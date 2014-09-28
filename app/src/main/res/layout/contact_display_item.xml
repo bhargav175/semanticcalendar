@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="6"
+        android:id="@+id/imageView"
+        android:contentDescription="@string/desc"
+        android:src="@drawable/abc_ic_search"
+        android:padding="8dp" />
+
+    <TextView
+        style="?android:attr/dropDownItemStyle"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/textView"
+        android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
+        android:singleLine="true"
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:text="asd"
+        android:padding="8dp"
+        android:layout_margin="8dp" />
+
+</LinearLayout>

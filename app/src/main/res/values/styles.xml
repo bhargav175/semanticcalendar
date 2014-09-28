@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+        <!-- Customize your theme here. -->
+    </style>
+
+
+    <style name="CustomCalendar" parent="android:Widget.CalendarView">
+        <item name="android:focusedMonthDateColor">@color/cs_textcolor</item>
+        <item name="android:weekNumberColor">@color/red</item>
+        <item name="android:selectedWeekBackgroundColor">@color/white</item>
+        <item name="android:unfocusedMonthDateColor">@color/whitesmoke</item>
+        <item name="android:weekDayTextAppearance">@style/TextAppearance.AppCompat.Base.Widget.PopupMenu.Large</item>
+        <item name="android:dateTextAppearance">@style/TextAppearance.AppCompat.Widget.PopupMenu.Small</item>
+    </style>
+</resources>
