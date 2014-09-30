@@ -1,5 +1,6 @@
 package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
+import android.app.ActionBar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
@@ -10,7 +11,9 @@ import android.provider.CalendarContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +31,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.NavDrawerItem;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends ActionBarActivity {
 
 
      public static final String TAG ="HomeActivity";
@@ -97,7 +100,11 @@ public class HomeActivity extends FragmentActivity {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
-
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.app_name);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayUseLogoEnabled(false);
         // Recycle the typed array
         navMenuIcons.recycle();
 
@@ -114,13 +121,13 @@ public class HomeActivity extends FragmentActivity {
                 R.string.app_name // nav drawer close - description for accessibility
         ){
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+                actionBar.setTitle(mTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
+                actionBar.setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
             }
@@ -223,7 +230,20 @@ public class HomeActivity extends FragmentActivity {
     }
 
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent e) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            // your action...
 
+            if (!mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }else{
+                mDrawerLayout.closeDrawer(mDrawerList);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, e);
+    }
 
     /*Navigation DRawer*/
 
@@ -256,6 +276,5 @@ public class HomeActivity extends FragmentActivity {
         }
         return false;
     }
-
 
 }

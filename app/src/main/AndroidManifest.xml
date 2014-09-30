@@ -91,6 +91,11 @@
             android:name="com.semantic.semanticOrganizer.semanticcalendar.ssupActivities.MainActivity"
             android:label="Main" >
 
+        </activity>
+        <activity
+            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.TutorialActivity"
+            android:label="Tutorial" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

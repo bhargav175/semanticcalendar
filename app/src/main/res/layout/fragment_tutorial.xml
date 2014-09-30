@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#3576ff"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:id="@+id/relativeLayout">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Plan your day like never before!"
+            android:id="@+id/heading"
+            android:padding="16dp"
+            android:textColor="#ffffffff"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Plan your day like never before!"
+            android:id="@+id/paragraph"
+            android:padding="16dp"
+            android:textColor="#ffffffff"
+            android:layout_below="@id/heading"
+            android:gravity="center"
+            android:singleLine="false"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            android:textSize="20sp"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Started!"
+            android:id="@+id/button"
+            android:layout_below="@id/paragraph"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ff3576ff"
+            android:background="#ffffffff"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

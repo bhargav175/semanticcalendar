@@ -1,0 +1,32 @@
+
+
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/RelativeLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:background="#3576ff"
+            android:paddingBottom="32dp">
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get Started"
+                android:id="@+id/button"
+                android:layout_gravity="center_horizontal"
+                android:background="#fff"
+                android:textColor="#3576ff"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:singleLine="false"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:clickable="true" />
+        </RelativeLayout>
+
+

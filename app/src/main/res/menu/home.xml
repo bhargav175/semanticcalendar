@@ -1,36 +1,46 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.HomeActivity" >
+  >
+    <item
+        android:id="@+id/a_More"
+        android:icon="@drawable/abc_ic_menu_moreoverflow_normal_holo_dark"
+        app:showAsAction="always"
+        android:title="More">
+
+        <menu >
+
+            <item android:id="@+id/action_new_event"
+                android:icon="@drawable/ic_action_new"
+                android:title="@string/add_event_string"
+                app:showAsAction="never"
+                />
+            <item android:id="@+id/action_new_habit"
+                android:icon="@drawable/ic_action_new"
+                android:title="@string/add_habit_string"
+                app:showAsAction="never"
+                />
+
+            <item android:id="@+id/action_new_todo"
+                android:icon="@drawable/ic_action_new"
+                android:title="@string/add_todo_string"
+                app:showAsAction="never"
+                />
+            <item android:id="@+id/action_new_note"
+                android:icon="@drawable/ic_action_new"
+                android:title="@string/add_task_string"
+                app:showAsAction="never"
+                />
+            <item android:id="@+id/action_settings"
+                android:title="@string/action_settings"
+                android:orderInCategory="100"
+                app:showAsAction="never"
+                />
+
+        </menu>
+        </item>
 
 
-    <item android:id="@+id/action_new_event"
-        android:icon="@drawable/ic_action_new"
-        android:title="@string/add_event_string"
-        app:showAsAction="always"
-        android:visible="true"/>
-    <item android:id="@+id/action_new_habit"
-        android:icon="@drawable/ic_action_new"
-        android:title="@string/add_habit_string"
-        app:showAsAction="always"
-        android:visible="true"/>
 
-    <item android:id="@+id/action_new_todo"
-        android:icon="@drawable/ic_action_new"
-        android:title="@string/add_todo_string"
-        app:showAsAction="always"
-        android:visible="true"/>
-    <item android:id="@+id/action_new_note"
-        android:icon="@drawable/ic_action_new"
-        android:title="@string/add_task_string"
-        app:showAsAction="always"
-        android:visible="true"/>
-
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        android:visible="true"/>
 
 
 </menu>
