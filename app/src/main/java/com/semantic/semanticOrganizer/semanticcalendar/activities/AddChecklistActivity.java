@@ -6,22 +6,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 
-public class AddEventActivity extends Activity {
+public class AddChecklistActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
-
-        setContentView(R.layout.activity_add_event);
-
+        setContentView(R.layout.activity_add_checklist);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_event, menu);
+        getMenuInflater().inflate(R.menu.add_checklist, menu);
         return true;
     }
 
@@ -43,4 +41,5 @@ public class AddEventActivity extends Activity {
         //closing transition animations
         overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
     }
+
 }

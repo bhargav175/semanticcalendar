@@ -54,12 +54,11 @@ public class ViewNoteActivity extends Activity {
 
     private void updateNote(Integer noteId) {
         String noteText=noteTextInput.getText().toString();
-        Boolean isDashboardHead=noteIsDashboardHead.isChecked();
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         Note note = noteDBHelper.getNote(noteId);
         if(note!=null){
-            noteDBHelper.updateNote(note, noteText, isDashboardHead);
+            noteDBHelper.updateNote(note, noteText);
             noteDBHelper.close();
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);

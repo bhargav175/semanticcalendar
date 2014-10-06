@@ -72,7 +72,6 @@ public class Write_Note_Activity extends Activity implements View.OnClickListene
             case R.id.save_note_btn:
                 Note note = new Note();
                 note.setNoteText(noteText.getText().toString());
-                note.setIsDashboardHead(noteIsDashboardHead.isChecked());
                 noteDBHelper.open();
                 noteDBHelper.saveNote(note);
                 Intent intent = new Intent(this, HomeActivity.class);

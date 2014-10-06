@@ -79,7 +79,6 @@ public class TodoListFragment extends Fragment {
                 Note note= (Note) parent.getAdapter().getItem(position);
                 Intent intent = new Intent(getActivity(), ViewNoteActivity.class);
                 intent.putExtra(NOTE_DESCRIPTION, note.getNoteText());
-                intent.putExtra(NOTE_IS_DASHBOARD_HEAD, note.getIsDashboardHead());
                 intent.putExtra(NOTE_ID,note.getId());
                 startActivity(intent);
             }

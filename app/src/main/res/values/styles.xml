@@ -21,7 +21,7 @@
     </style>
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#3576ff</item>
+        <item name="android:background">@color/blue_bright</item>
         <item name="actionBarDivider">@null</item>
         <item name="android:actionBarDivider">@null</item>
         <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>

@@ -1,8 +1,11 @@
 package com.semantic.semanticOrganizer.semanticcalendar.models;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
+
+import java.util.List;
 
 /**
  * Created by Admin on 28-09-2014.
@@ -63,6 +66,10 @@ public class Tag {
     public Tag(){
 
     }
+    @Override
+    public String toString(){
+        return this.tagText;
+    }
 
     public Tag(int id, String tagText,String tagDescription, Boolean isArchived, long createdMillis){
         this.tagId =id;
@@ -78,5 +85,22 @@ public class Tag {
         tagDBHelper.saveTag(this);
         tagDBHelper.close();
     }
+
+    public static  List<Tag> getAllTasks(Context context ,List<Tag> taskList) {
+        TagDBHelper tagDBHelper = new TagDBHelper(context);
+        tagDBHelper.open();
+        Cursor cursor= tagDBHelper.fetchAllTags();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Tag tag = tagDBHelper.cursorToTag(cursor);
+            taskList.add(tag);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        tagDBHelper.close();
+        return taskList;
+    }
+
 
 }

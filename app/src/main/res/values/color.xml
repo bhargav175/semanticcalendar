@@ -14,5 +14,6 @@
 
     <color name="white_opaque">#FFFFFFFF</color>
     <color name="pitch_black">#FF000000</color>
+    <color name="blue_bright">#3576ff</color>
 
 </resources>

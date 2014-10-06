@@ -32,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //Note COlumns
     public static final String NOTE_DESCRIPTION ="description";
-    public static final String NOTE_IS_DASHBOARD_HEAD ="isHead";
+    public static final String NOTE_TAG ="tag_id";
 
 //TODO COlumns
 public static final String TODO_DESCRIPTION ="description";
@@ -46,21 +46,21 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 10;
 
     private static final String CREATE_TABLE_TASKS = "create table if not exists "
             + TASKS_TABLE + "(" + COLUMN_ID
             + " integer primary key autoincrement, "
             + TASK_TITLE + " text not null, "
-            + COLUMN_CREATED_TIME +"TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
             +");";
 
     private static final String CREATE_TABLE_NOTES = "create table if not exists "
             + NOTES_TABLE + "("
             + COLUMN_ID + " integer primary key autoincrement, "
             + NOTE_DESCRIPTION+ " text not null, "
-            + COLUMN_CREATED_TIME +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
-            + NOTE_IS_DASHBOARD_HEAD + " BOOLEAN DEFAULT FALSE"
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + NOTE_TAG + " integer"
             +");";
 
  private static final String CREATE_TABLE_TODOS = "create table if not exists "
@@ -68,7 +68,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
          + COLUMN_ID+ " integer primary key autoincrement, "
          + TODO_DESCRIPTION + " text not null, "
          + TODO_IS_COMPLETED + " BOOLEAN DEFAULT FALSE, "
-         + COLUMN_CREATED_TIME +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+         + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
 
          +");";
 
@@ -80,7 +80,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + TAG_TITLE + " text not null, "
             + TAG_DESCRIPTION + " text, "
             + TAG_IS_ARCHIVED + " BOOLEAN DEFAULT FALSE, "
-            + COLUMN_CREATED_TIME +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
 
             +");";
 

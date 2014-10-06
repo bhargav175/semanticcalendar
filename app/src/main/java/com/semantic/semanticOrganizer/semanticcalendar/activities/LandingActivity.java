@@ -3,24 +3,16 @@ package com.semantic.semanticOrganizer.semanticcalendar.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
-import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 public class LandingActivity extends Activity {
 
     private Button tag_btn,event_btn,checklist_btn,note_btn,alarm_btn,habit_btn;
-    private EditText tag_text,event_text,checklist_text,note_text,alarm_text,habit_text;
-    private RelativeLayout addTagContainer,addEventContainer,addChecklistContainer,addNoteContainer,addAlarmContainer,addHabitContainer;
 //    private ActionMode.Callback tagActionModeCallback = new ActionMode.Callback() {
 //
 //        // Called when the action mode is created; startActionMode() was called
@@ -70,10 +62,10 @@ public class LandingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_landing);
+        setContentView(R.layout.activity_landing_refactor);
+
         initializeUi();
         setListeners();
-        hideLayouts();
         setActionModeListeners();
     }
 
@@ -90,30 +82,30 @@ public class LandingActivity extends Activity {
         event_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideLayouts();
-                makeVisible(addEventContainer);
+                Intent intent = new Intent(getApplicationContext(), AddEventActivity.class);
+                startActivity(intent);
             }
         });
         checklist_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideLayouts();
-                makeVisible(addChecklistContainer);
+                Intent intent = new Intent(getApplicationContext(), AddChecklistActivity.class);
+                startActivity(intent);
             }
         });
         note_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideLayouts();
-                makeVisible(addNoteContainer);
+                Intent intent = new Intent(getApplicationContext(), AddNoteActivity.class);
+                startActivity(intent);
             }
         });
 
         habit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideLayouts();
-                makeVisible(addHabitContainer);
+                Intent intent = new Intent(getApplicationContext(), AddHabitActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -140,44 +132,23 @@ public class LandingActivity extends Activity {
 
     }
 
-    private void makeVisible(RelativeLayout rl) {
-        rl.setVisibility(View.VISIBLE);
-        EditText t=(EditText) rl.getChildAt(0);
-       t.requestFocus();;
-    }
-
-    private void hideLayouts() {
-     addTagContainer.setVisibility(View.GONE);
-        addEventContainer.setVisibility(View.GONE);
-        addChecklistContainer.setVisibility(View.GONE);
-        addNoteContainer.setVisibility(View.GONE);
-        addHabitContainer.setVisibility(View.GONE);
-    }
 
     private void initializeUi() {
-        addTagContainer =(RelativeLayout) findViewById(R.id.tagLayout);
-        addEventContainer =(RelativeLayout) findViewById(R.id.eventLayout);
-        addChecklistContainer =(RelativeLayout) findViewById(R.id.checklistLayout);
-        addNoteContainer =(RelativeLayout) findViewById(R.id.noteLayout);
-        addHabitContainer =(RelativeLayout) findViewById(R.id.habitLayout);
+
         tag_btn= (Button) findViewById(R.id.tag_btn);
         event_btn= (Button) findViewById(R.id.event_btn);
         checklist_btn= (Button) findViewById(R.id.checklist_btn);
         note_btn= (Button) findViewById(R.id.note_btn);
         habit_btn= (Button) findViewById(R.id.habit_btn);
 
-        tag_text= (EditText) findViewById(R.id.tagText);
-        event_text= (EditText) findViewById(R.id.eventText);
-        checklist_text= (EditText) findViewById(R.id.checklistText);
-        note_text= (EditText) findViewById(R.id.noteText);
-        habit_text= (EditText) findViewById(R.id.habitText);
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.landing_actvitiy, menu);
+        getMenuInflater().inflate(R.menu.landing_actvitiy_refactor, menu);
         return true;
     }
 
@@ -190,6 +161,27 @@ public class LandingActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_view_tags) {
+            Intent intent = new Intent(this,ListTagsActivity.class);
+            startActivity(intent);
+        }
+        if (id == R.id.action_view_notes) {
+            Intent intent = new Intent(this,ListNotesActivity.class);
+            startActivity(intent);
+        }
+        if (id == R.id.action_view_events) {
+            Intent intent = new Intent(this,ListEventsActivity.class);
+            startActivity(intent);
+        }
+        if (id == R.id.action_view_checklists) {
+            Intent intent = new Intent(this,ListChecklistsActivity.class);
+            startActivity(intent);
+        }
+        if (id == R.id.action_view_habits) {
+            Intent intent = new Intent(this,ListHabitsActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

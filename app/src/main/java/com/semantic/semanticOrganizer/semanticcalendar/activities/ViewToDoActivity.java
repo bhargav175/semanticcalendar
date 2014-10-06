@@ -59,7 +59,7 @@ public class ViewToDoActivity extends Activity {
         noteDBHelper.open();
         Note note = noteDBHelper.getNote(noteId);
         if(note!=null){
-            noteDBHelper.updateNote(note, noteText, isDashboardHead);
+            noteDBHelper.updateNote(note, noteText);
             noteDBHelper.close();
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);

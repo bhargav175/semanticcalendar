@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/RelativeLayout"
+        android:background="#3576ff"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tag_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="T"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/note_btn" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="N"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/event_btn" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="E"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checklist_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="C"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/event_btn" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/habit_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="H"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/checklist_btn" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/relativeLayout"
+        android:background="#3576ff"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="visible" >
+
+        <EditText
+            android:layout_width="240dp"
+            android:layout_height="40dp"
+            android:id="@+id/addText"
+            android:hint="Add Note"
+            android:textColorHint="#fff"
+            android:gravity="left"
+            />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:text="Add"
+            android:id="@+id/addButton"
+            android:layout_toRightOf="@+id/addText"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/relativeLayout">
+
+
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tagsListView" />
+    </RelativeLayout>
+
+</RelativeLayout>

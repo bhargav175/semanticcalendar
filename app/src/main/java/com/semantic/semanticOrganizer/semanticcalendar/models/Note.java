@@ -9,10 +9,10 @@ public class Note {
 
     }
 
-    public Note(int id, String description, Boolean isDashboardHead){
+    public Note(int id, String description, String createdTime){
         this.id = id;
         this.noteText = description;
-        this.isDashboardHead=isDashboardHead;
+        this.createdTime = createdTime;
     }
 
     public int getId() {
@@ -43,15 +43,7 @@ public class Note {
     private String noteText;
     private String createdTime;
 
-    public Boolean getIsDashboardHead() {
-        return isDashboardHead;
-    }
 
-    public void setIsDashboardHead(Boolean isDashboardHead) {
-        this.isDashboardHead = isDashboardHead;
-    }
-
-    private Boolean isDashboardHead;
 
 
     // Will be used by the ArrayAdapter in the ListView

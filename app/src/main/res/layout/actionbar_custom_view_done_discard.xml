@@ -2,16 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:alpha="0.99"
+    android:background="@drawable/selectable_background_mystyle">
 
     <include layout="@layout/actionbar_discard_button" />
 
     <View
-        android:layout_width="0.5dp"
+        android:layout_width="5dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:background="#55FFFFFF" />
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/selectable_background_divider"
+         />
 
     <include layout="@layout/actionbar_done_button" />
 

@@ -10,22 +10,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.fragments.NoteListFragment;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddNoteActivity extends Activity implements View.OnClickListener {
+public class UpdateNoteActivity extends Activity implements View.OnClickListener {
     private NoteDBHelper noteDBHelper;
     private EditText noteText;
     private Spinner tag;
+    Integer noteId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +43,17 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        Note note = new Note();
-                        note.setNoteText(noteText.getText().toString());
-                        Tag noteTag = (Tag) tag.getSelectedItem();
-                        noteDBHelper.open();
-                        noteDBHelper.saveNote(note);
-                        Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
-                        noteDBHelper.close();
+                        if(noteId!=null){
 
-                        startActivity(intent);
+                            updateNote(noteId);
+                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
+                            startActivity(lIntent);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+
+                        }
+
                         finish();
                     }
                 });
@@ -71,9 +76,20 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         // END_INCLUDE (inflate_set_custom_view)
-
-
         setContentView(R.layout.activity_add_note);
+        Intent intent = getIntent();
+
+        Bundle extras= intent.getExtras();
+        if(extras!=null){
+            String noteTextString = extras.getString(DBHelper.NOTE_DESCRIPTION);
+            noteId = extras.getInt(DBHelper.COLUMN_ID);
+            noteText = (EditText) findViewById(R.id.noteText);
+            noteText.setText(noteTextString);
+        }else{
+            Toast.makeText(this, "Could not load note", Toast.LENGTH_LONG).show();
+        }
+
+
         initUi();
     }
     private void initUi() {
@@ -87,6 +103,25 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
         tag.setAdapter(adapter);
     }
     private void setListeners() {
+
+
+    }
+
+    private void updateNote(Integer noteId) {
+        String noteTextString=noteText.getText().toString();
+        noteDBHelper = new NoteDBHelper(this);
+        noteDBHelper.open();
+        Note note = noteDBHelper.getNote(noteId);
+        if(note!=null){
+            noteDBHelper.updateNote(note, noteTextString);
+            noteDBHelper.close();
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        }
+        else{
+            noteDBHelper.close();
+            Toast.makeText(this,"Update Failed",Toast.LENGTH_LONG).show();
+        }
 
 
     }

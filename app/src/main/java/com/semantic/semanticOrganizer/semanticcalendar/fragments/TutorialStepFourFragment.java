@@ -35,7 +35,7 @@ public class TutorialStepFourFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Intent intent = new Intent(getActivity(), LandingActivityNew.class);
+                Intent intent = new Intent(getActivity(), LandingActivity.class);
                 startActivity(intent);
             }
         });

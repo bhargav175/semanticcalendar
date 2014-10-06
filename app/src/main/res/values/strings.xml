@@ -97,13 +97,19 @@
 
     <string name="title_activity_landing_actvitiy">LandingActvitiy</string>
     <string name="LandingActivity">Semantic Organizer</string>
-    <string name="title_activity_add_tag">AddTagActivity</string>
-    <string name="title_activity_landing_activity_new">LandingActivityNew</string>
+    <string name="title_activity_add_tag">Add Tag</string>
+    <string name="title_activity_landing_activity_new">Home</string>
     <string name="menu_cancel">Cancel</string>
     <string name="menu_save">Done</string>
-    <string name="title_activity_add_note">AddNoteActivity</string>
-    <string name="title_activity_add_checklist">AddChecklist</string>
-    <string name="title_activity_add_habit">AddHabitActivity</string>
-    <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="title_activity_add_note">Add Note</string>
+    <string name="title_activity_add_checklist">Add Checklist</string>
+    <string name="title_activity_add_habit">Add Habit</string>
+    <string name="title_activity_add_event">Add Event</string>
+    <string name="title_activity_list_tags">ListTagsActivity</string>
+    <string name="title_activity_list_notes">ListNotesActivity</string>
+    <string name="title_activity_list_events">ListEventsActivity</string>
+    <string name="title_activity_list_checklists">ListChecklistsActivity</string>
+    <string name="title_activity_list_habits">ListHabitsActivity</string>
+    <string name="title_update_note">Update Note</string>
 
 </resources>
