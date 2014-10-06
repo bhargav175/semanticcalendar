@@ -18,6 +18,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //Declare Tables
     public static final String TASKS_TABLE ="tasks";
+    public static final String TAGS_TABLE ="tags";
+
     public static final String NOTES_TABLE ="notes";
     public static final String TODO_TABLE ="todos";
     public static final String HABIT_TABLE ="habits";
@@ -36,10 +38,15 @@ public class DBHelper extends SQLiteOpenHelper {
 public static final String TODO_DESCRIPTION ="description";
 public static final String TODO_IS_COMPLETED ="isCompleted";
 
+//Tags Columns
+
+    public static final String TAG_TITLE ="title";
+    public static final String TAG_DESCRIPTION ="description";
+    public static final String TAG_IS_ARCHIVED ="isArchived";
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String CREATE_TABLE_TASKS = "create table if not exists "
             + TASKS_TABLE + "(" + COLUMN_ID
@@ -66,9 +73,23 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
          +");";
 
 
+
+    private static final String CREATE_TABLE_TAGS = "create table if not exists "
+            + TAGS_TABLE + "("
+            + COLUMN_ID+ " integer primary key autoincrement, "
+            + TAG_TITLE + " text not null, "
+            + TAG_DESCRIPTION + " text, "
+            + TAG_IS_ARCHIVED + " BOOLEAN DEFAULT FALSE, "
+            + COLUMN_CREATED_TIME +" TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+
+            +");";
+
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+
 
 
     @Override
@@ -76,9 +97,11 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
         Log.d(TAG,CREATE_TABLE_TASKS);
         Log.d(TAG,CREATE_TABLE_NOTES);
         Log.d(TAG,CREATE_TABLE_TODOS);
+        Log.d(TAG,CREATE_TABLE_TAGS);
         db.execSQL(CREATE_TABLE_TASKS);
         db.execSQL(CREATE_TABLE_NOTES);
         db.execSQL(CREATE_TABLE_TODOS);
+        db.execSQL(CREATE_TABLE_TAGS);
 
     }
 
@@ -91,6 +114,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
         db.execSQL("DROP TABLE IF EXISTS " + TASKS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + NOTES_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TAGS_TABLE);
         onCreate(db);
     }
 }

@@ -54,10 +54,19 @@ public class Note {
     private Boolean isDashboardHead;
 
 
-
     // Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
         return noteText;
+    }
+
+    private Boolean isArchived;
+
+    public Boolean getIsArchived() {
+        return isArchived;
+    }
+
+    public void setIsArchived(Boolean isArchived) {
+        this.isArchived = isArchived;
     }
 }

@@ -31,6 +31,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.fragments.NoteListFragmen
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.TodayFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.TodoListFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.YesterdayFragment;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.NavDrawerItem;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
@@ -53,6 +54,7 @@ public class TutorialActivity extends FragmentActivity  {
     protected void onCreate(Bundle savedInstanceState) {
 
         final Context context = this;
+
 
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_tutorial);

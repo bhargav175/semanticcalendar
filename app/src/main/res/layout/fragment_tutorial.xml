@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get Started!"
-            android:id="@+id/button"
+            android:id="@+id/tag"
             android:layout_below="@id/paragraph"
             android:layout_centerHorizontal="true"
             android:textColor="#ff3576ff"

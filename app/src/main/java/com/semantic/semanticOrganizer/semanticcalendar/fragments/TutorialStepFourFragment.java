@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.activities.HomeActivity;
-import com.semantic.semanticOrganizer.semanticcalendar.activities.TutorialActivity;
+import com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity;
+import com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivityNew;
 
 
 public class TutorialStepFourFragment extends Fragment {
@@ -29,12 +30,12 @@ public class TutorialStepFourFragment extends Fragment {
         TextView paragraph = (TextView) rootView.findViewById(R.id.paragraph);
         heading.setText("Lets Go!");
         paragraph.setText("We have created some lists for you to help you get started!");
-        Button button = (Button) rootView.findViewById(R.id.button);
+        Button button = (Button) rootView.findViewById(R.id.tag);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                Intent intent = new Intent(getActivity(), LandingActivityNew.class);
                 startActivity(intent);
             }
         });

@@ -86,15 +86,24 @@
     <string name="title_view_note">Note</string>
     <string name="title_activity_write_todo">Write Todo</string>
     <string name="title_view_todo">To Do</string>
-
-
-
     <string name="greet_me">Greet Me</string>
     <string name="account">Account</string>
+
     <string-array name="main_activity_items">
-        <item >Foreground</item>
-        <item >Background</item>
-        <item >Background with Sync</item>
+        <item>Foreground</item>
+        <item>Background</item>
+        <item>Background with Sync</item>
     </string-array>
+
+    <string name="title_activity_landing_actvitiy">LandingActvitiy</string>
+    <string name="LandingActivity">Semantic Organizer</string>
+    <string name="title_activity_add_tag">AddTagActivity</string>
+    <string name="title_activity_landing_activity_new">LandingActivityNew</string>
+    <string name="menu_cancel">Cancel</string>
+    <string name="menu_save">Done</string>
+    <string name="title_activity_add_note">AddNoteActivity</string>
+    <string name="title_activity_add_checklist">AddChecklist</string>
+    <string name="title_activity_add_habit">AddHabitActivity</string>
+    <string name="title_activity_add_event">AddEventActivity</string>
 
 </resources>

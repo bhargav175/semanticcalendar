@@ -1,0 +1,326 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:padding="5dp"
+        android:id="@+id/RelativeLayout"
+        android:background="#3576ff">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tag_btn"
+            android:layout_alignBottom="@+id/checklist_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="T" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:layout_alignTop="@+id/tag_btn"
+            android:layout_toRightOf="@+id/tag_btn"
+            android:text="N" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="E"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checklist_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="C"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/habit_btn" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/habit_btn"
+            android:background="#3576ff"
+            android:textColor="#ffffff"
+            android:text="H"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/RelativeLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:background="#3576ff"
+        android:id="@+id/relativeLayout"
+        android:padding="8dp"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tagLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tagText"
+
+                android:inputType="text"
+                android:hint="Add Tag"
+                android:textColor="#000"
+                android:autoText="false"
+                android:background="#fff"
+                android:padding="8dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noteLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tagLayout">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/noteText"
+
+                android:inputType="text"
+                android:hint="Add Note"
+
+
+                android:textColor="#000"
+                android:autoText="false"
+                android:background="#fff"
+                android:padding="8dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/noteText"
+                android:background="#fff">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:text="Tag"
+                    android:id="@+id/noteTagTextView"
+                    android:textAlignment="center"
+                    android:gravity="bottom|center_horizontal"
+                    android:textSize="20sp"
+                    android:padding="8dp" />
+
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14pt"
+                    android:textColor="#FF8B1500"
+                    android:gravity="center"
+                    android:id="@+id/noteTagspinner"
+                    android:layout_toRightOf="@id/noteTagTextView"
+
+                    android:padding="8dp"
+                   />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/eventLayout"
+            android:layout_below="@+id/noteLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventText"
+                android:inputType="text"
+                android:hint="Add Event"
+                android:textColor="#000"
+                android:autoText="false"
+                android:background="#fff"
+                android:padding="8dp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventText"
+                android:background="#fff">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:text="Tag"
+                    android:id="@+id/eventTagTextView"
+                    android:textAlignment="center"
+                    android:gravity="bottom|center_horizontal"
+                    android:textSize="20sp"
+                    android:padding="8dp" />
+
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14pt"
+                    android:textColor="#FF8B1500"
+                    android:gravity="center"
+                    android:id="@+id/eventTagspinner"
+                    android:layout_toRightOf="@id/eventTagTextView"
+
+                    android:padding="8dp"
+                    />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/checklistLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/eventLayout">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/checklistText"
+                android:inputType="text"
+                android:hint="Add CheckList"
+                android:textColor="#000"
+                android:autoText="false"
+                android:background="#fff"
+                android:padding="8dp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checklistText"
+                android:background="#fff">
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:text="Tag"
+                    android:id="@+id/checklistTagTextView"
+                    android:textAlignment="center"
+                    android:gravity="bottom|center_horizontal"
+                    android:textSize="20sp"
+                    android:padding="8dp" />
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14pt"
+                    android:textColor="#FF8B1500"
+                    android:gravity="center"
+                    android:id="@+id/checklistTagspinner"
+                    android:layout_toRightOf="@id/checklistTagTextView"
+                    android:padding="8dp"
+                    />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/habitLayout"
+            android:layout_below="@+id/checklistLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/habitText"
+                android:inputType="text"
+                android:hint="Add Habit"
+                android:textColor="#000"
+                android:autoText="false"
+                android:background="#fff"
+                android:padding="8dp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/habitText"
+                android:background="#fff">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:text="Tag"
+                    android:id="@+id/habitTagTextView"
+                    android:textAlignment="center"
+                    android:gravity="bottom|center_horizontal"
+                    android:textSize="20sp"
+                    android:padding="8dp" />
+
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14pt"
+                    android:textColor="#FF8B1500"
+                    android:gravity="center"
+                    android:id="@+id/habitTagspinner"
+                    android:layout_toRightOf="@id/habitTagTextView"
+
+                    android:padding="8dp"
+                    />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/relativeLayout">
+
+
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tagsListView" />
+    </RelativeLayout>
+
+</RelativeLayout>

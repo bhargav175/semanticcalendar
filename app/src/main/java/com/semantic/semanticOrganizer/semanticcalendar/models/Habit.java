@@ -3,16 +3,28 @@ package com.semantic.semanticOrganizer.semanticcalendar.models;
 /**
  * Created by Admin on 16-09-2014.
  */
-public class ToDoItem {
+public class Habit {
 
-    public ToDoItem(){
+
+
+    private enum state {
+        COMPLETED_SUCCESSFULLY,COMPLETED_UNSUCCESSFULLY, SKIPPED, INCOMPLETE;
+    }
+    private int id;
+    private String habitText;
+    private String habitQuestion;
+    private String createdTime;
+    private String dueTime;
+    private Boolean isArchived;
+
+    public Habit(){
 
     }
 
-    public ToDoItem(int id, String description, Boolean isCompleted){
+    public Habit(int id, String habitText){
         this.id = id;
-        this.todoText = description;
-        this.isCompleted=isCompleted;
+        this.habitText = habitText;
+
     }
 
     public int getId() {
@@ -24,11 +36,11 @@ public class ToDoItem {
     }
 
     public String geTtodoText() {
-        return todoText;
+        return habitText;
     }
 
     public void setTodoText(String todoText) {
-        this.todoText = todoText;
+        this.habitText = todoText;
     }
 
     public String getCreatedTime() {
@@ -39,16 +51,9 @@ public class ToDoItem {
         this.createdTime = createdTime;
     }
 
-    private int id;
-    private String todoText;
-    private String createdTime;
-
-    private String dueTime;
-    private Boolean isCompleted;
-    private Boolean isArchived;
 
     public String getTodoText() {
-        return todoText;
+        return habitText;
     }
 
     public String getDueTime() {
@@ -59,12 +64,12 @@ public class ToDoItem {
         this.dueTime = dueTime;
     }
 
-    public Boolean getIsCompleted() {
-        return isCompleted;
+    public String getHabitQuestion() {
+        return habitQuestion;
     }
 
-    public void setIsCompleted(Boolean isCompleted) {
-        this.isCompleted = isCompleted;
+    public void setHabitQuestion(String habitQuestion) {
+        this.habitQuestion = habitQuestion;
     }
 
 
@@ -80,6 +85,6 @@ public class ToDoItem {
     // Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
-        return todoText;
+        return habitText;
     }
 }

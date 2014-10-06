@@ -25,82 +25,106 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.Login"
+            android:name=".activities.Login"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.TaskManager"
+            android:name=".activities.TaskManager"
             android:label="@string/title_activity_task_manager"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.WriteTask"
+            android:name=".activities.WriteTask"
             android:label="@string/title_activity_write_task" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.WriteEvent"
+            android:name=".activities.WriteEvent"
             android:label="@string/title_activity_write_event" >
             <intent-filter>
-                <action android:name="android.intent.action.INSERT"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.intent.action.INSERT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.ViewTaskActivity"
+            android:name=".activities.ViewTaskActivity"
             android:label="@string/title_activity_view_task" >
-
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.HomeActivity"
+            android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.AppCompat.Light" >
-
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.Write_Note_Activity"
+            android:name=".activities.Write_Note_Activity"
             android:label="@string/title_activity_write__note_" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.NoteListActivity"
+            android:name=".activities.NoteListActivity"
             android:label="@string/title_list_notes" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.ViewNoteActivity"
+            android:name=".activities.ViewNoteActivity"
             android:label="@string/title_view_note" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.Write_Todo_Activity"
+            android:name=".activities.Write_Todo_Activity"
             android:label="@string/title_activity_write_todo" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.ViewToDoActivity"
+            android:name=".activities.ViewToDoActivity"
             android:label="@string/title_view_todo" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.ViewCalendar"
+            android:name=".activities.ViewCalendar"
             android:label="@string/title_activity_view_calendar" >
-
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.ssupActivities.HelloActivity"
+            android:name=".ssupActivities.HelloActivity"
             android:label="Hello" >
-
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.ssupActivities.MainActivity"
+            android:name=".ssupActivities.MainActivity"
             android:label="Main" >
-
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.semanticcalendar.activities.TutorialActivity"
+            android:name=".activities.TutorialActivity"
             android:label="Tutorial" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.LandingActivity"
+            android:label="@string/LandingActivity" >
+        </activity>
+        <activity
+            android:name=".activities.AddTagActivity"
+            android:label="@string/title_activity_add_tag" >
+        </activity>
+        <activity
+            android:name=".activities.LandingActivityNew"
+            android:label="@string/title_activity_landing_activity_new" >
+        </activity>
+        <activity
+            android:name=".activities.AddNoteActivity"
+            android:label="@string/title_activity_add_note" >
+        </activity>
+        <activity
+            android:name=".activities.AddChecklist"
+            android:label="@string/title_activity_add_checklist" >
+        </activity>
+        <activity
+            android:name=".activities.AddHabitActivity"
+            android:label="@string/title_activity_add_habit" >
+        </activity>
+        <activity
+            android:name=".activities.AddEventActivity"
+            android:label="@string/title_activity_add_event" >
         </activity>
     </application>
 
