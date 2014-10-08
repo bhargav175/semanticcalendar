@@ -102,9 +102,10 @@ public class NoteDBHelper {
         Note note = new Note();
         note.setId(cursor.getInt(0));
         note.setNoteText(cursor.getString(1));
-        note.setCreatedTime(cursor.getString(2));
-        if (!cursor.isNull(3)){
-            note.setTag(cursor.getInt(3));
+        note.setIsArchived(cursor.getInt(2)>0);
+        note.setCreatedTime(cursor.getString(3));
+                if (!cursor.isNull(4)){
+            note.setTag(cursor.getInt(4));
         }
 
         return note;

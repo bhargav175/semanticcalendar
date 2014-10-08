@@ -9,14 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.semantic.semanticOrganizer.semanticcalendar.fragments.NoteListFragment;
-import com.semantic.semanticOrganizer.semanticcalendar.fragments.TodayFragment;
-import com.semantic.semanticOrganizer.semanticcalendar.fragments.TomorrowFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.TutorialStepFourFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.TutorialStepOneFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.TutorialStepThreeFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.fragments.TutorialStepTwoFragment;
-import com.semantic.semanticOrganizer.semanticcalendar.fragments.YesterdayFragment;
 
 public class TutorialPagerAdapter extends FragmentPagerAdapter {
 

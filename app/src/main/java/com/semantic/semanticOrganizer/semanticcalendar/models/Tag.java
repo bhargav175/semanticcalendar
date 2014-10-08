@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,6 +101,32 @@ public class Tag {
         cursor.close();
         tagDBHelper.close();
         return taskList;
+    }
+
+
+    public static  List<Tag> getAllUnArchivedTags(Context context) {
+        List<Tag> taskList = new ArrayList<Tag>();
+        TagDBHelper tagDBHelper = new TagDBHelper(context);
+        tagDBHelper.open();
+        Cursor cursor= tagDBHelper.fetchAllUnArchivedTags();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Tag tag = tagDBHelper.cursorToTag(cursor);
+            taskList.add(tag);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        tagDBHelper.close();
+        return taskList;
+    }
+
+    public static void archiveTag(Tag tag,Context context){
+        TagDBHelper tagDBHelper = new TagDBHelper(context);
+        tagDBHelper.open();
+        tagDBHelper.archiveTag(tag);
+        tagDBHelper.close();
+
     }
 
 

@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ import java.util.List;
 
 public class LandingActivity extends Activity {
 
-    private Button tag_btn,event_btn,checklist_btn,note_btn,alarm_btn,habit_btn ,add_item;
+    private Button tag_btn,checklist_btn,note_btn,alarm_btn,habit_btn ,add_item;
     private EditText addItemEditText;
     private LinearLayout homeLayout, horizontalLayout;
     private NoteDBHelper noteDBHelper;
@@ -56,6 +57,7 @@ public class LandingActivity extends Activity {
     private CheckListDBHelper checkListDBHelper;
     private List<OrganizerItem> mOrganizerItemList;
     private ActionMode mActionMode;
+    private RelativeLayout parentLayout;
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -149,7 +151,7 @@ public class LandingActivity extends Activity {
 
     }
 
-    private void populateTags(List<Tag> tagList) {
+    private void populateTags(final List<Tag> tagList) {
         LayoutInflater layoutInflater = (LayoutInflater)
                 this.getSystemService(LAYOUT_INFLATER_SERVICE);
         if(horizontalLayout!=null){
@@ -175,8 +177,8 @@ public class LandingActivity extends Activity {
                         alertDialog.setTitle("Select Action");
                         alertDialog.setCancelable(true);
                         final AlertDialog alert = alertDialog.create();
-                        ListView lv = (ListView) convertView.findViewById(R.id.lv);
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,names);
+                        final ListView lv = (ListView) convertView.findViewById(R.id.lv);
+                        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,names);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -197,15 +199,19 @@ public class LandingActivity extends Activity {
                                         break;
                                     case 1:
                                         str = "Archive Items";
+
                                         break;
                                     case 2:
                                         str = "Archive Tag";
+                                        Tag.archiveTag(tag,getApplicationContext());
+                                        Intent intent2 = new Intent(LandingActivity.this, LandingActivity.class);
+                                        startActivity(intent2);
                                         break;
                                     default:
                                         str = "Error";
                                         break;
                                 }
-                                Toast.makeText(getApplicationContext(),str,Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
                             }
                         });
                         lv.setAdapter(adapter);
@@ -415,7 +421,7 @@ public class LandingActivity extends Activity {
                                tagDBHelper.open();
                                tagDBHelper.saveTag(tag);
                                tagDBHelper.close();
-                               horizontalLayout.invalidate();
+                               parentLayout.invalidate();
 
                                str = "Tag";
                                break;
@@ -442,13 +448,7 @@ public class LandingActivity extends Activity {
 
             }
         });
-        event_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddEventActivity.class);
-                startActivity(intent);
-            }
-        });
+
         checklist_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -486,11 +486,11 @@ public class LandingActivity extends Activity {
         add_item= (Button) findViewById(R.id.addButton);
         addItemEditText =(EditText) findViewById(R.id.addText);
         tag_btn= (Button) findViewById(R.id.tag_btn);
-        event_btn= (Button) findViewById(R.id.event_btn);
         checklist_btn= (Button) findViewById(R.id.checklist_btn);
         note_btn= (Button) findViewById(R.id.note_btn);
         habit_btn= (Button) findViewById(R.id.habit_btn);
         homeLayout = (LinearLayout) findViewById(R.id.homeLayout);
+        parentLayout =(RelativeLayout) findViewById(R.id.parentLayout);
         horizontalLayout = (LinearLayout) findViewById(R.id.horizontalLayout);
 
     }
@@ -518,10 +518,6 @@ public class LandingActivity extends Activity {
         }
         if (id == R.id.action_view_notes) {
             Intent intent = new Intent(this,ListNotesActivity.class);
-            startActivity(intent);
-        }
-        if (id == R.id.action_view_events) {
-            Intent intent = new Intent(this,ListEventsActivity.class);
             startActivity(intent);
         }
         if (id == R.id.action_view_checklists) {
@@ -573,7 +569,7 @@ public class LandingActivity extends Activity {
         @Override
         protected List<Tag> doInBackground(String... params) {
             List<Tag> tagList = new ArrayList<Tag>();
-            tagList = Tag.getAllTags(tagList,getApplicationContext());
+            tagList = Tag.getAllUnArchivedTags(getApplicationContext());
             return tagList;
         }
 
@@ -584,7 +580,7 @@ public class LandingActivity extends Activity {
                 @Override
                 public void run() {
                     populateTags(tagList);
-                    Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_SHORT).show();
                 }
             });
 

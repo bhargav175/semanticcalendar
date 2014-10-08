@@ -120,7 +120,7 @@ public class UpdateCheckListActivity extends Activity {
             else{
                 checkListDBHelper.updateCheckList(checkList, checkListTextString,checkListTag.getTagId());
                 checkListDBHelper.close();
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, LandingActivity.class);
                 startActivity(intent);
             }
 

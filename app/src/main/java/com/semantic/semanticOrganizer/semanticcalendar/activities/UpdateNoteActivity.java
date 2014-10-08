@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
-import com.semantic.semanticOrganizer.semanticcalendar.fragments.NoteListFragment;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
@@ -123,7 +122,7 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
             else{
                 noteDBHelper.updateNote(note, noteTextString,noteTag.getTagId());
                 noteDBHelper.close();
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, LandingActivity.class);
                 startActivity(intent);
             }
 

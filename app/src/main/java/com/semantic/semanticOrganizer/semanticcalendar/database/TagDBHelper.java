@@ -45,6 +45,9 @@ public class TagDBHelper {
     public Cursor fetchAllTags() {
         return database.query(TAGS_TABLE, null, null, null, null, null, null);
     }
+    public Cursor fetchAllUnArchivedTags() {
+        return database.query(TAGS_TABLE, null,DBHelper.TAG_IS_ARCHIVED +  " = 0",  null, null, null, null);
+    }
 
     public Tag getTag(int id) {
         Cursor cursor = database.query(TAGS_TABLE, null, DBHelper.COLUMN_ID + "=?",
@@ -71,7 +74,17 @@ public class TagDBHelper {
                 new String[] { String.valueOf(tag.getTagId()) });
     }
 
-    public Tag cursorToTag(Cursor cursor) {
+
+    public int archiveTag(Tag tag) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.TAG_IS_ARCHIVED, true);
+
+        return database.update(TAGS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[] { String.valueOf(tag.getTagId()) });
+    }
+
+        public Tag cursorToTag(Cursor cursor) {
         Tag tag = new Tag();
         tag.setTagId(cursor.getInt(0));
         tag.setTagText(cursor.getString(1));

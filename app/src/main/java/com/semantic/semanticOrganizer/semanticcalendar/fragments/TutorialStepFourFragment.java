@@ -10,9 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
-import com.semantic.semanticOrganizer.semanticcalendar.activities.HomeActivity;
 import com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity;
-import com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivityNew;
 
 
 public class TutorialStepFourFragment extends Fragment {

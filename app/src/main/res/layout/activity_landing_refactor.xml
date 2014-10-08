@@ -8,6 +8,8 @@
     android:paddingBottom="0dp"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
+    android:id="@+id/parentLayout"
+
     tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity">
 
     <RelativeLayout
@@ -32,7 +34,7 @@
             android:textColor="#ffffff"
             android:text="T"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/note_btn" />
+             />
 
         <Button
             android:layout_width="wrap_content"
@@ -42,17 +44,9 @@
             android:textColor="#ffffff"
             android:text="N"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/event_btn" />
+            android:layout_toRightOf="@+id/tag_btn" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/event_btn"
-            android:background="#3576ff"
-            android:textColor="#ffffff"
-            android:text="E"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+
 
         <Button
             android:layout_width="wrap_content"
@@ -62,7 +56,7 @@
             android:textColor="#ffffff"
             android:text="C"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/event_btn" />
+            android:layout_toRightOf="@+id/note_btn" />
 
         <Button
             android:layout_width="wrap_content"

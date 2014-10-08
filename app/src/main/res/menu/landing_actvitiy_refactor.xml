@@ -7,11 +7,6 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
 
-
-    <item android:id="@+id/action_view_events"
-        android:title="Events"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
     <item android:id="@+id/action_view_habits"
         android:title="Habits"
         android:orderInCategory="100"

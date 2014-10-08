@@ -120,7 +120,7 @@ public class UpdateTagActivity extends Activity {
             else{
                 tagDBHelper.updateTag(tag, tagTextString,tagDescriptionString,tagArchived);
                 tagDBHelper.close();
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, LandingActivity.class);
                 startActivity(intent);
             }
 

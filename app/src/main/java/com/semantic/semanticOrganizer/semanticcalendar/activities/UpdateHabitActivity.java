@@ -122,7 +122,7 @@ public class UpdateHabitActivity extends Activity {
             else{
                 habitDBHelper.updateHabit(habit, habitTextString,habitTag.getTagId());
                 habitDBHelper.close();
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, LandingActivity.class);
                 startActivity(intent);
             }
 
