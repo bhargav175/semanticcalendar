@@ -65,6 +65,8 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
                         finish();
                     }
                 });
+        setContentView(R.layout.activity_add_note);
+        initUi();
         // Show the custom action bar view and hide the normal Home icon and title.
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayOptions(
@@ -76,30 +78,30 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         // END_INCLUDE (inflate_set_custom_view)
-        setContentView(R.layout.activity_add_note);
         Intent intent = getIntent();
 
         Bundle extras= intent.getExtras();
         if(extras!=null){
             String noteTextString = extras.getString(DBHelper.NOTE_DESCRIPTION);
             noteId = extras.getInt(DBHelper.COLUMN_ID);
-            noteText = (EditText) findViewById(R.id.noteText);
             noteText.setText(noteTextString);
+            Integer tagId = extras.getInt(DBHelper.NOTE_TAG);
         }else{
             Toast.makeText(this, "Could not load note", Toast.LENGTH_LONG).show();
         }
 
 
-        initUi();
+
     }
     private void initUi() {
         noteText = (EditText) findViewById(R.id.noteText);
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         tag = (Spinner) findViewById(R.id.selectSpinner);
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = Tag.getAllTags(new ArrayList<Tag>(),getApplicationContext());
+        tags.add(new Tag("No Tag"));
         ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                android.R.layout.simple_spinner_item, Tag.getAllTasks(getApplicationContext(),tags));
+                android.R.layout.simple_spinner_item,tags );
         tag.setAdapter(adapter);
     }
     private void setListeners() {
@@ -112,11 +114,19 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         Note note = noteDBHelper.getNote(noteId);
+        Tag noteTag = (Tag) tag.getSelectedItem();
+
         if(note!=null){
-            noteDBHelper.updateNote(note, noteTextString);
-            noteDBHelper.close();
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
+            if(noteTextString.length()==0){
+                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_LONG).show();
+            }
+            else{
+                noteDBHelper.updateNote(note, noteTextString,noteTag.getTagId());
+                noteDBHelper.close();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+            }
+
         }
         else{
             noteDBHelper.close();
@@ -129,7 +139,7 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_note, menu);
+        getMenuInflater().inflate(R.menu.landing_actvitiy_refactor, menu);
         return true;
     }
 

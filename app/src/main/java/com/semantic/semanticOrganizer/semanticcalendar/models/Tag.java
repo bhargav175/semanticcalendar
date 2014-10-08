@@ -11,11 +11,11 @@ import java.util.List;
  * Created by Admin on 28-09-2014.
  */
 public class Tag {
-    public long getTagId() {
+    public Integer getTagId() {
         return tagId;
     }
 
-    public void setTagId(long tagId) {
+    public void setTagId(Integer tagId) {
         this.tagId = tagId;
     }
 
@@ -28,7 +28,7 @@ public class Tag {
     }
 
 
-    private long tagId;
+    private Integer tagId;
     private String tagText;
 
     public long getCreatedMillis() {
@@ -86,7 +86,7 @@ public class Tag {
         tagDBHelper.close();
     }
 
-    public static  List<Tag> getAllTasks(Context context ,List<Tag> taskList) {
+    public static  List<Tag> getAllTags(List<Tag> taskList,Context context) {
         TagDBHelper tagDBHelper = new TagDBHelper(context);
         tagDBHelper.open();
         Cursor cursor= tagDBHelper.fetchAllTags();

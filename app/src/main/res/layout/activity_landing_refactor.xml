@@ -6,6 +6,8 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity">
 
     <RelativeLayout
@@ -86,7 +88,8 @@
         android:paddingRight="20dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:visibility="visible" >
+        android:visibility="visible"
+        >
 
         <EditText
             android:layout_width="240dp"
@@ -111,11 +114,55 @@
         android:layout_below="@+id/relativeLayout">
 
 
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/horizontalScrollView"
+            android:background="@color/blue_bright">
 
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tagsListView" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="16dp"
+                android:id="@+id/horizontalLayout">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="300dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/homeLayout"
+                    android:alpha="0.8"
+                    android:background="#32ff76"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sandbox"
+                        android:id="@+id/textView"
+                        android:padding="8dp"
+                        android:gravity="center"
+                        android:textColor="#000"
+                        android:background="#fff"
+                        android:layout_marginBottom="8dp"/>
+
+                    <ListView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="8.0sp"
+                        android:id="@+id/sandboxCards" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
     </RelativeLayout>
 
 </RelativeLayout>

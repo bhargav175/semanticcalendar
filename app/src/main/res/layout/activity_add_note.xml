@@ -23,8 +23,9 @@
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
-            android:textSize="32dp"
-            android:paddingStart="8dp" />
+            android:textSize="24sp"
+            android:paddingStart="8dp"
+            android:textColor="#fff" />
     </LinearLayout>
 
 
@@ -43,7 +44,8 @@
             android:id="@+id/noteText"
             android:hint="@string/write_note_text_hint"
             android:layout_gravity="center_horizontal"
-            android:gravity="top" />
+            android:gravity="top"
+            android:textColorHint="#ffdddddd" />
     </LinearLayout>
 
 

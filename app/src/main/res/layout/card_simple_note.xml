@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/imageLayout"
+        android:padding="5dp">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/left"
+        android:layout_toRightOf="@id/imageLayout"
+        >
+
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/cardText1"
+            android:padding="8dp"
+            android:gravity="left"
+            android:textColor="#000"
+            android:background="#fff"
+             />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/cardText2"
+            android:layout_below="@+id/cardText1"
+            android:padding="8dp"
+            android:gravity="left"
+            android:textColor="#222"
+            android:background="#fff"
+            android:textSize="10sp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

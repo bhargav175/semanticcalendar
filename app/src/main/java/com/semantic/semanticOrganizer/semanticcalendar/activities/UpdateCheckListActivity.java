@@ -10,27 +10,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
-import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
-import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
+import com.semantic.semanticOrganizer.semanticcalendar.database.CheckListDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.models.CheckList;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddNoteActivity extends Activity implements View.OnClickListener {
-    private NoteDBHelper noteDBHelper;
-    private EditText noteText;
+public class UpdateCheckListActivity extends Activity {
+    private CheckListDBHelper checkListDBHelper;
+    private EditText checkListText;
     private Spinner tag;
-
+    Integer checkListId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
         final LayoutInflater inflater = (LayoutInflater) getActionBar().getThemedContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
         final View customActionBarView = inflater.inflate(
@@ -40,15 +40,17 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        Note note = new Note();
-                        note.setNoteText(noteText.getText().toString());
-                        Tag noteTag = (Tag) tag.getSelectedItem();
-                        noteDBHelper.open();
-                        noteDBHelper.saveNote(note);
-                        Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
-                        noteDBHelper.close();
+                        if(checkListId!=null){
 
-                        startActivity(intent);
+                            updateCheckList(checkListId);
+                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
+                            startActivity(lIntent);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+
+                        }
+
                         finish();
                     }
                 });
@@ -61,6 +63,9 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                     }
                 });
         // Show the custom action bar view and hide the normal Home icon and title.
+        setContentView(R.layout.activity_add_checklist);
+        initUi();
+
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayOptions(
                 ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -71,25 +76,70 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         // END_INCLUDE (inflate_set_custom_view)
+        Intent intent = getIntent();
 
+        Bundle extras= intent.getExtras();
+        if(extras!=null){
+            String checkListTextString = extras.getString(DBHelper.CHECKLIST_TITLE);
+            checkListId = extras.getInt(DBHelper.COLUMN_ID);
+            checkListText.setText(checkListTextString);
+            Integer tagId = extras.getInt(DBHelper.CHECKLIST_TAG);
+        }else{
+            Toast.makeText(this, "Could not load checkList", Toast.LENGTH_LONG).show();
+        }
 
-        setContentView(R.layout.activity_add_note);
-        initUi();
     }
+
     private void initUi() {
-        noteText = (EditText) findViewById(R.id.noteText);
-        noteDBHelper = new NoteDBHelper(this);
-        noteDBHelper.open();
+        checkListText = (EditText) findViewById(R.id.checkListText);
+        checkListDBHelper = new CheckListDBHelper(this);
+        checkListDBHelper.open();
         tag = (Spinner) findViewById(R.id.selectSpinner);
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = Tag.getAllTags(new ArrayList<Tag>(),getApplicationContext());
+        tags.add(new Tag("No Tag"));
         ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                android.R.layout.simple_spinner_item, Tag.getAllTags(tags,getApplicationContext()));
+                android.R.layout.simple_spinner_item,tags );
         tag.setAdapter(adapter);
     }
     private void setListeners() {
 
 
     }
+
+    private void updateCheckList(Integer checkListId) {
+        String checkListTextString=checkListText.getText().toString();
+        checkListDBHelper = new CheckListDBHelper(this);
+        checkListDBHelper.open();
+        CheckList checkList = checkListDBHelper.getCheckList(checkListId);
+        Tag checkListTag = (Tag) tag.getSelectedItem();
+
+        if(checkList!=null){
+            if(checkListTextString.length()==0){
+                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_LONG).show();
+            }
+            else{
+                checkListDBHelper.updateCheckList(checkList, checkListTextString,checkListTag.getTagId());
+                checkListDBHelper.close();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+            }
+
+        }
+        else{
+            checkListDBHelper.close();
+            Toast.makeText(this,"Update Failed",Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        //closing transition animations
+        overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,17 +158,5 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        //closing transition animations
-        overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 }

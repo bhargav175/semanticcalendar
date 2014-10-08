@@ -71,6 +71,7 @@
     <string name="write_note_title"></string>
     <string name="write_note_text_hint">Note Text</string>
     <string name="write_note_title_hint">Note Title</string>
+    <string name="write_habit_text_hint">Habit Title</string>
     <string name="write_note_label">Add Note</string>
     <string name="title_activity_view_calendar">ViewCalendar</string>
     <string name="save_write_event">Save Event</string>
@@ -111,5 +112,11 @@
     <string name="title_activity_list_checklists">ListChecklistsActivity</string>
     <string name="title_activity_list_habits">ListHabitsActivity</string>
     <string name="title_update_note">Update Note</string>
+    <string name="title_activity_update_habit">UpdateHabitActivity</string>
+    <string name="write_habit_label">Habit</string>
+    <string name="title_activity_update_check_list">UpdateCheckListActivity</string>
+    <string name="write_checklist_text_hint">Add CheckList</string>
+    <string name="write_checklist_label">Check List</string>
+    <string name="title_activity_update_tag">UpdateTagActivity</string>
 
 </resources>

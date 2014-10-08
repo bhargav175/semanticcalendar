@@ -19,10 +19,12 @@ public class DBHelper extends SQLiteOpenHelper {
     //Declare Tables
     public static final String TASKS_TABLE ="tasks";
     public static final String TAGS_TABLE ="tags";
+    public static final String CHECKLISTS_TABLE ="checklists";
+    public static final String CHECKLIST_ITEMS_TABLE ="checklistItems";
+    public static final String HABITS_TABLE ="habits";
 
     public static final String NOTES_TABLE ="notes";
     public static final String TODO_TABLE ="todos";
-    public static final String HABIT_TABLE ="habits";
 
 
     //TAsks Columns
@@ -33,6 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //Note COlumns
     public static final String NOTE_DESCRIPTION ="description";
     public static final String NOTE_TAG ="tag_id";
+    public static final String NOTE_IS_ARCHIVED ="isArchived";
 
 //TODO COlumns
 public static final String TODO_DESCRIPTION ="description";
@@ -44,35 +47,43 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
     public static final String TAG_DESCRIPTION ="description";
     public static final String TAG_IS_ARCHIVED ="isArchived";
 
+  //CheckList
+
+    public static final String CHECKLIST_TITLE ="title";
+    public static final String CHECKLIST_IS_ARCHIVED ="isArchived";
+    public static final String CHECKLIST_TAG ="tag_id";
+
+
+    //ChecklistItem
+    public static final String CHECKLIST_ITEM_TEXT ="title";
+    public static final String CHECKLIST_ITEM_STATE ="state";
+    public static final String CHECKLIST_ITEM_CHECKLIST ="checklistId";
+
+
+    //Habit
+
+    public static final String HABIT_TEXT ="title";
+    public static final String HABIT_QUESTION ="question";
+    public static final String HABIT_STATE ="state";
+    public static final String HABIT_IS_ARCHIVED ="isArchived";
+    public static final String HABIT_TAG ="tag_id";
+
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 13;
 
-    private static final String CREATE_TABLE_TASKS = "create table if not exists "
-            + TASKS_TABLE + "(" + COLUMN_ID
-            + " integer primary key autoincrement, "
-            + TASK_TITLE + " text not null, "
-            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
-            +");";
+
+
+
+
 
     private static final String CREATE_TABLE_NOTES = "create table if not exists "
             + NOTES_TABLE + "("
             + COLUMN_ID + " integer primary key autoincrement, "
             + NOTE_DESCRIPTION+ " text not null, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
-            + NOTE_TAG + " integer"
+            + NOTE_TAG + " integer DEFAULT null"
             +");";
-
- private static final String CREATE_TABLE_TODOS = "create table if not exists "
-            + TODO_TABLE + "("
-         + COLUMN_ID+ " integer primary key autoincrement, "
-         + TODO_DESCRIPTION + " text not null, "
-         + TODO_IS_COMPLETED + " BOOLEAN DEFAULT FALSE, "
-         + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
-
-         +");";
-
-
 
     private static final String CREATE_TABLE_TAGS = "create table if not exists "
             + TAGS_TABLE + "("
@@ -81,6 +92,37 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + TAG_DESCRIPTION + " text, "
             + TAG_IS_ARCHIVED + " BOOLEAN DEFAULT FALSE, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
+
+            +");";
+
+    private static final String CREATE_TABLE_CHECKLISTS = "create table if not exists "
+            + CHECKLISTS_TABLE + "("
+            + COLUMN_ID+ " integer primary key autoincrement, "
+            + CHECKLIST_TITLE + " text not null, "
+            + CHECKLIST_IS_ARCHIVED + " BOOLEAN DEFAULT FALSE, "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + CHECKLIST_TAG + " integer DEFAULT null"
+
+            +");";
+
+    private static final String CREATE_TABLE_CHECKLIST_ITEMS = "create table if not exists "
+            + CHECKLIST_ITEMS_TABLE + "("
+            + COLUMN_ID+ " integer primary key autoincrement, "
+            + CHECKLIST_ITEM_TEXT + " text not null, "
+            + CHECKLIST_ITEM_STATE + " integer DEFAULT 0, "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + CHECKLIST_ITEM_CHECKLIST + " integer not null"
+
+            +");";
+ private static final String CREATE_TABLE_HABITS = "create table if not exists "
+            + HABITS_TABLE + "("
+            + COLUMN_ID+ " integer primary key autoincrement, "
+            + HABIT_TEXT + " text not null, "
+         + HABIT_QUESTION+ " text , "
+         + HABIT_STATE + " integer DEFAULT 0, "
+         + HABIT_IS_ARCHIVED + " BOOLEAN DEFAULT FALSE, "
+         + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + HABIT_TAG + " integer DEFAULT null"
 
             +");";
 
@@ -94,14 +136,16 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG,CREATE_TABLE_TASKS);
         Log.d(TAG,CREATE_TABLE_NOTES);
-        Log.d(TAG,CREATE_TABLE_TODOS);
         Log.d(TAG,CREATE_TABLE_TAGS);
-        db.execSQL(CREATE_TABLE_TASKS);
+        Log.d(TAG,CREATE_TABLE_CHECKLISTS);
+        Log.d(TAG,CREATE_TABLE_CHECKLIST_ITEMS);
+        Log.d(TAG,CREATE_TABLE_HABITS);
         db.execSQL(CREATE_TABLE_NOTES);
-        db.execSQL(CREATE_TABLE_TODOS);
         db.execSQL(CREATE_TABLE_TAGS);
+        db.execSQL(CREATE_TABLE_CHECKLISTS);
+        db.execSQL(CREATE_TABLE_CHECKLIST_ITEMS);
+        db.execSQL(CREATE_TABLE_HABITS);
 
     }
 
@@ -111,10 +155,11 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data"
         );
-        db.execSQL("DROP TABLE IF EXISTS " + TASKS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + NOTES_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TAGS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CHECKLISTS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CHECKLIST_ITEMS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + HABITS_TABLE);
         onCreate(db);
     }
 }

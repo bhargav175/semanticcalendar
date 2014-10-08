@@ -15,7 +15,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 /**
  * Created by Admin on 16-09-2014.
  */
-public class NoteDBHelper {
+public class CheckListItemDBHelper {
 
     private final static String NOTES_TABLE = "notes";
     private final static String TAG = "Notesave";
@@ -24,12 +24,12 @@ public class NoteDBHelper {
     private Context context;
     private SQLiteDatabase database;
 
-    public NoteDBHelper(Context context) {
+    public CheckListItemDBHelper(Context context) {
         this.context = context;
 
     }
 
-    public NoteDBHelper open() throws SQLException {
+    public CheckListItemDBHelper open() throws SQLException {
         dbHelper = new DBHelper(context);
         database = dbHelper.getWritableDatabase();
         return this;
@@ -46,7 +46,7 @@ public class NoteDBHelper {
     }
 
     public Note getNote(int id) {
-        Cursor cursor = database.query(NOTES_TABLE, null, DBHelper.COLUMN_ID + "=?",
+        Cursor cursor = database.query(NOTES_TABLE, new String[] {DBHelper.COLUMN_ID, DBHelper.NOTE_DESCRIPTION, DBHelper.COLUMN_CREATED_TIME, DBHelper.NOTE_TAG }, DBHelper.COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -113,8 +113,5 @@ public class NoteDBHelper {
 
     public Cursor fetchAllNotesInTag(Tag tag) {
         return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  "=" + tag.getTagId(), null, null, null, null);
-    }
-    public Cursor fetchAllNotesSandbox() {
-        return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  " is null" , null, null, null, null);
     }
 }

@@ -65,7 +65,7 @@ public class ListNotesActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.list_notes, menu);
+        getMenuInflater().inflate(R.menu.landing_actvitiy_refactor, menu);
         return true;
     }
 
@@ -81,7 +81,7 @@ public class ListNotesActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<Note> getAllNotes(List<Note> noteList) {
+    private  List<Note> getAllNotes(List<Note> noteList) {
         noteDBHelper.open();
         Cursor cursor= noteDBHelper.fetchAllNotes();
         cursor.moveToFirst();

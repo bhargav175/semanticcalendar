@@ -1,18 +1,21 @@
 package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.Event;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
@@ -31,7 +34,7 @@ public class ListTagsActivity extends Activity {
 
         tagDBHelper = new TagDBHelper(this);
         ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                R.layout.tag_list_item,R.id.text1, getAllTasks(tagList)){
+                R.layout.tag_list_item,R.id.text1, getAllTags(tagList)) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -42,17 +45,34 @@ public class ListTagsActivity extends Activity {
                 text2.setText(tagList.get(position).getTagDescription());
                 return view;
             }
-
         };
-        ListView list = (ListView) findViewById(R.id.tagsListView);
-        list.setAdapter(adapter);
+
+
+            ListView list = (ListView) findViewById(R.id.tagsListView);
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position,
+                                        long id) {
+                    Tag tag = (Tag) parent.getAdapter().getItem(position);
+                    Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
+                    intent.putExtra(DBHelper.TAG_TITLE, tag.getTagText());
+                    intent.putExtra(DBHelper.COLUMN_ID, tag.getTagId());
+                    intent.putExtra(DBHelper.TAG_DESCRIPTION, tag.getTagDescription());
+                    intent.putExtra(DBHelper.TAG_IS_ARCHIVED, tag.getIsArchived());
+                    startActivity(intent);
+                }
+            });
+            list.setAdapter(adapter);
+
+
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.list_tags, menu);
+        getMenuInflater().inflate(R.menu.landing_actvitiy_refactor, menu);
         return true;
     }
 
@@ -68,19 +88,19 @@ public class ListTagsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<Tag> getAllTasks(List<Tag> taskList) {
+    private List<Tag> getAllTags(List<Tag> tagList) {
         tagDBHelper.open();
         Cursor cursor= tagDBHelper.fetchAllTags();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Tag tag = tagDBHelper.cursorToTag(cursor);
-            taskList.add(tag);
+            tagList.add(tag);
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
         tagDBHelper.close();
-        return taskList;
+        return tagList;
     }
 
 }

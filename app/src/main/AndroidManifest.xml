@@ -150,6 +150,18 @@
             android:name=".activities.ListHabitsActivity"
             android:label="@string/title_activity_list_habits" >
         </activity>
+        <activity
+            android:name=".activities.UpdateHabitActivity"
+            android:label="@string/title_activity_update_habit" >
+        </activity>
+        <activity
+            android:name=".activities.UpdateCheckListActivity"
+            android:label="@string/title_activity_update_check_list" >
+        </activity>
+        <activity
+            android:name=".activities.UpdateTagActivity"
+            android:label="@string/title_activity_update_tag" >
+        </activity>
     </application>
 
 </manifest>

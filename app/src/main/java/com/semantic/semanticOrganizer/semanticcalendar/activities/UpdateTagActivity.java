@@ -10,23 +10,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
-import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
-import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
+import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddNoteActivity extends Activity implements View.OnClickListener {
-    private NoteDBHelper noteDBHelper;
-    private EditText noteText;
-    private Spinner tag;
-
+public class UpdateTagActivity extends Activity {
+    private TagDBHelper tagDBHelper;
+    private EditText tagText;
+    private EditText tagDescription;
+    private CheckBox tagIsArchived;
+    Integer tagId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +42,17 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        Note note = new Note();
-                        note.setNoteText(noteText.getText().toString());
-                        Tag noteTag = (Tag) tag.getSelectedItem();
-                        noteDBHelper.open();
-                        noteDBHelper.saveNote(note);
-                        Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
-                        noteDBHelper.close();
+                        if(tagId!=null){
 
-                        startActivity(intent);
+                            updateTag(tagId);
+                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
+                            startActivity(lIntent);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+
+                        }
+
                         finish();
                     }
                 });
@@ -61,6 +65,9 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                     }
                 });
         // Show the custom action bar view and hide the normal Home icon and title.
+        setContentView(R.layout.activity_add_tag);
+        initUi();
+
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayOptions(
                 ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -71,22 +78,57 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         // END_INCLUDE (inflate_set_custom_view)
+        Intent intent = getIntent();
 
+        Bundle extras= intent.getExtras();
+        if(extras!=null){
+            String tagTextString = extras.getString(DBHelper.TAG_TITLE);
+            tagId = extras.getInt(DBHelper.COLUMN_ID);
+            tagText.setText(tagTextString);
+            tagDescription.setText(extras.getString(DBHelper.TAG_DESCRIPTION));
+            tagIsArchived.setChecked(extras.getBoolean(DBHelper.TAG_IS_ARCHIVED));
+        }else{
+            Toast.makeText(this, "Could not load tag", Toast.LENGTH_LONG).show();
+        }
 
-        setContentView(R.layout.activity_add_note);
-        initUi();
     }
     private void initUi() {
-        noteText = (EditText) findViewById(R.id.noteText);
-        noteDBHelper = new NoteDBHelper(this);
-        noteDBHelper.open();
-        tag = (Spinner) findViewById(R.id.selectSpinner);
-        List<Tag> tags = new ArrayList<Tag>();
-        ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                android.R.layout.simple_spinner_item, Tag.getAllTags(tags,getApplicationContext()));
-        tag.setAdapter(adapter);
+        tagText = (EditText) findViewById(R.id.tagTitle);
+        tagDescription = (EditText) findViewById(R.id.descriptionText);
+        tagIsArchived = (CheckBox) findViewById(R.id.isArchived);
+        tagDBHelper = new TagDBHelper(this);
+
     }
     private void setListeners() {
+
+
+    }
+
+    private void updateTag(Integer tagId) {
+        String tagTextString=tagText.getText().toString();
+        String tagDescriptionString=tagDescription.getText().toString();
+        Boolean tagArchived=tagIsArchived.isChecked();
+        tagDBHelper = new TagDBHelper(this);
+        tagDBHelper.open();
+        Tag tag = tagDBHelper.getTag(tagId);
+
+        if(tag!=null){
+            if(tagTextString.length()==0){
+                tagDBHelper.close();
+                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_LONG).show();
+            }
+            else{
+                tagDBHelper.updateTag(tag, tagTextString,tagDescriptionString,tagArchived);
+                tagDBHelper.close();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+            }
+
+        }
+        else{
+            tagDBHelper.close();
+            Toast.makeText(this,"Update Failed",Toast.LENGTH_LONG).show();
+        }
 
 
     }
@@ -99,6 +141,14 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+        //closing transition animations
+        overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -108,17 +158,5 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        //closing transition animations
-        overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 }
