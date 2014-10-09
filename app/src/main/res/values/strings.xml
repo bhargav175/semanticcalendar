@@ -72,7 +72,7 @@
     <string name="write_note_text_hint">Note Text</string>
     <string name="write_note_title_hint">Note Title</string>
     <string name="write_habit_text_hint">Habit Title</string>
-    <string name="write_note_label">Add Note</string>
+    <string name="write_note_label">Note</string>
     <string name="title_activity_view_calendar">ViewCalendar</string>
     <string name="save_write_event">Save Event</string>
     <string name="cancel_write_event">Cancel Event</string>

@@ -4,29 +4,42 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class UpdateNoteActivity extends Activity implements View.OnClickListener {
+public class UpdateNoteActivity extends FragmentActivity implements View.OnClickListener,DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private NoteDBHelper noteDBHelper;
     private EditText noteText;
     private Spinner tag;
+    private Button addReminderButton;
+    private LinearLayout remainderContainer;
+    public static final String DATEPICKER_TAG = "datepicker";
+    public static final String TIMEPICKER_TAG = "timepicker";
+
     Integer noteId;
 
     @Override
@@ -66,6 +79,7 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
                 });
         setContentView(R.layout.activity_add_note);
         initUi();
+        setListeners();
         // Show the custom action bar view and hide the normal Home icon and title.
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayOptions(
@@ -91,9 +105,23 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
 
 
 
+        DatePickerDialog dpd = (DatePickerDialog) getSupportFragmentManager().findFragmentByTag(DATEPICKER_TAG);
+        if (dpd != null) {
+            dpd.setOnDateSetListener(this);
+        }
+
+        TimePickerDialog tpd = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag(TIMEPICKER_TAG);
+        if (tpd != null) {
+            tpd.setOnTimeSetListener(this);
+        }
+
+
+
     }
     private void initUi() {
         noteText = (EditText) findViewById(R.id.noteText);
+        addReminderButton =(Button) findViewById(R.id.addReminder);
+        remainderContainer =(LinearLayout) findViewById(R.id.remainderContainer);
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         tag = (Spinner) findViewById(R.id.selectSpinner);
@@ -104,9 +132,89 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
         tag.setAdapter(adapter);
     }
     private void setListeners() {
+        addReminderButton.setOnClickListener(new View.OnClickListener() {
+
+
+            final Calendar calendar = Calendar.getInstance();
+            final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(UpdateNoteActivity.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+            final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(UpdateNoteActivity.this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
+
+
+            @Override
+            public void onClick(View view) {
+                addReminderButton.setVisibility(View.GONE);
+                final View add_reminder = getLayoutInflater().inflate(R.layout.add_reminder_non_repeating, remainderContainer, false);
+                remainderContainer.addView(add_reminder);
+                Button close = (Button) add_reminder.findViewById(R.id.close);
+                Spinner dateSpinner, timeSpinner;
+                dateSpinner = (Spinner) add_reminder.findViewById(R.id.date);
+                timeSpinner = (Spinner) add_reminder.findViewById(R.id.time);
+
+                final List <String> dates = new ArrayList<String>();
+                dates.add("Today");
+                dates.add("Yesterday");
+                dates.add("Pick Date");
+                final List <String> times = new ArrayList<String>();
+                times.add("Early Morning 5:00 AM");
+                times.add("Morning 8:00 AM");
+                times.add("Afternoon 12:00 PM");
+                times.add("Evening 6:00 PM");
+                times.add("Pick Time");
+
+                ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_spinner_item,dates );
+
+                final ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_spinner_item,times );
+
+                dateSpinner.setAdapter(dateAdapter);
+                timeSpinner.setAdapter(timeAdapter);
+                dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if(dates.get(i).equals("Pick Date")){
+                                datePickerDialog.setYearRange(1985, 2028);
+                                datePickerDialog.setCloseOnSingleTapDay(false);
+                                datePickerDialog.show(UpdateNoteActivity.this.getSupportFragmentManager(), DATEPICKER_TAG);
+                            }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        if(times.get(i).equals("Pick Time")){
+                            timePickerDialog.setCloseOnSingleTapMinute(false);
+                            timePickerDialog.show(getSupportFragmentManager(), TIMEPICKER_TAG);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        remainderContainer.removeView(add_reminder);
+                        addReminderButton.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+
 
 
     }
+
+
+
 
     private void updateNote(Integer noteId) {
         String noteTextString=noteText.getText().toString();
@@ -164,5 +272,15 @@ public class UpdateNoteActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        Toast.makeText(UpdateNoteActivity.this, "new date:" + year + "-" + month + "-" + day, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+        Toast.makeText(UpdateNoteActivity.this, "new time:" + hourOfDay + "-" + minute, Toast.LENGTH_LONG).show();
     }
 }

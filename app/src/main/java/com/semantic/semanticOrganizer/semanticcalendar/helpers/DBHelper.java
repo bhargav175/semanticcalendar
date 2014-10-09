@@ -70,7 +70,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
 
 
 
@@ -82,7 +82,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + COLUMN_ID + " integer primary key autoincrement, "
             + NOTE_DESCRIPTION+ " text not null, "
             + NOTE_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
-            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + NOTE_TAG + " integer DEFAULT null"
             +");";
 
@@ -92,7 +92,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + TAG_TITLE + " text not null, "
             + TAG_DESCRIPTION + " text, "
             + TAG_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
-            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP"
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime'))"
 
             +");";
 
@@ -101,7 +101,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + COLUMN_ID+ " integer primary key autoincrement, "
             + CHECKLIST_TITLE + " text not null, "
             + CHECKLIST_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
-            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + CHECKLIST_TAG + " integer DEFAULT null"
 
             +");";
@@ -111,7 +111,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + COLUMN_ID+ " integer primary key autoincrement, "
             + CHECKLIST_ITEM_TEXT + " text not null, "
             + CHECKLIST_ITEM_STATE + " integer DEFAULT 0, "
-            + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + CHECKLIST_ITEM_CHECKLIST + " integer not null"
 
             +");";
@@ -122,7 +122,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
          + HABIT_QUESTION+ " text , "
          + HABIT_STATE + " integer DEFAULT 0, "
          + HABIT_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
-         + COLUMN_CREATED_TIME +" DATETIME DEFAULT CURRENT_TIMESTAMP, "
+         + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + HABIT_TAG + " integer DEFAULT null"
 
             +");";

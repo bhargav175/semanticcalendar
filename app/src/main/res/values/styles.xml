@@ -7,6 +7,7 @@
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
         <item name="android:windowBackground">@color/white_opaque</item>
         <item name="android:colorBackground">@color/pitch_black</item>
+
     </style>
 
 

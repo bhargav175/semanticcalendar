@@ -1,6 +1,7 @@
 package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -42,9 +45,12 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.OrganizerItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
+import com.semantic.semanticOrganizer.semanticcalendar.utils.MyBroadcastReceiver;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class LandingActivity extends Activity {
 
@@ -110,7 +116,9 @@ public class LandingActivity extends Activity {
         initializeUi();
         setListeners();
         populateUi();
-        showNotif();
+        //showNotif();
+        startAlert();
+        cancelAlert();
     }
     private void showNotif(){
         NotificationCompat.Builder mBuilder =
@@ -188,7 +196,7 @@ public class LandingActivity extends Activity {
                                 switch (position){
                                     case 0:
                                         str = "Edit Tag";
-                                        Toast.makeText(getApplicationContext(),str,Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
                                         intent.putExtra(DBHelper.TAG_TITLE, tag.getTagText());
                                         intent.putExtra(DBHelper.COLUMN_ID, tag.getTagId());
@@ -319,6 +327,52 @@ public class LandingActivity extends Activity {
         Toast.makeText(this,"Archive",Toast.LENGTH_SHORT).show();
     }
 
+    public void startAlert() {
+        int i =10;
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pI = PendingIntent.getBroadcast(this.getApplicationContext(), 17, intent, PendingIntent.FLAG_NO_CREATE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+
+        if (alarmManager!= null) {
+            if(pI==null) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 17, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + i *1000, pendingIntent);
+                Toast.makeText(this, "Alarm did not exist and is now set in " + i + " seconds",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
+
+
+
+    }
+    public void cancelAlert() {
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 17, intent, PendingIntent.FLAG_NO_CREATE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager!= null) {
+            if(pendingIntent!=null){
+                alarmManager.cancel(pendingIntent);
+                Toast.makeText(this, "Alarm cancelled ",
+                        Toast.LENGTH_SHORT).show();
+
+            }else{
+                Toast.makeText(this, "Alarm does not exist ",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        }
+
+
+    }
+
     private void populateSandbox(final List<OrganizerItem> organizerItems) {
         if(homeLayout!=null){
 
@@ -430,7 +484,7 @@ public class LandingActivity extends Activity {
                                break;
                        }
                         alert.cancel();
-                        Toast.makeText(getApplicationContext(),addItemEditText.getText()+" "+str+" created",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),addItemEditText.getText()+" "+str+" created",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(),LandingActivity.class);
                         startActivity(intent);
                     }
@@ -549,7 +603,7 @@ public class LandingActivity extends Activity {
                 public void run() {
                     populateSandbox(organizerItems);
 
-                    Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_SHORT).show();
                 }
             });
 
