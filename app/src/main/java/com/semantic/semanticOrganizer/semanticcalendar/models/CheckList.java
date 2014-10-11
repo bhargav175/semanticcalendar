@@ -17,6 +17,16 @@ public class CheckList {
     private String createdTime;
     private String checkListText;
     private Boolean isArchived;
+    public int getReminderId() {
+        return reminderId;
+    }
+
+    public void setReminderId(int reminderId) {
+        this.reminderId = reminderId;
+    }
+
+    private int reminderId;
+
 
     public CheckList(String checkListText) {
         this.checkListText = checkListText;

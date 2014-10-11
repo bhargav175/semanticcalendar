@@ -87,6 +87,18 @@ public class Tag {
         tagDBHelper.close();
     }
 
+
+    public static Tag getTagById(int tagId,Context context) {
+        TagDBHelper tagDBHelper = new TagDBHelper(context);
+        tagDBHelper.open();
+        Tag tag= tagDBHelper.getTag(tagId);
+        tagDBHelper.close();
+        return tag;
+    }
+
+
+
+
     public static  List<Tag> getAllTags(List<Tag> taskList,Context context) {
         TagDBHelper tagDBHelper = new TagDBHelper(context);
         tagDBHelper.open();

@@ -15,7 +15,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 /**
  * Created by Admin on 16-09-2014.
  */
-public class HabitDBHelper {
+public class HabitItemDBHelper {
 
     private final static String TABLE = DBHelper.HABITS_TABLE;
     private final static String TAG = "HabitSave";
@@ -24,12 +24,12 @@ public class HabitDBHelper {
     private Context context;
     private SQLiteDatabase database;
 
-    public HabitDBHelper(Context context) {
+    public HabitItemDBHelper(Context context) {
         this.context = context;
 
     }
 
-    public HabitDBHelper open() throws SQLException {
+    public HabitItemDBHelper open() throws SQLException {
         dbHelper = new DBHelper(context);
         database = dbHelper.getWritableDatabase();
         return this;

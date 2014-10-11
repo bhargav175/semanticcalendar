@@ -48,11 +48,47 @@
     </LinearLayout>
 
 
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout3"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout5" >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/habitQuestion"
+            android:hint="Habit Question"
+            android:layout_gravity="center_horizontal"
+            android:gravity="top"
+            android:textColorHint="#ffdddddd" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout5"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout6" >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/duration"
+            android:hint="Duration"
+            android:layout_gravity="center_horizontal"
+            android:gravity="top"
+            android:textColorHint="#ffdddddd" />
+    </LinearLayout>
+
     <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout3"
+        android:layout_below="@id/linearLayout6"
         android:orientation="horizontal"
         android:id="@+id/linearLayout4"
         android:weightSum="1">
@@ -75,5 +111,169 @@
             android:checked="false" />
 
     </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout4"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout7"
+        android:weightSum="1"
+        android:layout_alignRight="@+id/linearLayout4"
+        android:layout_alignEnd="@+id/linearLayout4">
+
+
+        <Spinner
+            android:layout_width="158dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/selectHabitType"
+            android:layout_weight="0.50" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout7"
+        android:id="@+id/typeContainerUi">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutFixed"
+
+            android:visibility="gone">
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/linearLayout8"
+                android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select days"
+                android:id="@+id/textView2"
+                android:paddingTop="15dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="15dp"
+                android:textColor="#fff"
+                android:paddingLeft="5dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearLayout8"
+                android:orientation="horizontal"
+                android:id="@+id/linearLayout9"
+                android:weightSum="1">
+
+
+                <Button
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:text="S"
+                    android:id="@+id/sundayButton"
+                    android:padding="0dp" />
+
+                <Button
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:text="M"
+                    android:id="@+id/mondayButton" />
+
+                <Button
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:text="T"
+                    android:id="@+id/tuesdayButton" />
+
+                <Button
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:text="W"
+                    android:id="@+id/wednesdayButton" />
+
+                <Button
+                    android:layout_width="54dp"
+                    android:layout_height="wrap_content"
+                    android:text="Th"
+                    android:id="@+id/thursdayButton" />
+
+                <Button
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:text="F"
+                    android:id="@+id/fridayButton" />
+
+                <Button
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:text="S"
+                    android:id="@+id/saturdayButton" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayoutFixed"
+            android:id="@+id/linearLayoutFlexible"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/linearLayout11"
+                android:weightSum="1" >
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/habitFrequency"
+                    android:hint="Days per"
+                    android:textColorHint="#fff"
+                    android:paddingTop="15dp"
+                    android:paddingRight="30dp"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="5dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/typeContainerUi"
+        android:orientation="horizontal"
+        android:id="@+id/remainderContainer" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ Reminder"
+            android:id="@+id/addReminder"
+            android:background="#fff"
+            android:textColor="@color/blue_bright"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp" />
+    </LinearLayout>
+
 
 </RelativeLayout>

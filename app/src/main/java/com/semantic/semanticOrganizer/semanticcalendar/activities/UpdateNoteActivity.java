@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -35,12 +36,18 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     private NoteDBHelper noteDBHelper;
     private EditText noteText;
     private Spinner tag;
+    private Spinner dateSpinner, timeSpinner;
+
     private Button addReminderButton;
     private LinearLayout remainderContainer;
+    private Boolean hasRemainder;
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
 
+    int day, month, year, hour, minute, second;
+
     Integer noteId;
+    Integer requestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +104,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         if(extras!=null){
             String noteTextString = extras.getString(DBHelper.NOTE_DESCRIPTION);
             noteId = extras.getInt(DBHelper.COLUMN_ID);
+            requestId = extras.getInt(DBHelper.NOTE_REQUEST_ID);
             noteText.setText(noteTextString);
             Integer tagId = extras.getInt(DBHelper.NOTE_TAG);
         }else{
@@ -115,10 +123,15 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
             tpd.setOnTimeSetListener(this);
         }
 
-
+        updateUi();
 
     }
-    private void initUi() {
+
+
+    private void updateUi() {
+
+    }
+        private void initUi() {
         noteText = (EditText) findViewById(R.id.noteText);
         addReminderButton =(Button) findViewById(R.id.addReminder);
         remainderContainer =(LinearLayout) findViewById(R.id.remainderContainer);
@@ -146,15 +159,16 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                 final View add_reminder = getLayoutInflater().inflate(R.layout.add_reminder_non_repeating, remainderContainer, false);
                 remainderContainer.addView(add_reminder);
                 Button close = (Button) add_reminder.findViewById(R.id.close);
-                Spinner dateSpinner, timeSpinner;
                 dateSpinner = (Spinner) add_reminder.findViewById(R.id.date);
                 timeSpinner = (Spinner) add_reminder.findViewById(R.id.time);
 
                 final List <String> dates = new ArrayList<String>();
+                dates.add("");
                 dates.add("Today");
                 dates.add("Yesterday");
                 dates.add("Pick Date");
                 final List <String> times = new ArrayList<String>();
+                times.add("");
                 times.add("Early Morning 5:00 AM");
                 times.add("Morning 8:00 AM");
                 times.add("Afternoon 12:00 PM");
@@ -162,10 +176,54 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                 times.add("Pick Time");
 
                 ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                        android.R.layout.simple_spinner_item,dates );
+                        android.R.layout.simple_spinner_item,dates ){
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    {
+                        View v = null;
+
+                        // If this is the initial dummy entry, make it hidden
+                        if (position == 0) {
+                            TextView tv = new TextView(getContext());
+                            tv.setHeight(0);
+                            tv.setVisibility(View.GONE);
+                            v = tv;
+                        }
+                        else {
+                            // Pass convertView as null to prevent reuse of special case views
+                            v = super.getDropDownView(position, null, parent);
+                        }
+
+                        // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                        parent.setVerticalScrollBarEnabled(false);
+                        return v;
+                    }
+                };
 
                 final ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                        android.R.layout.simple_spinner_item,times );
+                        android.R.layout.simple_spinner_item,times ){
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    {
+                        View v = null;
+
+                        // If this is the initial dummy entry, make it hidden
+                        if (position == 0) {
+                            TextView tv = new TextView(getContext());
+                            tv.setHeight(0);
+                            tv.setVisibility(View.GONE);
+                            v = tv;
+                        }
+                        else {
+                            // Pass convertView as null to prevent reuse of special case views
+                            v = super.getDropDownView(position, null, parent);
+                        }
+
+                        // Hide scroll bar because it appears sometimes unnecessarily, this does not prevent scrolling
+                        parent.setVerticalScrollBarEnabled(false);
+                        return v;
+                    }
+                };
 
                 dateSpinner.setAdapter(dateAdapter);
                 timeSpinner.setAdapter(timeAdapter);
@@ -176,6 +234,8 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                                 datePickerDialog.setYearRange(1985, 2028);
                                 datePickerDialog.setCloseOnSingleTapDay(false);
                                 datePickerDialog.show(UpdateNoteActivity.this.getSupportFragmentManager(), DATEPICKER_TAG);
+
+
                             }
                     }
 
@@ -276,7 +336,14 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        if(dateSpinner != null){
+            dateSpinner.setSelection(0);
+            EditText et = (EditText)dateSpinner.getChildAt(0);
+            et.setText("Date Max");
+
+        }
         Toast.makeText(UpdateNoteActivity.this, "new date:" + year + "-" + month + "-" + day, Toast.LENGTH_LONG).show();
+
     }
 
     @Override

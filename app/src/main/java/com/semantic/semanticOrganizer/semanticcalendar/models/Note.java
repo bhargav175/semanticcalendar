@@ -52,6 +52,16 @@ public class Note {
     private String noteText;
     private String createdTime;
 
+    public int getRemainderId() {
+        return remainderId;
+    }
+
+    public void setRemainderId(int remainderId) {
+        this.remainderId = remainderId;
+    }
+
+    private int remainderId;
+
 
 
 

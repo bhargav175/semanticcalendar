@@ -24,7 +24,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String HABITS_TABLE ="habits";
 
     public static final String NOTES_TABLE ="notes";
-    public static final String TODO_TABLE ="todos";
+    public static final String REMINDER_TABLE ="reminders";
+    public static final String HABIT_ITEMS_TABLE ="habitItems";
 
 
     //TAsks Columns
@@ -36,10 +37,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String NOTE_DESCRIPTION ="description";
     public static final String NOTE_TAG ="tag_id";
     public static final String NOTE_IS_ARCHIVED ="isArchived";
+    public static final String NOTE_REQUEST_ID ="requestId";
 
-//TODO COlumns
-public static final String TODO_DESCRIPTION ="description";
-public static final String TODO_IS_COMPLETED ="isCompleted";
 
 //Tags Columns
 
@@ -52,6 +51,7 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
     public static final String CHECKLIST_TITLE ="title";
     public static final String CHECKLIST_IS_ARCHIVED ="isArchived";
     public static final String CHECKLIST_TAG ="tag_id";
+    public static final String CHECKLIST_REQUEST_ID ="requestId";
 
 
     //ChecklistItem
@@ -64,13 +64,39 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
 
     public static final String HABIT_TEXT ="title";
     public static final String HABIT_QUESTION ="question";
-    public static final String HABIT_STATE ="state";
+    public static final String HABIT_REQUEST_ID ="requestId";
     public static final String HABIT_IS_ARCHIVED ="isArchived";
     public static final String HABIT_TAG ="tag_id";
+    public static final String HABIT_TYPE="type";
+    public static final String HABIT_DAYS_CODE="dayCode";
+    public static final String HABIT_DURATION="numberOfDays";
+    public static final String HABIT_FREQUENCY="frequency";
+
+
+    //HabitItem
+    public static final String HABIT_ITEM_DATE ="habitItemDate";
+    public static final String HABIT_ITEM_STATE ="state";
+    public static final String HABIT_ITEM_HABIT ="habitId";
+
+
+
+
+    //Reminder
+
+    public static final String REMINDER_DAY_OF_MONTH ="dayOfMonth";
+    public static final String REMINDER_MONTH_OF_YEAR ="monthOfYear";
+    public static final String REMINDER_YEAR ="Year";
+    public static final String REMINDER_HOUR_OF_DAY ="hourOfDay";
+    public static final String REMINDER_MINUTE_OF_HOUR ="minuteOfHour";
+    public static final String REMINDER_SECONDS="seconds";
+    public static final String REMINDER_IS_REPEATING="isRepeating";
+    public static final String REMINDER_INTERVAL="interval";
+    public static final String REMINDER_DURATION="duration";
+
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 17;
 
 
 
@@ -83,7 +109,8 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + NOTE_DESCRIPTION+ " text not null, "
             + NOTE_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
-            + NOTE_TAG + " integer DEFAULT null"
+            + NOTE_TAG + " integer DEFAULT null, "
+            + NOTE_REQUEST_ID + " integer DEFAULT null"
             +");";
 
     private static final String CREATE_TABLE_TAGS = "create table if not exists "
@@ -102,7 +129,8 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + CHECKLIST_TITLE + " text not null, "
             + CHECKLIST_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
-            + CHECKLIST_TAG + " integer DEFAULT null"
+            + CHECKLIST_TAG + " integer DEFAULT null, "
+            + CHECKLIST_REQUEST_ID + " integer DEFAULT null"
 
             +");";
 
@@ -120,11 +148,41 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
             + COLUMN_ID+ " integer primary key autoincrement, "
             + HABIT_TEXT + " text not null, "
          + HABIT_QUESTION+ " text , "
-         + HABIT_STATE + " integer DEFAULT 0, "
          + HABIT_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
          + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
-            + HABIT_TAG + " integer DEFAULT null"
+            + HABIT_TYPE + " integer DEFAULT 1, "
+            + HABIT_DAYS_CODE + " integer DEFAULT null, "
+            + HABIT_FREQUENCY + " integer DEFAULT null, "
+            + HABIT_DURATION + " integer DEFAULT null, "
+         + HABIT_TAG + " integer DEFAULT null, "
+         + HABIT_REQUEST_ID + " integer DEFAULT null"
 
+            +");";
+
+
+    private static final String CREATE_TABLE_HABIT_ITEMS = "create table if not exists "
+            + HABIT_ITEMS_TABLE + "("
+            + COLUMN_ID+ " integer primary key autoincrement, "
+            + HABIT_ITEM_DATE + " DATETIME, "
+            + HABIT_ITEM_STATE+ " integer DEFAULT 0 , "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
+            + HABIT_ITEM_HABIT+ " integer not null"
+            +");";
+
+
+    private static final String CREATE_TABLE_REMINDERS = "create table if not exists "
+            + REMINDER_TABLE + "("
+            + COLUMN_ID+ " integer primary key autoincrement, "
+            + REMINDER_YEAR+ " integer DEFAULT 0 , "
+            + REMINDER_MONTH_OF_YEAR+ " integer DEFAULT 0 , "
+            + REMINDER_DAY_OF_MONTH+ " integer DEFAULT 0 , "
+            + REMINDER_HOUR_OF_DAY+ " integer DEFAULT 0 , "
+            + REMINDER_MINUTE_OF_HOUR+ " integer DEFAULT 0 , "
+            + REMINDER_SECONDS+ " integer DEFAULT 0 , "
+            + REMINDER_IS_REPEATING+ " BOOLEAN DEFAULT 0 , "
+            + REMINDER_INTERVAL+ " integer DEFAULT 0 , "
+            + REMINDER_DURATION+ " integer DEFAULT 0 , "
+            + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')) "
             +");";
 
 
@@ -142,11 +200,15 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
         Log.d(TAG,CREATE_TABLE_CHECKLISTS);
         Log.d(TAG,CREATE_TABLE_CHECKLIST_ITEMS);
         Log.d(TAG,CREATE_TABLE_HABITS);
+        Log.d(TAG,CREATE_TABLE_HABIT_ITEMS);
+        Log.d(TAG,CREATE_TABLE_REMINDERS);
         db.execSQL(CREATE_TABLE_NOTES);
         db.execSQL(CREATE_TABLE_TAGS);
         db.execSQL(CREATE_TABLE_CHECKLISTS);
         db.execSQL(CREATE_TABLE_CHECKLIST_ITEMS);
         db.execSQL(CREATE_TABLE_HABITS);
+        db.execSQL(CREATE_TABLE_HABIT_ITEMS);
+        db.execSQL(CREATE_TABLE_REMINDERS);
 
     }
 
@@ -161,6 +223,8 @@ public static final String TODO_IS_COMPLETED ="isCompleted";
         db.execSQL("DROP TABLE IF EXISTS " + CHECKLISTS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CHECKLIST_ITEMS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + HABITS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + HABIT_ITEMS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + REMINDER_TABLE);
         onCreate(db);
     }
 }

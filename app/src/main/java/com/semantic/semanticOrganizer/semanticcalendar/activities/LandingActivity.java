@@ -292,8 +292,17 @@ public class LandingActivity extends Activity {
                             startActivity(intent);
                         }else if(organizerItem.getType().equals("HABIT")){
                             Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
-                            intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
-                            intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
+                            Habit habit = Habit.getHabitById(organizerItem.getId(),getApplicationContext());
+                            intent.putExtra(DBHelper.HABIT_TEXT, habit.getHabitText());
+                            intent.putExtra(DBHelper.HABIT_QUESTION, habit.getHabitQuestion());
+                            intent.putExtra(DBHelper.HABIT_DURATION, habit.getDuration());
+                            intent.putExtra(DBHelper.HABIT_DAYS_CODE, habit.getDaysCode());
+                            intent.putExtra(DBHelper.HABIT_FREQUENCY, habit.getFrequency());
+                            intent.putExtra(DBHelper.HABIT_IS_ARCHIVED, habit.getIsArchived());
+                            intent.putExtra(DBHelper.HABIT_TYPE, habit.getHabitType());
+                            intent.putExtra(DBHelper.COLUMN_CREATED_TIME, habit.getCreatedTime());
+                            intent.putExtra(DBHelper.HABIT_REQUEST_ID, habit.getRequestId());
+                            intent.putExtra(DBHelper.COLUMN_ID,habit.getId());
                             startActivity(intent);
                         }else if(organizerItem.getType().equals("CHECKLIST")){
                             Intent intent = new Intent(getApplicationContext(), UpdateCheckListActivity.class);

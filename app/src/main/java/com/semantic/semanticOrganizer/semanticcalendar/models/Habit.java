@@ -38,36 +38,64 @@ public class Habit {
     private String habitText;
     private String habitQuestion;
     private String createdTime;
-    private String dueTime;
     private Boolean isArchived;
     private Integer Tag;
-    private State habitState;
+    private Integer requestId;
+    private Type habitType;
+    private Integer frequency;
 
-    public State getHabitState() {
-        return habitState;
+    public Type getHabitType() {
+        return habitType;
     }
 
-    public void setHabitState(State habitState) {
-        this.habitState = habitState;
+    public void setHabitType(Type habitType) {
+        this.habitType = habitType;
     }
 
-    public enum  State{
-        NOT_STARTED(0), STARTED(1), INCOMPLETE(2),COMPLETED_UNSUCCESSFULLY(3),COMPLETED_SUCCESSFULLY(4);
-
-        private int stateValue;
-        State(int stateValue) {
-            this.stateValue = stateValue;
-        }
-
-        public void setStateValue(int stateValue) {
-            this.stateValue = stateValue;
-        }
-
-        public int getStateValue() {
-            return stateValue;
-        }
+    public Integer getFrequency() {
+        return frequency;
     }
 
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public Integer getDaysCode() {
+        return daysCode;
+    }
+
+    public void setDaysCode(Integer daysCode) {
+        this.daysCode = daysCode;
+    }
+
+    private Integer duration;
+    private Integer daysCode;
+
+
+    public enum  Type{
+        FIXED(0), FLEXIBLE(1);
+
+        private int typeValue;
+        Type(int typeValue) {
+            this.typeValue = typeValue;
+        }
+
+        public void setTypeValue(int typeValue) {
+            this.typeValue = typeValue;
+        }
+
+        public int getTypeValue() {
+            return typeValue;
+        }
+    }
 
     public Habit(){
 
@@ -99,13 +127,6 @@ public class Habit {
 
 
 
-    public String getDueTime() {
-        return dueTime;
-    }
-
-    public void setDueTime(String dueTime) {
-        this.dueTime = dueTime;
-    }
 
     public String getHabitQuestion() {
         return habitQuestion;
@@ -130,6 +151,16 @@ public class Habit {
     public String toString() {
         return habitText;
     }
+
+
+    public static Habit getHabitById(Integer habitId, Context context) {
+        HabitDBHelper habitDBHelper = new HabitDBHelper(context);
+        habitDBHelper.open();
+        Habit habit= habitDBHelper.getHabit(habitId);
+        habitDBHelper.close();
+        return habit;
+    }
+
 
 
     public static List<Habit> getAllHabits(List<Habit> habitList, Context context) {
@@ -181,5 +212,13 @@ public class Habit {
         habitDBHelper.close();
         return habitList;
 
+    }
+
+    public Integer getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(Integer requestId) {
+        this.requestId = requestId;
     }
 }
