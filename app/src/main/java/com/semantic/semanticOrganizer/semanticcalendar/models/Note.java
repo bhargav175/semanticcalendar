@@ -24,11 +24,11 @@ public class Note {
         this.createdTime = createdTime;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,16 +48,24 @@ public class Note {
         this.createdTime = createdTime;
     }
 
-    private int id;
+    private Integer id;
     private String noteText;
     private String createdTime;
 
-    public int getRemainderId() {
+    public Integer getRemainderId() {
         return remainderId;
     }
 
-    public void setRemainderId(int remainderId) {
+    public void setRemainderId(Integer remainderId) {
         this.remainderId = remainderId;
+    }
+
+    public Boolean hasReminder(){
+        if(this.getRemainderId() ==null){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private int remainderId;
@@ -143,4 +151,14 @@ public class Note {
         return noteList;
 
     }
+
+    public static Note getNote(int id, Context context) {
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+         Note note=  noteDBHelper.getNote(id);
+        noteDBHelper.close();
+        return note;
+    }
+
+
 }

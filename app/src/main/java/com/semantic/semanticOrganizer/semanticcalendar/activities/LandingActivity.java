@@ -117,8 +117,7 @@ public class LandingActivity extends Activity {
         setListeners();
         populateUi();
         //showNotif();
-        startAlert();
-        cancelAlert();
+
     }
     private void showNotif(){
         NotificationCompat.Builder mBuilder =
@@ -286,10 +285,9 @@ public class LandingActivity extends Activity {
                         OrganizerItem organizerItem = (OrganizerItem) parent.getAdapter().getItem(position);
 
                         if(organizerItem.getType().equals("NOTE")){
-                            Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
-                            intent.putExtra(DBHelper.NOTE_DESCRIPTION, organizerItem.getItemText());
-                            intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
-                            startActivity(intent);
+                            new GetNote(organizerItem.getId()).execute("");
+
+
                         }else if(organizerItem.getType().equals("HABIT")){
                             Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
                             Habit habit = Habit.getHabitById(organizerItem.getId(),getApplicationContext());
@@ -644,6 +642,50 @@ public class LandingActivity extends Activity {
                 public void run() {
                     populateTags(tagList);
                     Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+    private class GetNote extends AsyncTask<String, Void,Note> {
+
+        private int id;
+        public GetNote(int id){
+            this.id = id;
+        }
+
+        @Override
+        protected Note doInBackground(String... params) {
+            Note note = new Note();
+            note = Note.getNote(id,getApplicationContext());
+            return note;
+        }
+
+        @Override
+        protected void onPostExecute(final Note note) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if(note!=null){
+                        Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
+                        intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
+                        intent.putExtra(DBHelper.COLUMN_ID,note.getId());
+                        intent.putExtra(DBHelper.NOTE_REQUEST_ID,note.getRemainderId());
+                        intent.putExtra(DBHelper.NOTE_IS_ARCHIVED,note.getIsArchived());
+                        intent.putExtra(DBHelper.NOTE_TAG,note.getTag());
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),"failed",Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

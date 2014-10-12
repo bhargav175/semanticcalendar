@@ -151,6 +151,14 @@ public class Reminder {
         return reminder;
     }
 
+    public static Integer getNextReminderId(Context context){
+        ReminderDBHelper reminderDBHelper = new ReminderDBHelper(context);
+        reminderDBHelper.open();
+        Integer i= reminderDBHelper.getLastReminderId() +1;
+        reminderDBHelper.close();
+        return i;
+    }
+
 
 
 

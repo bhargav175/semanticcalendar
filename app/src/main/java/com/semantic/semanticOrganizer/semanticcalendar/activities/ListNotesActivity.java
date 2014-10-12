@@ -55,6 +55,9 @@ public class ListNotesActivity extends Activity {
                 Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
                 intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
                 intent.putExtra(DBHelper.COLUMN_ID,note.getId());
+                intent.putExtra(DBHelper.NOTE_REQUEST_ID,note.getRemainderId());
+                intent.putExtra(DBHelper.NOTE_IS_ARCHIVED,note.getIsArchived());
+                intent.putExtra(DBHelper.NOTE_TAG,note.getTag());
                 startActivity(intent);
             }
         });

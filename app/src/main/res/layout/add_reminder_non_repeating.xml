@@ -20,13 +20,13 @@
     android:weightSum="1">
 
 
-    <Spinner
+    <com.semantic.semanticOrganizer.semanticcalendar.helpers.MySpinner
         android:layout_width="104dp"
         android:layout_height="wrap_content"
         android:id="@+id/date"
         android:layout_weight="0.50" />
 
-    <Spinner
+    <com.semantic.semanticOrganizer.semanticcalendar.helpers.MySpinner
         android:layout_width="113dp"
         android:layout_height="wrap_content"
         android:id="@+id/time"

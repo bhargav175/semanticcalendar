@@ -56,12 +56,14 @@ public class NoteDBHelper {
         return note;
     }
 
-    public int updateNote(Note note, String noteText ,Integer noteTag) {
+    public int updateNote(Note note, String noteText ,Boolean isArchived, Integer noteTag, Integer requestId) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.NOTE_DESCRIPTION, noteText);
         values.put(DBHelper.NOTE_TAG, noteTag);
+        values.put(DBHelper.NOTE_IS_ARCHIVED,isArchived);
+        values.put(DBHelper.NOTE_REQUEST_ID,requestId);
 
 
 
@@ -107,7 +109,9 @@ public class NoteDBHelper {
                 if (!cursor.isNull(4)){
             note.setTag(cursor.getInt(4));
         }
-
+        if (!cursor.isNull(5)) {
+            note.setRemainderId(cursor.getInt(5));
+        }
         return note;
 
     }
