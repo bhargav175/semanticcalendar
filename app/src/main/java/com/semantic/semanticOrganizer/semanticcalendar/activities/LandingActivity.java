@@ -195,7 +195,6 @@ public class LandingActivity extends Activity {
                                 switch (position){
                                     case 0:
                                         str = "Edit Tag";
-                                        Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
                                         intent.putExtra(DBHelper.TAG_TITLE, tag.getTagText());
                                         intent.putExtra(DBHelper.COLUMN_ID, tag.getTagId());
@@ -218,7 +217,6 @@ public class LandingActivity extends Activity {
                                         str = "Error";
                                         break;
                                 }
-                                Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
                             }
                         });
                         lv.setAdapter(adapter);
@@ -244,7 +242,7 @@ public class LandingActivity extends Activity {
 //
 //                };
 
-                final List<OrganizerItem> organizerItems = OrganizerItem.getOrganizerItemsWithTag(tag, this);
+                final List<OrganizerItem> organizerItems = OrganizerItem.getUnArchivedOrganizerItemsWithTag(tag, this);
                 mOrganizerItemList.addAll(organizerItems);
                 final ArrayAdapter<OrganizerItem> adapter = new ArrayAdapter<OrganizerItem>(this,
                         R.layout.card_simple_note,R.id.cardText1, organizerItems){
@@ -285,7 +283,11 @@ public class LandingActivity extends Activity {
                         OrganizerItem organizerItem = (OrganizerItem) parent.getAdapter().getItem(position);
 
                         if(organizerItem.getType().equals("NOTE")){
-                            new GetNote(organizerItem.getId()).execute("");
+
+                            Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
+                            intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
+                            startActivity(intent);
+
 
 
                         }else if(organizerItem.getType().equals("HABIT")){
@@ -304,7 +306,6 @@ public class LandingActivity extends Activity {
                             startActivity(intent);
                         }else if(organizerItem.getType().equals("CHECKLIST")){
                             Intent intent = new Intent(getApplicationContext(), UpdateCheckListActivity.class);
-                            intent.putExtra(DBHelper.CHECKLIST_TITLE,  organizerItem.getItemText());
                             intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                             startActivity(intent);
                         }else{
@@ -403,10 +404,8 @@ public class LandingActivity extends Activity {
                    OrganizerItem organizerItem = (OrganizerItem) parent.getAdapter().getItem(position);
 
                    if(organizerItem.getType().equals("NOTE")){
-                       Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
-                       intent.putExtra(DBHelper.NOTE_DESCRIPTION, organizerItem.getItemText());
-                       intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
-                       startActivity(intent);
+                       new GetNote(organizerItem.getId()).execute("");
+
                    }else if(organizerItem.getType().equals("HABIT")){
                        Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
                        intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
@@ -598,7 +597,7 @@ public class LandingActivity extends Activity {
 
         @Override
         protected List<OrganizerItem> doInBackground(String... params) {
-            List<OrganizerItem> organizerItems = OrganizerItem.getSandboxOrganizerItems(getApplicationContext());
+            List<OrganizerItem> organizerItems = OrganizerItem.getSandboxUnArchivedOrganizerItems(getApplicationContext());
             return organizerItems;
         }
 
@@ -609,8 +608,6 @@ public class LandingActivity extends Activity {
                 @Override
                 public void run() {
                     populateSandbox(organizerItems);
-
-                    Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -641,7 +638,6 @@ public class LandingActivity extends Activity {
                 @Override
                 public void run() {
                     populateTags(tagList);
-                    Toast.makeText(getApplicationContext(),"Executed",Toast.LENGTH_SHORT).show();
                 }
             });
 

@@ -14,7 +14,45 @@ import java.util.List;
 public class HabitItem {
 
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
+    }
+
+    public Integer getHabit() {
+        return Habit;
+    }
+
+    public void setHabit(Integer habit) {
+        Habit = habit;
+    }
+
+    public State getHabitItemState() {
+        return habitItemState;
+    }
+
+    public void setHabitItemState(State habitItemState) {
+        this.habitItemState = habitItemState;
+    }
 
     private int id;
     private String createdTime;

@@ -45,6 +45,10 @@ public class CheckListDBHelper {
         return database.query(CHECKLISTS_TABLE, null, null, null, null, null, null);
     }
 
+    public Cursor fetchAllUnArchivedCheckLists() {
+        return database.query(CHECKLISTS_TABLE, null, DBHelper.CHECKLIST_IS_ARCHIVED + "=?",  new String[] { String.valueOf(false) }, null, null, null);
+    }
+
     public CheckList getCheckList(int id) {
         Cursor cursor = database.query(CHECKLISTS_TABLE, null, DBHelper.COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
@@ -56,19 +60,21 @@ public class CheckListDBHelper {
         return checkList;
     }
 
-    public int updateCheckList(CheckList checkList, String checkListText ,Integer checkListTag) {
+    public int updateCheckList(CheckList checkList, String checkListText ,Integer checkListTag, Boolean isArchived) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.CHECKLIST_TITLE, checkListText);
         values.put(DBHelper.CHECKLIST_TAG, checkListTag);
+        values.put(DBHelper.CHECKLIST_TAG, checkListTag);
+        values.put(DBHelper.CHECKLIST_IS_ARCHIVED, isArchived);
 
 
 
         // updating row
         database.update(CHECKLISTS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(checkList.getId()) });
-        Toast.makeText(context,"CheckList "+ checkListText+" updated", Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"CheckList "+ checkListText+" updated", Toast.LENGTH_SHORT).show();
 
 
         return 0;
@@ -85,7 +91,7 @@ public class CheckListDBHelper {
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(CHECKLISTS_TABLE, null, values);
-        Toast.makeText(context,"CheckList "+ checkList.getCheckListText()+" saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"CheckList "+ checkList.getCheckListText()+" saved", Toast.LENGTH_SHORT).show();
 
     }
     private String getPrevCheckListId(String tableName) {
@@ -118,5 +124,16 @@ public class CheckListDBHelper {
 
     public Cursor fetchAllCheckListsSandbox() {
         return database.query(CHECKLISTS_TABLE, null, DBHelper.CHECKLIST_TAG +  " is null" , null, null, null, null);
+    }
+
+    public Cursor fetchAllUnArchivedCheckListsSandbox() {
+        return database.query(CHECKLISTS_TABLE, null, DBHelper.CHECKLIST_TAG +  " is null AND "+DBHelper.CHECKLIST_IS_ARCHIVED+" = 0 "  , null, null, null, null);
+    }
+
+
+    public Cursor fetchAllUnArchivedCheckListsInTag(Tag tag) {
+
+        return database.query(CHECKLISTS_TABLE, null, DBHelper.CHECKLIST_TAG +  "= ? AND "+DBHelper.CHECKLIST_IS_ARCHIVED + " = 0" , new String[] { String.valueOf(tag.getTagId()) }, null, null, null);
+
     }
 }

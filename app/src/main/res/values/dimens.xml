@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="default_element_height">64dp</dimen>
+    <dimen name="checklist_element_height">40dp</dimen>
 </resources>

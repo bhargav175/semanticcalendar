@@ -80,6 +80,7 @@ public class Habit {
     private Integer daysCode;
 
 
+
     public enum  Type{
         FIXED(0), FLEXIBLE(1);
 
@@ -213,6 +214,41 @@ public class Habit {
         return habitList;
 
     }
+public static List<Habit> getAllUnArchivedHabitsSandbox(Context context) {
+        List<Habit> habitList = new ArrayList<Habit>();
+        HabitDBHelper habitDBHelper = new HabitDBHelper(context);
+        habitDBHelper.open();
+        Cursor cursor= habitDBHelper.fetchAllUnArchivedHabitsSandbox();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Habit habit = habitDBHelper.cursorToHabit(cursor);
+            habitList.add(habit);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        habitDBHelper.close();
+        return habitList;
+
+    }
+
+    public static List<Habit> getAllUnArchivedHabitsInTag(Tag tag, Context context) {
+        List<Habit> habitList = new ArrayList<Habit>();
+        HabitDBHelper habitDBHelper = new HabitDBHelper(context);
+        habitDBHelper.open();
+        Cursor cursor= habitDBHelper.fetchAllUnArchivedHabitsInTag(tag);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Habit habit = habitDBHelper.cursorToHabit(cursor);
+            habitList.add(habit);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        habitDBHelper.close();
+        return habitList;
+    }
+
 
     public Integer getRequestId() {
         return requestId;

@@ -25,11 +25,11 @@ public class OrganizerItem {
         this.itemText = itemText;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public String getCreatedTime() {
@@ -42,7 +42,7 @@ public class OrganizerItem {
     private String type;
     private String itemText;
     private String createdTime;
-    private int id;
+    private Integer id;
 
     public static List<OrganizerItem> getOrganizerItemsWithTag(Tag tag, Context context){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
@@ -52,6 +52,25 @@ public class OrganizerItem {
             List<Note> noteList = Note.getAllNotesInTag(tag, context);
             List<CheckList> checkListList = CheckList.getAllCheckListsInTag(tag, context);
             List<Habit> habitList = Habit.getAllHabitsInTag(tag, context);
+            organizerItems.addAll(castNotesToOrganizerItemList(noteList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+            organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+            return organizerItems;
+        }
+        else{
+            return organizerItems;
+        }
+    }
+
+
+    public static List<OrganizerItem> getUnArchivedOrganizerItemsWithTag(Tag tag, Context context){
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+
+
+        if(tag!=null){
+            List<Note> noteList = Note.getAllUnArchivedNotesInTag(tag, context);
+            List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsInTag(tag, context);
+            List<Habit> habitList = Habit.getAllUnArchivedHabitsInTag(tag, context);
             organizerItems.addAll(castNotesToOrganizerItemList(noteList));
             organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
             organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
@@ -76,6 +95,22 @@ public class OrganizerItem {
             return organizerItems;
 
     }
+
+    public static List<OrganizerItem> getSandboxUnArchivedOrganizerItems(Context context){
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+
+
+
+        List<Note> noteList = Note.getAllUnArchivedNotesSandbox(context);
+        List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsSandbox(context);
+        List<Habit> habitList = Habit.getAllUnArchivedHabitsSandbox(context);
+        organizerItems.addAll(castNotesToOrganizerItemList(noteList));
+        organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+        organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+        return organizerItems;
+
+    }
+
 
     public static List<OrganizerItem> castNotesToOrganizerItemList( List<Note> noteList){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();

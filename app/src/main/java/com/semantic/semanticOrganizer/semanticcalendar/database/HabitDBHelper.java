@@ -40,6 +40,10 @@ public class HabitDBHelper {
 
     }
 
+    public Cursor fetchAllUnArchivedCheckLists() {
+        return database.query(TABLE, null, DBHelper.HABIT_IS_ARCHIVED + "=?",  new String[] { String.valueOf(false) }, null, null, null);
+    }
+
 
     public Cursor fetchAllHabits() {
         return database.query(TABLE, null, null, null, null, null, null);
@@ -156,5 +160,14 @@ public class HabitDBHelper {
 
     public Cursor fetchAllHabitsSandbox() {
         return database.query(TABLE, null, DBHelper.HABIT_TAG +  " is null" , null, null, null, null);
+    }
+
+    public Cursor fetchAllUnArchivedHabitsSandbox() {
+        return database.query(TABLE, null, DBHelper.HABIT_TAG +  " is null AND " + DBHelper.HABIT_IS_ARCHIVED +" = 0 " , null, null, null, null);
+    }
+
+    public Cursor fetchAllUnArchivedHabitsInTag(Tag tag) {
+        return database.query(TABLE, null, DBHelper.HABIT_TAG +  "= ? AND "+DBHelper.HABIT_IS_ARCHIVED + " = 0" , new String[] { String.valueOf(tag.getTagId()) }, null, null, null);
+
     }
 }

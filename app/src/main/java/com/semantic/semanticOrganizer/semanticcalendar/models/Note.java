@@ -68,7 +68,7 @@ public class Note {
         }
     }
 
-    private int remainderId;
+    private Integer remainderId;
 
 
 
@@ -152,6 +152,24 @@ public class Note {
 
     }
 
+    public static List<Note> getAllUnArchivedNotesSandbox(Context context) {
+        List<Note> noteList = new ArrayList<Note>();
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+        Cursor cursor= noteDBHelper.fetchAllUnArchivedNotesSandbox();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Note note = noteDBHelper.cursorToNote(cursor);
+            noteList.add(note);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        noteDBHelper.close();
+        return noteList;
+
+    }
+
     public static Note getNote(int id, Context context) {
         NoteDBHelper noteDBHelper = new NoteDBHelper(context);
         noteDBHelper.open();
@@ -161,4 +179,20 @@ public class Note {
     }
 
 
+    public static List<Note> getAllUnArchivedNotesInTag(Tag tag, Context context) {
+        List<Note> noteList = new ArrayList<Note>();
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+        Cursor cursor= noteDBHelper.fetchAllUnArchivedNotesInTag(tag);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Note note = noteDBHelper.cursorToNote(cursor);
+            noteList.add(note);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        noteDBHelper.close();
+        return noteList;
+    }
 }

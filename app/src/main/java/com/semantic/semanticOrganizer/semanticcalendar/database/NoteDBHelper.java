@@ -40,6 +40,9 @@ public class NoteDBHelper {
 
     }
 
+    public Cursor fetchAllUnArchivedNotes() {
+        return database.query(NOTES_TABLE, null, DBHelper.NOTE_IS_ARCHIVED + "=?",  new String[] { String.valueOf(false) }, null, null, null);
+    }
 
     public Cursor fetchAllNotes() {
         return database.query(NOTES_TABLE, null, null, null, null, null, null);
@@ -121,5 +124,15 @@ public class NoteDBHelper {
     }
     public Cursor fetchAllNotesSandbox() {
         return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  " is null" , null, null, null, null);
+    }
+
+    public Cursor fetchAllUnArchivedNotesSandbox() {
+        return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  " is null AND "+DBHelper.NOTE_IS_ARCHIVED +" = 0 " , null, null, null, null);
+    }
+
+    public Cursor fetchAllUnArchivedNotesInTag(Tag tag) {
+        return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  "= ? AND "+DBHelper.NOTE_IS_ARCHIVED + " = 0" , new String[] { String.valueOf(tag.getTagId()) }, null, null, null);
+
+
     }
 }

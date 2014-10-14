@@ -24,13 +24,13 @@
         android:layout_width="104dp"
         android:layout_height="wrap_content"
         android:id="@+id/date"
-        android:layout_weight="0.50" />
+        android:layout_weight="0.6" />
 
     <com.semantic.semanticOrganizer.semanticcalendar.helpers.MySpinner
         android:layout_width="113dp"
         android:layout_height="wrap_content"
         android:id="@+id/time"
-        android:layout_weight="0.50" />
+        android:layout_weight="0.3" />
 
     <Button
         android:layout_width="wrap_content"

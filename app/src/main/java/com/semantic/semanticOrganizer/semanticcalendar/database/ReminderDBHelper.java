@@ -12,6 +12,8 @@ import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Reminder;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
+import static android.database.DatabaseUtils.dumpCursorToString;
+
 /**
  * Created by Admin on 16-09-2014.
  */
@@ -48,12 +50,15 @@ public class ReminderDBHelper {
     public Reminder getReminder(int id) {
         Cursor cursor = database.query(TABLE,null, DBHelper.COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
+        if (cursor != null){
+            dumpCursorToString(cursor);
+            Boolean b= cursor.moveToNext();
+            Reminder reminder =cursorToReminder(cursor);
+            return reminder;
 
-        Reminder reminder =cursorToReminder(cursor);
-        // return contact
-        return reminder;
+        }
+        return null;
+
     }
 
 
@@ -63,7 +68,7 @@ public class ReminderDBHelper {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.REMINDER_YEAR, reminder.getYear());
-        values.put(DBHelper.REMINDER_MONTH_OF_YEAR, reminder.getMinuteOfHour());
+        values.put(DBHelper.REMINDER_MONTH_OF_YEAR, reminder.getMonthOfYear());
         values.put(DBHelper.REMINDER_DAY_OF_MONTH, reminder.getDayOfMonth());
         values.put(DBHelper.REMINDER_HOUR_OF_DAY, reminder.getHourOfDay());
         values.put(DBHelper.REMINDER_MINUTE_OF_HOUR, reminder.getMinuteOfHour());
@@ -89,7 +94,7 @@ public class ReminderDBHelper {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevReminderId(TABLE)) + 1)));
         values.put(DBHelper.REMINDER_YEAR, reminder.getYear());
-        values.put(DBHelper.REMINDER_MONTH_OF_YEAR, reminder.getMinuteOfHour());
+        values.put(DBHelper.REMINDER_MONTH_OF_YEAR, reminder.getMonthOfYear());
         values.put(DBHelper.REMINDER_DAY_OF_MONTH, reminder.getDayOfMonth());
         values.put(DBHelper.REMINDER_HOUR_OF_DAY, reminder.getHourOfDay());
         values.put(DBHelper.REMINDER_MINUTE_OF_HOUR, reminder.getMinuteOfHour());
@@ -124,6 +129,7 @@ public class ReminderDBHelper {
 
     public Reminder cursorToReminder(Cursor cursor) {
 
+        dumpCursorToString(cursor);
 
         Reminder reminder = new Reminder();
         reminder.setId(cursor.getInt(0));

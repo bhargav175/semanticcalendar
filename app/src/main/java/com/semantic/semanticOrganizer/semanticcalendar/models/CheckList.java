@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class CheckList {
     private Integer Tag;
-    private int id;
+    private Integer id;
     private String createdTime;
     private String checkListText;
     private Boolean isArchived;
@@ -26,6 +26,10 @@ public class CheckList {
     }
 
     private int reminderId;
+
+    public CheckList(Integer id) {
+        this.id = id;
+    }
 
 
     public CheckList(String checkListText) {
@@ -127,5 +131,46 @@ public class CheckList {
         return checkListList;
 
     }
+    public static List<CheckList> getAllUnArchivedCheckListsSandbox( Context context) {
+        List<CheckList> checkListList = new ArrayList<CheckList>();
+        CheckListDBHelper checkListDBHelper = new CheckListDBHelper(context);
+        checkListDBHelper.open();
+        Cursor cursor= checkListDBHelper.fetchAllUnArchivedCheckListsSandbox();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            CheckList checkList = checkListDBHelper.cursorToCheckList(cursor);
+            checkListList.add(checkList);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        checkListDBHelper.close();
+        return checkListList;
 
+    }
+
+   public static CheckList getCheckListById(Integer id, Context context) {
+       CheckListDBHelper checkListDBHelper = new CheckListDBHelper(context);
+       checkListDBHelper.open();
+       CheckList checkList=  checkListDBHelper.getCheckList(id);
+       checkListDBHelper.close();
+       return checkList;
+    }
+
+    public static List<CheckList> getAllUnArchivedCheckListsInTag(Tag tag, Context context) {
+        List<CheckList> checkListList = new ArrayList<CheckList>();
+        CheckListDBHelper checkListDBHelper = new CheckListDBHelper(context);
+        checkListDBHelper.open();
+        Cursor cursor= checkListDBHelper.fetchAllUnArchivedCheckListsInTag(tag);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            CheckList checkList = checkListDBHelper.cursorToCheckList(cursor);
+            checkListList.add(checkList);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        checkListDBHelper.close();
+        return checkListList;
+    }
 }

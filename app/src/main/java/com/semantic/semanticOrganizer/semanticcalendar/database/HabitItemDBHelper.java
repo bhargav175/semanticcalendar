@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
+import com.semantic.semanticOrganizer.semanticcalendar.models.HabitItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 /**
@@ -41,24 +42,24 @@ public class HabitItemDBHelper {
     }
 
 
-    public Cursor fetchAllHabits() {
+    public Cursor fetchAllHabitItems() {
         return database.query(TABLE, null, null, null, null, null, null);
     }
 
-    public Habit getHabit(int id) {
+    public HabitItem getHabitItem(int id) {
         Cursor cursor = database.query(TABLE,null, DBHelper.COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Habit habit =cursorToHabit(cursor);
+        HabitItem habitItem =cursorToHabitItem(cursor);
         // return contact
-        return habit;
+        return habitItem;
     }
 
 
 
-    public int updateHabit(Habit habit, String habitText ,Integer habitTag) {
+    public int updateHabitItem(Habit habit, String habitText ,Integer habitTag) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -77,10 +78,10 @@ public class HabitItemDBHelper {
     }
 
 
-    public void saveHabit(Habit habit) {
+    public void saveHabitItem(Habit habit) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitId(TABLE)) + 1)));
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitItemId(TABLE)) + 1)));
         values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
 
         //values.put("image_path", draft.getDraftImagePath());
@@ -90,7 +91,7 @@ public class HabitItemDBHelper {
         Toast.makeText(context,"Habit "+ habit.getHabitText()+" saved", Toast.LENGTH_LONG).show();
 
     }
-    private String getPrevHabitId(String tableName) {
+    private String getPrevHabitItemId(String tableName) {
         try {
             Cursor cr = database.query(tableName, null, null, null, null, null, null);
             cr.moveToLast();
@@ -100,7 +101,7 @@ public class HabitItemDBHelper {
         }
     }
 
-    public Habit cursorToHabit(Cursor cursor) {
+    public HabitItem cursorToHabitItem(Cursor cursor) {
 //        + COLUMN_ID+ " integer primary key autoincrement, "
 //                + HABIT_TEXT + " text not null, "
 //                + HABIT_QUESTION+ " text , "
@@ -115,46 +116,22 @@ public class HabitItemDBHelper {
 
 
 
-        Habit habit = new Habit();
-        habit.setId(cursor.getInt(0));
-        habit.setHabitText(cursor.getString(1));
-        habit.setHabitQuestion(cursor.getString(2));
-        habit.setIsArchived(cursor.getInt(3)>0);
+        HabitItem habitItem = new HabitItem();
 
-        habit.setCreatedTime(cursor.getString(4));
-        if (!cursor.isNull(5)){
-
-            habit.setHabitType(Habit.Type.values()[cursor.getInt(5)]);
+        habitItem.setId(cursor.getInt(0));
+        habitItem.setCurrentDate(cursor.getString(1));
+        habitItem.setHabitItemState(HabitItem.State.values()[(cursor.getInt(2))]);
+        habitItem.setCreatedTime(cursor.getString(3));
+        if(cursor.getString(4)!=null) {
+            habitItem.setHabit(cursor.getInt(4));
         }
-        if (!cursor.isNull(6)){
-            habit.setDaysCode(cursor.getInt(6));
-        }
-        if (!cursor.isNull(7)){
-
-            habit.setFrequency(cursor.getInt(7));
-        }
-        if (!cursor.isNull(8)){
-            habit.setDuration(cursor.getInt(8));
-        }
-
-        if (!cursor.isNull(9)){
-            habit.setTag(cursor.getInt(9));
-        }
-
-        if (!cursor.isNull(10)){
-            habit.setRequestId(cursor.getInt(10));
-        }
-
-
-        return habit;
+        return habitItem;
 
     }
 
-    public Cursor fetchAllHabitsInTag(Tag tag) {
-        return database.query(TABLE, null, DBHelper.HABIT_TAG +  "=" + tag.getTagId(), null, null, null, null);
+    public Cursor fetchAllHabitsItemsInHabit(Habit habit) {
+        return database.query(TABLE, null, DBHelper.HABIT_ITEM_HABIT +  "=" + habit.getId(), null, null, null, null);
     }
 
-    public Cursor fetchAllHabitsSandbox() {
-        return database.query(TABLE, null, DBHelper.HABIT_TAG +  " is null" , null, null, null, null);
-    }
+
 }

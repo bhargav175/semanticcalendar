@@ -1,21 +1,51 @@
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:weightSum="1">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:id="@+id/addCheckListItemButton" />
 
-    <CheckBox
+<CheckBox
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/checklist_element_height"
         android:id="@+id/checkBox"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/addCheckListItemButton"
         android:checked="false"
-        android:hint="Add Item"
         android:textColorHint="#ddd"
         android:textColor="#fff" />
-</RelativeLayout>
+
+
+
+    <EditText
+        android:layout_width="wrap_content"
+         android:layout_centerHorizontal="true"
+        android:layout_height="@dimen/checklist_element_height"
+        android:layout_toRightOf="@+id/checkBox"
+        android:id="@+id/editText"
+        android:hint="Add Item"
+        android:layout_weight="0.6" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/checklist_element_height"
+        android:text="New Text"
+        android:layout_toRightOf="@+id/editText"
+
+        android:id="@+id/idStore"
+        android:hint="Id"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+
+        android:layout_width="40dp"
+        android:layout_height="@dimen/checklist_element_height"
+        android:text="x"
+        android:id="@+id/removeCheckListItemButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="#fff"
+        android:textColor="#333"
+        android:layout_weight="0.1" />
+</LinearLayout>

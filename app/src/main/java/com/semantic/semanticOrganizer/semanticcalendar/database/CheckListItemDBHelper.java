@@ -9,7 +9,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
-import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
+import com.semantic.semanticOrganizer.semanticcalendar.models.CheckList;
+import com.semantic.semanticOrganizer.semanticcalendar.models.CheckListItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 /**
@@ -17,8 +18,8 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
  */
 public class CheckListItemDBHelper {
 
-    private final static String NOTES_TABLE = "notes";
-    private final static String TAG = "Notesave";
+    private final static String CHECKLIST_ITEMS_TABLE = DBHelper.CHECKLIST_ITEMS_TABLE;
+    private final static String TAG = "CheckListItemsave";
 
     private DBHelper dbHelper;
     private Context context;
@@ -41,54 +42,55 @@ public class CheckListItemDBHelper {
     }
 
 
-    public Cursor fetchAllNotes() {
-        return database.query(NOTES_TABLE, null, null, null, null, null, null);
+    public Cursor fetchAllCheckListItems() {
+        return database.query(CHECKLIST_ITEMS_TABLE, null, null, null, null, null, null);
     }
 
-    public Note getNote(int id) {
-        Cursor cursor = database.query(NOTES_TABLE, new String[] {DBHelper.COLUMN_ID, DBHelper.NOTE_DESCRIPTION, DBHelper.COLUMN_CREATED_TIME, DBHelper.NOTE_TAG }, DBHelper.COLUMN_ID + "=?",
+    public CheckListItem getCheckListItem(int id) {
+        Cursor cursor = database.query(CHECKLIST_ITEMS_TABLE, null, DBHelper.COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Note note =cursorToNote(cursor);
+        CheckListItem checkListItem =cursorToCheckListItem(cursor);
         // return contact
-        return note;
+        return checkListItem;
     }
 
-    public int updateNote(Note note, String noteText ,Integer noteTag) {
+    public int updateCheckListItem(CheckListItem checkListItem, String checkListItemText ,CheckListItem.State state) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.NOTE_DESCRIPTION, noteText);
-        values.put(DBHelper.NOTE_TAG, noteTag);
+        values.put(DBHelper.CHECKLIST_ITEM_TEXT, checkListItemText);
+        values.put(DBHelper.CHECKLIST_ITEM_STATE, state.getStateValue());
 
 
 
         // updating row
-        database.update(NOTES_TABLE, values, DBHelper.COLUMN_ID + " = ?",
-                new String[] { String.valueOf(note.getId()) });
-        Toast.makeText(context,"Note "+ noteText+" updated", Toast.LENGTH_LONG).show();
+        database.update(CHECKLIST_ITEMS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[] { String.valueOf(checkListItem.getId()) });
+        Toast.makeText(context,"CheckListItem "+ checkListItemText+" updated", Toast.LENGTH_SHORT).show();
 
 
         return 0;
     }
 
 
-    public void saveNote(Note note) {
+    public void saveCheckListItem(CheckListItem checkListItem) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevNoteId(NOTES_TABLE)) + 1)));
-        values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
+        values.put(DBHelper.CHECKLIST_ITEM_TEXT, checkListItem.getCheckListItemText());
+        values.put(DBHelper.CHECKLIST_ITEM_STATE, checkListItem.getCheckListItemState().getStateValue());
+        values.put(DBHelper.CHECKLIST_ITEM_CHECKLIST, checkListItem.getCheckList());
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         Log.d(TAG, values.toString());
-        database.insert(NOTES_TABLE, null, values);
-        Toast.makeText(context,"Note "+ note.getNoteText()+" saved", Toast.LENGTH_LONG).show();
+        database.insert(CHECKLIST_ITEMS_TABLE, null, values);
+        Toast.makeText(context,"CheckListItem "+ checkListItem.getCheckListItemText()+" saved", Toast.LENGTH_SHORT).show();
 
     }
-    private String getPrevNoteId(String tableName) {
+    private String getPrevCheckListItemId(String tableName) {
         try {
             Cursor cr = database.query(tableName, null, null, null, null, null, null);
             cr.moveToLast();
@@ -98,20 +100,27 @@ public class CheckListItemDBHelper {
         }
     }
 
-    public Note cursorToNote(Cursor cursor) {
-        Note note = new Note();
-        note.setId(cursor.getInt(0));
-        note.setNoteText(cursor.getString(1));
-        note.setCreatedTime(cursor.getString(2));
-        if (!cursor.isNull(3)){
-            note.setTag(cursor.getInt(3));
+    public CheckListItem cursorToCheckListItem(Cursor cursor) {
+        CheckListItem checkListItem = new CheckListItem();
+        checkListItem.setId(cursor.getInt(0));
+        checkListItem.setCheckListItemText(cursor.getString(1));
+        checkListItem.setCheckListItemState(CheckListItem.State.values()[(cursor.getInt(2))]);
+        checkListItem.setCreatedTime(cursor.getString(3));
+        if (!cursor.isNull(4)){
+            checkListItem.setCheckList(cursor.getInt(4));
         }
 
-        return note;
+        return checkListItem;
 
     }
 
-    public Cursor fetchAllNotesInTag(Tag tag) {
-        return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  "=" + tag.getTagId(), null, null, null, null);
+    public Cursor fetchAllCheckListItemsInCheckList(Integer checkListId) {
+        return database.query(CHECKLIST_ITEMS_TABLE, null, DBHelper.CHECKLIST_ITEM_CHECKLIST +  "=" + checkListId, null, null, null, null);
+    }
+
+    public void deleteCheckListItem(Integer i) {
+         database.delete(CHECKLIST_ITEMS_TABLE,  DBHelper.COLUMN_ID + " = ?",
+                new String[] { String.valueOf(i) });
+
     }
 }
