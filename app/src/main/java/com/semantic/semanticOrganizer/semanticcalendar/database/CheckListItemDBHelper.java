@@ -57,19 +57,19 @@ public class CheckListItemDBHelper {
         return checkListItem;
     }
 
-    public int updateCheckListItem(CheckListItem checkListItem, String checkListItemText ,CheckListItem.State state) {
+    public int updateCheckListItem(CheckListItem checkListItem) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.CHECKLIST_ITEM_TEXT, checkListItemText);
-        values.put(DBHelper.CHECKLIST_ITEM_STATE, state.getStateValue());
+        values.put(DBHelper.CHECKLIST_ITEM_TEXT, checkListItem.getCheckListItemText());
+        values.put(DBHelper.CHECKLIST_ITEM_STATE, checkListItem.getCheckListItemState().getStateValue());
 
 
 
         // updating row
         database.update(CHECKLIST_ITEMS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(checkListItem.getId()) });
-        Toast.makeText(context,"CheckListItem "+ checkListItemText+" updated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context,"CheckListItem "+ checkListItem.getCheckListItemText()+" updated", Toast.LENGTH_SHORT).show();
 
 
         return 0;

@@ -33,15 +33,16 @@
         <activity
             android:name=".activities.TutorialActivity"
             android:label="Tutorial" >
+
+        </activity>
+        <activity
+            android:name=".activities.LandingActivity"
+            android:label="@string/LandingActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.LandingActivity"
-            android:label="@string/LandingActivity" >
         </activity>
         <activity
             android:name=".activities.AddTagActivity"

@@ -73,7 +73,7 @@ public class NoteDBHelper {
         // updating row
         database.update(NOTES_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(note.getId()) });
-        Toast.makeText(context,"Note "+ noteText+" updated", Toast.LENGTH_LONG).show();
+        Log.d( TAG,"Note updated" + noteText);
 
 
         return 0;
@@ -88,9 +88,8 @@ public class NoteDBHelper {
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
-        Log.d(TAG, values.toString());
         database.insert(NOTES_TABLE, null, values);
-        Toast.makeText(context,"Note "+ note.getNoteText()+" saved", Toast.LENGTH_LONG).show();
+        Log.d( TAG,"Note saved" + note.getNoteText());
 
     }
     private String getPrevNoteId(String tableName) {
@@ -111,9 +110,14 @@ public class NoteDBHelper {
         note.setCreatedTime(cursor.getString(3));
                 if (!cursor.isNull(4)){
             note.setTag(cursor.getInt(4));
-        }
+        }else{
+                    note.setTag(null);
+                }
         if (!cursor.isNull(5)) {
             note.setRemainderId(cursor.getInt(5));
+        }
+        else{
+            note.setRemainderId(null);
         }
         return note;
 
@@ -132,6 +136,21 @@ public class NoteDBHelper {
 
     public Cursor fetchAllUnArchivedNotesInTag(Tag tag) {
         return database.query(NOTES_TABLE, null, DBHelper.NOTE_TAG +  "= ? AND "+DBHelper.NOTE_IS_ARCHIVED + " = 0" , new String[] { String.valueOf(tag.getTagId()) }, null, null, null);
+
+
+    }
+
+    public void archiveNote(Note note) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(DBHelper.NOTE_IS_ARCHIVED,true);
+
+        // updating row
+        database.update(NOTES_TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[] { String.valueOf(note.getId()) });
+        Log.d( TAG,"Note archived" + note.getNoteText());
+
 
 
     }

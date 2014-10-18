@@ -74,7 +74,7 @@ public class HabitDBHelper {
         // updating row
         database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(habit.getId()) });
-        Toast.makeText(context,"Habit "+ habitText+" updated", Toast.LENGTH_LONG).show();
+        Log.d( TAG,"Habit updated" + habitText);
 
 
         return 0;
@@ -91,7 +91,7 @@ public class HabitDBHelper {
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(TABLE, null, values);
-        Toast.makeText(context,"Habit "+ habit.getHabitText()+" saved", Toast.LENGTH_LONG).show();
+        Log.d( TAG,"Habit saved" + habit.getHabitText());
 
     }
     private String getPrevHabitId(String tableName) {
@@ -168,6 +168,17 @@ public class HabitDBHelper {
 
     public Cursor fetchAllUnArchivedHabitsInTag(Tag tag) {
         return database.query(TABLE, null, DBHelper.HABIT_TAG +  "= ? AND "+DBHelper.HABIT_IS_ARCHIVED + " = 0" , new String[] { String.valueOf(tag.getTagId()) }, null, null, null);
+
+    }
+
+    public void archiveHabit(Habit habit) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.HABIT_IS_ARCHIVED, true);
+        // updating row
+        database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[] { String.valueOf(habit.getId()) });
+        Log.d( TAG,"Habit archived" + habit.getHabitText());
 
     }
 }

@@ -74,7 +74,7 @@ public class CheckListDBHelper {
         // updating row
         database.update(CHECKLISTS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(checkList.getId()) });
-        Toast.makeText(context,"CheckList "+ checkListText+" updated", Toast.LENGTH_SHORT).show();
+        Log.d( TAG,"CheckList updated" + checkList.getCheckListText());
 
 
         return 0;
@@ -91,7 +91,8 @@ public class CheckListDBHelper {
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(CHECKLISTS_TABLE, null, values);
-        Toast.makeText(context,"CheckList "+ checkList.getCheckListText()+" saved", Toast.LENGTH_SHORT).show();
+        Log.d( TAG,"CheckList saved" + checkList.getCheckListText());
+        ;
 
     }
     private String getPrevCheckListId(String tableName) {
@@ -135,5 +136,14 @@ public class CheckListDBHelper {
 
         return database.query(CHECKLISTS_TABLE, null, DBHelper.CHECKLIST_TAG +  "= ? AND "+DBHelper.CHECKLIST_IS_ARCHIVED + " = 0" , new String[] { String.valueOf(tag.getTagId()) }, null, null, null);
 
+    }
+
+    public void archiveCheckList(CheckList checkList) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.CHECKLIST_IS_ARCHIVED, true);
+        database.update(CHECKLISTS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(checkList.getId())});
+        Log.d( TAG,"CheckList archived" + checkList.getCheckListText());
     }
 }

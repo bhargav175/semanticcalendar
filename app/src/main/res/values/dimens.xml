@@ -4,4 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="default_element_height">64dp</dimen>
     <dimen name="checklist_element_height">40dp</dimen>
+    <dimen name="material_padding">16dp</dimen>
+    <dimen name="material_actionbar_size">48dp</dimen>
+    <dimen name="material_simple_text_size">14sp</dimen>
+    <dimen name="material_heading_text_size">24sp</dimen>
 </resources>

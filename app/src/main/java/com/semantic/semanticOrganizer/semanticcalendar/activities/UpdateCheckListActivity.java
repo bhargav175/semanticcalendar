@@ -258,17 +258,28 @@ public class UpdateCheckListActivity extends Activity {
 
 
                     }else{
-                        //update checklistitem in database
-                       CheckListItem checkListItem = new CheckListItem();
-                        checkListItem.setCheckListItemText(checkListItemText.getText().toString());
-                        checkListItem.setCheckList(checkList.getId());
+                        //update checklistitem in database if it has been modified
+                       CheckListItem checkListItem = checkListItemDBHelper.getCheckListItem(checkListItemId);
+                        Integer currStateValue = null;
                         if(checkListItemCheckBox.isChecked()){
-                            checkListItem.setCheckListItemState(CheckListItem.State.DONE);
+                            currStateValue=2;
                         }else{
-                            checkListItem.setCheckListItemState(CheckListItem.State.NOT_DONE);
+                            currStateValue = 0;
                         }
 
-                        checkListItemDBHelper.updateCheckListItem(checkListItem,checkListItemText.getText().toString(), CheckListItem.State.NOT_DONE);
+                        if(checkListItem.getCheckListItemText().equals(checkListItemText.getText().toString()) && checkListItem.getCheckListItemState().getStateValue() == currStateValue )
+                        {
+                                //It was not modified
+                        }else{
+                            checkListItem.setCheckListItemText(checkListItemText.getText().toString());
+                            checkListItem.setCheckList(checkList.getId());
+                            checkListItem.setCheckListItemState(CheckListItem.State.values()[currStateValue]);
+                            checkListItemDBHelper.updateCheckListItem(checkListItem);
+
+
+                        }
+
+
 
 
                     }

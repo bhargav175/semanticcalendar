@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    android:background="#fff">
+    >
 
     <RelativeLayout
         android:layout_width="40dp"
@@ -27,13 +27,15 @@
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="New Text"
+            android:text="Did you go to the gym??"
             android:id="@+id/cardText1"
             android:padding="8dp"
             android:gravity="left"
-            android:textColor="#000"
             style="@android:style/TextAppearance.Medium"
-            android:background="#fff" />
+            android:textColor="#000"
+            android:background="#fff"
+             />
+
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
@@ -45,7 +47,39 @@
             android:gravity="left"
             android:textColor="#222"
             android:background="#fff"
-            style="@android:style/TextAppearance.Small" />
+            style="@android:style/TextAppearance.Small"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/cardText2"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yeah"
+                android:id="@+id/done"
+                android:layout_weight="0.5"
+                android:background="#42bd41"
+                android:textColor="#fff"
+                android:layout_margin="5dp"
+                android:textSize="@dimen/material_simple_text_size" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:id="@+id/cancel"
+                android:layout_weight="0.5"
+                android:background="#c41411"
+                android:layout_margin="5dp"
+                android:textSize="@dimen/material_simple_text_size" />
+        </LinearLayout>
+
     </RelativeLayout>
 
 

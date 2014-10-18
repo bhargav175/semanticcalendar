@@ -130,13 +130,13 @@ public class UpdateHabitActivity extends Activity {
 
         //7 Booleans
 
-        sun = new Boolean(false);
-        mon = new Boolean(false);
-        tue = new Boolean(false);
-        wed = new Boolean(false);
-        thu = new Boolean(false);
-        fri = new Boolean(false);
-        sat = new Boolean(false);
+        sun = false;
+        mon = false;
+        tue = false;
+        wed = false;
+        thu = false;
+        fri = false;
+        sat = false;
 
 
         //8 Buttons

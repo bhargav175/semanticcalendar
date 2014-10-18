@@ -195,4 +195,15 @@ public class Note {
         noteDBHelper.close();
         return noteList;
     }
+
+    public static void archiveAllNotesInTag(Tag tag, Context context) {
+        List<Note> noteList = getAllUnArchivedNotesInTag(tag,context);
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+
+        for(Note note:noteList){
+            noteDBHelper.archiveNote(note);
+        }
+        noteDBHelper.close();
+    }
 }

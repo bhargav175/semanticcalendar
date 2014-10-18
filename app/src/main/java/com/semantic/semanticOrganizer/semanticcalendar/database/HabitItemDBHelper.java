@@ -13,6 +13,9 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 import com.semantic.semanticOrganizer.semanticcalendar.models.HabitItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Admin on 16-09-2014.
  */
@@ -57,6 +60,21 @@ public class HabitItemDBHelper {
         return habitItem;
     }
 
+    public HabitItem getHabitItemByDate(Date date, Habit habit) {
+        Cursor cursor = database.query(DBHelper.HABIT_ITEMS_TABLE,null, DBHelper.HABIT_ITEM_DATE + "= ? AND "+DBHelper.HABIT_ITEM_HABIT + " = ?",
+                new String[] { new SimpleDateFormat("yyyy-MM-dd").format(new Date()) , habit.getId().toString()}, null, null, null, null);
+        HabitItem habitItem = null;
+        if ( cursor.moveToNext())
+        {
+
+            habitItem =cursorToHabitItem(cursor);
+
+        }
+
+        // return contact
+        return habitItem;
+    }
+
 
 
     public int updateHabitItem(Habit habit, String habitText ,Integer habitTag) {
@@ -71,7 +89,7 @@ public class HabitItemDBHelper {
         // updating row
         database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(habit.getId()) });
-        Toast.makeText(context,"Habit "+ habitText+" updated", Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"Habit "+ habitText+" updated", Toast.LENGTH_SHORT).show();
 
 
         return 0;
@@ -83,12 +101,13 @@ public class HabitItemDBHelper {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitItemId(TABLE)) + 1)));
         values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
-
+        values.put( DBHelper.HABIT_ITEM_DATE,
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(TABLE, null, values);
-        Toast.makeText(context,"Habit "+ habit.getHabitText()+" saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"Habit "+ habit.getHabitText()+" saved", Toast.LENGTH_SHORT).show();
 
     }
     private String getPrevHabitItemId(String tableName) {

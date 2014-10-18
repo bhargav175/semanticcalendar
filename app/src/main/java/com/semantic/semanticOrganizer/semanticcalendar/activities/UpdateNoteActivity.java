@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,11 +65,13 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     private AdapterView.OnItemSelectedListener timeItemSelectedListener;
 
 
+    private Note noteCurrent;
     private Button addReminderButton, close;
     private LinearLayout remainderContainer;
     private Boolean hadReminder, hasReminder;
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
+    public static final String ACTIVITY_TAG = "UpdateNoteActivity";
 
 
     int day, month, year, hour, minute, second;
@@ -91,10 +94,17 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                         // "Done"
                         if (noteId != null) {
 
-                            updateNote(noteId);
+                            if (noteText.getText().toString().length() == 0) {
+                                Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_LONG).show();
 
-                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
-                            startActivity(lIntent);
+                            } else {
+
+                                updateNote(noteId);
+
+                                Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
+                                startActivity(lIntent);
+                            }
+
                         } else {
                             Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
 
@@ -132,32 +142,29 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         );
 
 
-
-
-
-
     }
 
 
     private void updateUi(Note note) {
 
-        if(note !=null){
+        if (note != null) {
 
             noteId = note.getId();
             noteText.setText(note.getNoteText());
 
             isArchived.setChecked(note.getIsArchived());
 
-           //Get Reminder
+            //Get Reminder
 
 
-            if(note.getRemainderId()!=null){
+            if (note.getRemainderId() != null) {
                 hadReminder = true;
                 requestId = note.getRemainderId();
-            }else{
+            } else {
                 hadReminder = false;
-            } ;
-                    hasReminder = hadReminder;
+            }
+            ;
+            hasReminder = hadReminder;
 
             //Update Note TAg
 
@@ -168,18 +175,18 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                     android.R.layout.simple_spinner_item, tags);
             tag.setAdapter(adapter);
 
-            Integer tagId ;
-            if(note.getTag()!=null){
+            Integer tagId;
+            if (note.getTag() != null) {
                 tagId = note.getTag();
-                for(Tag tagD : tags){
-                    if(tagD.getTagId() == tagId){
+                for (Tag tagD : tags) {
+                    if (tagD.getTagId() == tagId) {
                         Integer pos = tags.indexOf(tagD);
                         tag.setSelection(pos);
                         break;
                     }
                 }
-            }else{
-                tag.setSelection(tags.size()-1);
+            } else {
+                tag.setSelection(tags.size() - 1);
             }
 
 
@@ -188,12 +195,11 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         }
 
 
-
     }
 
 
     private void initUi() {
-    noteText = (EditText) findViewById(R.id.noteText);
+        noteText = (EditText) findViewById(R.id.noteText);
         addReminderButton = (Button) findViewById(R.id.addReminder);
         remainderContainer = (LinearLayout) findViewById(R.id.remainderContainer);
         noteDBHelper = new NoteDBHelper(this);
@@ -203,7 +209,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         isArchived = (CheckBox) findViewById(R.id.isArchived);
         tag = (Spinner) findViewById(R.id.selectSpinner);
 
-        final   Calendar calendar = new GregorianCalendar();
+        final Calendar calendar = new GregorianCalendar();
 
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
@@ -213,7 +219,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         second = 0;
 
         dates.add("Today");
-        dates.add("Yesterday");
+        dates.add("Tomorrow");
         dates.add("Pick Date");
         times.add("Early Morning 5:00 AM");
         times.add("Morning 8:00 AM");
@@ -233,16 +239,15 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         configureSpinners();
 
 
-
     }
 
 
     private void setListeners() {
 
 
-
-        if(hadReminder){
-            Reminder reminder = Reminder.getReminderById(requestId,this);
+        if (hadReminder) {
+            Log.d(ACTIVITY_TAG,requestId.toString());
+            Reminder reminder = Reminder.getReminderById(requestId, this);
             year = reminder.getYear();
             month = reminder.getMonthOfYear();
             day = reminder.getDayOfMonth();
@@ -251,16 +256,16 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
             second = reminder.getSecond();
             Calendar calendar = new GregorianCalendar();
 
-            calendar.set(Calendar.YEAR,year);
-            calendar.set(Calendar.MONTH,month);
-            calendar.set(Calendar.DAY_OF_MONTH,day);
-            calendar.set(Calendar.HOUR_OF_DAY,hour);
-            calendar.set(Calendar.MINUTE,minute);
-            calendar.set(Calendar.SECOND,0);
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
             hadMilliSeconds = calendar.getTimeInMillis();
 
             yesReminderUI();
-           showReminder();
+            showReminder();
 
             dateSpinner.post(new Runnable() {
                 @Override
@@ -279,20 +284,15 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
             });
 
 
-
-        }
-        else{
+        } else {
             noReminderUI();
         }
-
-
-
 
 
     }
 
 
-    private void configureSpinners(){
+    private void configureSpinners() {
 
         final ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, dates) {
@@ -308,15 +308,8 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (dates.get(i).equals("Pick Date")) {
-
-
-                            TextView dv = (TextView) dateSpinner.findViewById(android.R.id.text1);
-                            dv.setText(day + "-" + month + "-" + year);
-
-
-
-
-
+                    TextView dv = (TextView) dateSpinner.findViewById(android.R.id.text1);
+                    dv.setText(day + "-" + month + "-" + year);
                     datePickerDialog.setYearRange(1985, 2028);
                     datePickerDialog.setCloseOnSingleTapDay(false);
                     datePickerDialog.show(UpdateNoteActivity.this.getSupportFragmentManager(), DATEPICKER_TAG);
@@ -330,8 +323,19 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                             dv.setText(day + "-" + month + "-" + year);
                         }
                     });
+                }else if(dates.get(i).equals("Today")){
+                    Calendar calendar = new GregorianCalendar();
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day= calendar.get(Calendar.DAY_OF_MONTH);
+                }else if(dates.get(i).equals("Tomorrow")){
+                    Calendar calendar = new GregorianCalendar();
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day= calendar.get(Calendar.DAY_OF_MONTH) + 1;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -342,12 +346,10 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-               if (times.get(i).equals("Pick Time")) {
+                if (times.get(i).equals("Pick Time")) {
 
-                            TextView tv = (TextView) timeSpinner.findViewById(android.R.id.text1);
-                            tv.setText(hour + "::" + minute);
-
-
+                    TextView tv = (TextView) timeSpinner.findViewById(android.R.id.text1);
+                    tv.setText(hour + "::" + minute);
 
 
                     timePickerDialog.setCloseOnSingleTapMinute(false);
@@ -360,9 +362,25 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                             minute = m;
                             tv.setText(hour + "::" + minute);
                         }
-                    },hour,minute,false,false);
+                    }, hour, minute, false, false);
 
+                }else if(times.get(i).equals("Early Morning 5:00 AM")){
+                    hour = 5;
+                    minute = 0;
+
+                }else if(times.get(i).equals("Morning 8:00 AM")){
+                    hour = 8;
+                    minute = 0;
                 }
+                else if(times.get(i).equals("Afternoon 12:00 PM")){
+                    hour = 12;
+                    minute = 0;
+                }
+                 else if(times.get(i).equals("Evening 6:00 PM")){
+                    hour = 18;
+                    minute = 0;
+                }
+
             }
 
             @Override
@@ -373,7 +391,8 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
     }
-    private void configureDialogs(){
+
+    private void configureDialogs() {
 
         datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -393,7 +412,6 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
         addReminderButton.setOnClickListener(new View.OnClickListener() {
-
 
 
             @Override
@@ -435,44 +453,45 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         add_reminder.setVisibility(View.VISIBLE);
 
     }
+
     private void hideReminder() {
         add_reminder.setVisibility(View.GONE);
         addReminderButton.setVisibility(View.VISIBLE);
 
     }
 
-    private void updateReminder(Integer requestId, int year , int month, int day, int hour,int minute){
-            Intent intent = new Intent(this, MyBroadcastReceiver.class);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            if (alarmManager!= null) {
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    Reminder reminder = new Reminder(year,month,day,hour,minute,second,0,0,false);
-                    reminder.setId(requestId);
-                    reminderDBHelper.updateReminder(reminder);
-                    Calendar calendar = new GregorianCalendar();
-                    calendar.set(year,month,day,hour,minute,0);
-                Date currentLocalTime = calendar.getTime();
-                DateFormat date = new SimpleDateFormat("dd-MM-yyy HH:mm:ss z");
-                date.setTimeZone(TimeZone.getTimeZone("GMT"));
-                String localTime = date.format(currentLocalTime);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                    Toast.makeText(this, "Alarm created " + localTime + " seconds",
-                            Toast.LENGTH_SHORT).show();
-
-            }
-    }
-
-    private void saveReminder(Integer requestId, int year , int month, int day, int hour,int minute){
+    private void updateReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager!= null) {
+        if (alarmManager != null) {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Reminder reminder = new Reminder(year,month,day,hour,minute,second,0,0,false);
+            Reminder reminder = new Reminder(year, month, day, hour, minute, second, 0, 0, false);
+            reminder.setId(requestId);
+            reminderDBHelper.updateReminder(reminder);
+            Calendar calendar = new GregorianCalendar();
+            calendar.set(year, month, day, hour, minute, 0);
+            Date currentLocalTime = calendar.getTime();
+            DateFormat date = new SimpleDateFormat("dd-MM-yyy HH:mm:ss z");
+            date.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String localTime = date.format(currentLocalTime);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            Toast.makeText(this, "Alarm created " + localTime + " seconds",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private void saveReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (alarmManager != null) {
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Reminder reminder = new Reminder(year, month, day, hour, minute, second, 0, 0, false);
             reminder.setId(requestId);
 
             reminderDBHelper.saveReminder(reminder);
             Calendar calendar = new GregorianCalendar();
-            calendar.set(year,month,day,hour,minute,0);
+            calendar.set(year, month, day, hour, minute, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
             Toast.makeText(this, "Alarm created " + calendar.getTime().toString() + " seconds",
                     Toast.LENGTH_SHORT).show();
@@ -481,25 +500,25 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     }
 
 
-private void deleteReminder(int requestId){
-    Intent intent = new Intent(this, MyBroadcastReceiver.class);
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_NO_CREATE);
-    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    private void deleteReminder(int requestId) {
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_NO_CREATE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-    if (alarmManager!= null) {
-        if(pendingIntent!=null){
-            alarmManager.cancel(pendingIntent);
-            Toast.makeText(this, "Alarm cancelled ",
-                    Toast.LENGTH_SHORT).show();
+        if (alarmManager != null) {
+            if (pendingIntent != null) {
+                alarmManager.cancel(pendingIntent);
+                Toast.makeText(this, "Alarm cancelled ",
+                        Toast.LENGTH_SHORT).show();
 
-        }else{
-            Toast.makeText(this, "Alarm does not exist ",
-                    Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Alarm does not exist ",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+
 
         }
-
-
-    }
     }
 
 
@@ -507,81 +526,61 @@ private void deleteReminder(int requestId){
         String noteTextString = noteText.getText().toString();
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
-        Note note = noteDBHelper.getNote(noteId);
         Tag noteTag = (Tag) tag.getSelectedItem();
-        if(requestId!=null){
-            Toast.makeText(this, "Note already has reminder", Toast.LENGTH_LONG).show();
-
-
-        }else{
-            requestId = Reminder.getNextReminderId(this);
-            Toast.makeText(this, "Note has no reminder", Toast.LENGTH_LONG).show();
-
+        if(hasReminder){
+            if (requestId != null) {
+                Toast.makeText(this, "Note already has reminder", Toast.LENGTH_LONG).show();
+            } else {
+                requestId = Reminder.getNextReminderId(this);
+                Toast.makeText(this, "Note has no reminder", Toast.LENGTH_LONG).show();
+            }
         }
-        Toast.makeText(this, requestId.toString() + hasReminder.toString() + "-"+year+ "-"+month+ "-"+day+ "-"+hour+ "-"+minute, Toast.LENGTH_SHORT).show();
-        if(hadReminder){
-            if(hasReminder){
 
+        if(requestId!=null){
+            Toast.makeText(this, requestId.toString() + hasReminder.toString() + "-" + year + "-" + month + "-" + day + "-" + hour + "-" + minute, Toast.LENGTH_SHORT).show();
+        }
 
+        if (hadReminder) {
+            if (hasReminder) {
                 Calendar calendar = new GregorianCalendar();
-                    calendar.set(Calendar.YEAR,year);
-                    calendar.set(Calendar.MONTH,month);
-                    calendar.set(Calendar.DAY_OF_MONTH,day);
-                    calendar.set(Calendar.HOUR_OF_DAY,hour);
-                    calendar.set(Calendar.MINUTE,minute);
-                    calendar.set(Calendar.SECOND,0);
-                    hasMIlliSeconds = calendar.getTimeInMillis();
-
-
-                if(hasMIlliSeconds == hadMilliSeconds){
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                calendar.set(Calendar.SECOND, 0);
+                hasMIlliSeconds = calendar.getTimeInMillis();
+                if (hasMIlliSeconds == hadMilliSeconds) {
                     //do nothing
-                }else{
+                } else {
                     //update
-                    updateReminder(requestId, year, month , day, hour ,minute);
-
+                    updateReminder(requestId, year, month, day, hour, minute);
                 }
-
-            }else{
+            } else {
                 //delete current reminder
                 deleteReminder(requestId);
-
-            }
-
-        }else{
-            if(hasReminder){
-                //add reminder
-                saveReminder(requestId, year, month, day, hour, second);
-
-
-            }else{
-                //do nothing
-            }
-        }
-
-
-
-
-
-
-
-
-
-        if (note != null) {
-            if (noteTextString.length() == 0) {
-                Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_LONG).show();
-            } else {
-                noteDBHelper.updateNote(note, noteTextString,isArchived.isChecked(), noteTag.getTagId(),requestId);
-                noteDBHelper.close();
-                Intent intent = new Intent(this, LandingActivity.class);
-                startActivity(intent);
             }
 
         } else {
-            noteDBHelper.close();
-            Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show();
-
-
+            if (hasReminder) {
+                //add reminder
+                saveReminder(requestId, year, month, day, hour, second);
+            } else {
+                //do nothing
+            }
         }
+        if (noteCurrent != null) {
+
+            noteDBHelper.updateNote(noteCurrent, noteTextString, isArchived.isChecked(), noteTag.getTagId(), requestId);
+            noteDBHelper.close();
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+
+        } else {
+
+            Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show();
+        }
+        noteDBHelper.close();
 
 
     }
@@ -620,18 +619,19 @@ private void deleteReminder(int requestId){
     }
 
 
-    private class GetNote extends AsyncTask<String, Void,Note> {
+    private class GetNote extends AsyncTask<String, Void, Note> {
 
         private int id;
-        public GetNote(int id){
+
+        public GetNote(int id) {
             this.id = id;
         }
 
         @Override
         protected Note doInBackground(String... params) {
-            Note note = new Note();
-            note = Note.getNote(id,getApplicationContext());
-            return note;
+
+            noteCurrent = Note.getNote(id, getApplicationContext());
+            return noteCurrent;
         }
 
         @Override
@@ -640,15 +640,14 @@ private void deleteReminder(int requestId){
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if(note!=null){
+                    if (noteCurrent != null) {
                         initUi();
 
-                        updateUi(note);
+                        updateUi(noteCurrent);
 
                         setListeners();
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(),"failed",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -656,12 +655,13 @@ private void deleteReminder(int requestId){
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
-        protected void onProgressUpdate(Void... values) {}
+        protected void onProgressUpdate(Void... values) {
+        }
     }
-
 
 
 }

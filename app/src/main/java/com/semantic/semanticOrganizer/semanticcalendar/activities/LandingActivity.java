@@ -49,6 +49,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.utils.MyBroadcastReceiver
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -64,7 +65,8 @@ public class LandingActivity extends Activity {
     private List<OrganizerItem> mOrganizerItemList;
     private ActionMode mActionMode;
     private RelativeLayout parentLayout;
-
+    private HashMap<ListView, ArrayAdapter<OrganizerItem>> LISTVIEWADAPTERS;
+    private HashMap<Integer, ListView> TAGLISTS;
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
@@ -165,9 +167,11 @@ public class LandingActivity extends Activity {
 
             mOrganizerItemList = new ArrayList<OrganizerItem>();
 
+                LISTVIEWADAPTERS = new HashMap<ListView, ArrayAdapter<OrganizerItem>>();
+                TAGLISTS = new HashMap<Integer, ListView>();
             for(final Tag tag : tagList){
-                View view =layoutInflater.inflate(R.layout.list_layout, horizontalLayout, false);
-                TextView tagTitle = (TextView) view.findViewById(R.id.heading);
+                final View tagLister =layoutInflater.inflate(R.layout.list_layout, horizontalLayout, false);
+                TextView tagTitle = (TextView) tagLister.findViewById(R.id.heading);
                 tagTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -205,18 +209,39 @@ public class LandingActivity extends Activity {
                                         break;
                                     case 1:
                                         str = "Archive Items";
+                                        Tag.archiveAllTagItems(tag,getApplicationContext());
+                                        Toast.makeText(getApplicationContext(),"Archived",Toast.LENGTH_SHORT).show();
+
+                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ListView lView = TAGLISTS.get(tag.getTagId());
+                                                ArrayAdapter<OrganizerItem> ad = LISTVIEWADAPTERS.get(lView);
+                                                ad.clear();
+                                                ad.notifyDataSetChanged();
+                                            }
+                                        });
+
 
                                         break;
                                     case 2:
                                         str = "Archive Tag";
-                                        Tag.archiveTag(tag,getApplicationContext());
-                                        Intent intent2 = new Intent(LandingActivity.this, LandingActivity.class);
-                                        startActivity(intent2);
+                                        Tag.archiveTag(tag, getApplicationContext());
+
+                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                horizontalLayout.removeView(tagLister);
+                                                horizontalLayout.invalidate();
+                                            }
+                                        });
+
                                         break;
                                     default:
                                         str = "Error";
                                         break;
                                 }
+
                             }
                         });
                         lv.setAdapter(adapter);
@@ -226,7 +251,7 @@ public class LandingActivity extends Activity {
                     }
                 });
                 tagTitle.setText(tag.getTagText());
-                ListView lv = (ListView) view.findViewById(R.id.listView);
+                ListView lv = (ListView) tagLister.findViewById(R.id.listView);
 
 //                final List<Note> noteList = Note.getAllNotesInTag(tag, this);
 //                mNoteList.addAll(noteList);
@@ -248,30 +273,42 @@ public class LandingActivity extends Activity {
                         R.layout.card_simple_note,R.id.cardText1, organizerItems){
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
-                        View view = super.getView(position, convertView, parent);
-                        TextView cardText1 = (TextView) view.findViewById(R.id.cardText1);
-                        TextView cardText2 = (TextView) view.findViewById(R.id.cardText2);
-                        cardText1.setText(organizerItems.get(position).getItemText());
-                        cardText2.setText(organizerItems.get(position).getCreatedTime());
-                        ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-                        if(organizerItems.get(position).getType().equals("NOTE")){
-                            imageView.setImageResource(R.drawable.ic_action_new);
-
-                        }else if(organizerItems.get(position).getType().equals("HABIT")){
-                            imageView.setImageResource(R.drawable.ic_action_time);
-
-                        }else if(organizerItems.get(position).getType().equals("CHECKLIST")){
-                            imageView.setImageResource(R.drawable.abc_ic_go);
-
-                        }else{
-                            imageView.setImageResource(R.drawable.ic_action_play);
-                        }
 
 
-                        return view;
+
+                            View view = super.getView(position, convertView, parent);
+                            TextView cardText1 = (TextView) view.findViewById(R.id.cardText1);
+                            TextView cardText2 = (TextView) view.findViewById(R.id.cardText2);
+                            cardText1.setText(organizerItems.get(position).getItemText());
+                            cardText2.setText(organizerItems.get(position).getCreatedTime());
+                            ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                            if(organizerItems.get(position).getType().equals("NOTE")){
+                                imageView.setImageResource(R.drawable.ic_action_new);
+
+                            }else if(organizerItems.get(position).getType().equals("HABIT")){
+                                imageView.setImageResource(R.drawable.ic_action_time);
+
+                            }else if(organizerItems.get(position).getType().equals("CHECKLIST")){
+                                imageView.setImageResource(R.drawable.abc_ic_go);
+
+                            }else{
+                                imageView.setImageResource(R.drawable.ic_action_play);
+                            }
+
+                            return view;
+
+
+
+
+
+
+
                     }
 
                 };
+                TAGLISTS.put(tag.getTagId(),lv);
+                LISTVIEWADAPTERS.put(lv,adapter);
+
 
 
 
@@ -321,7 +358,7 @@ public class LandingActivity extends Activity {
 
 
 
-                    horizontalLayout.addView(view,1);
+                    horizontalLayout.addView(tagLister,1);
 
                 }
             }
@@ -389,11 +426,34 @@ public class LandingActivity extends Activity {
                    R.layout.card_simple_note,R.id.cardText1,organizerItems ){
                @Override
                public View getView(int position, View convertView, ViewGroup parent) {
-                   View view = super.getView(position, convertView, parent);
-                   TextView cardText1 = (TextView) view.findViewById(R.id.cardText1);
-                   cardText1.setText(organizerItems.get(position).getItemText());
-                   return view;
+
+                       View view = super.getView(position, convertView, parent);
+                       TextView cardText1 = (TextView) view.findViewById(R.id.cardText1);
+                       TextView cardText2 = (TextView) view.findViewById(R.id.cardText2);
+                       cardText1.setText(organizerItems.get(position).getItemText());
+                       cardText2.setText(organizerItems.get(position).getCreatedTime());
+                       ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                       if(organizerItems.get(position).getType().equals("NOTE")){
+                           imageView.setImageResource(R.drawable.ic_action_new);
+
+                       }else if(organizerItems.get(position).getType().equals("HABIT")){
+                           imageView.setImageResource(R.drawable.ic_action_time);
+
+                       }else if(organizerItems.get(position).getType().equals("CHECKLIST")){
+                           imageView.setImageResource(R.drawable.abc_ic_go);
+
+                       }else{
+                           imageView.setImageResource(R.drawable.ic_action_play);
+                       }
+
+                       return view;
+
+
+
+
+
                }
+
 
            };
            ListView list = (ListView) findViewById(R.id.sandboxCards);

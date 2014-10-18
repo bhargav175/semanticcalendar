@@ -9,7 +9,7 @@ import android.util.Log;
  * Created by Admin on 15-09-2014.
  */
 public class DBHelper extends SQLiteOpenHelper {
-    public static final String TAG="Data-base";
+    public static final String TAG="Semantic Tables";
 
 
 //Common Columns
@@ -96,7 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 20;
 
 
 
@@ -163,7 +163,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_HABIT_ITEMS = "create table if not exists "
             + HABIT_ITEMS_TABLE + "("
             + COLUMN_ID+ " integer primary key autoincrement, "
-            + HABIT_ITEM_DATE + " DATETIME, "
+            + HABIT_ITEM_DATE + " DATETIME DEFAULT (DATETIME(current_date, 'localtime')), "
             + HABIT_ITEM_STATE+ " integer DEFAULT 0 , "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + HABIT_ITEM_HABIT+ " integer not null"

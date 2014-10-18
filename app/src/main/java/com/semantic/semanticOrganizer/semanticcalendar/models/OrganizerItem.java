@@ -2,6 +2,8 @@ package com.semantic.semanticOrganizer.semanticcalendar.models;
 
 import android.content.Context;
 
+import com.semantic.semanticOrganizer.semanticcalendar.database.HabitItemDBHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,16 @@ public class OrganizerItem {
     }
     private String type;
     private String itemText;
+
+    public String getSecondaryText() {
+        return secondaryText;
+    }
+
+    public void setSecondaryText(String secondaryText) {
+        this.secondaryText = secondaryText;
+    }
+
+    private String secondaryText;
     private String createdTime;
     private Integer id;
 
@@ -53,7 +65,7 @@ public class OrganizerItem {
             List<CheckList> checkListList = CheckList.getAllCheckListsInTag(tag, context);
             List<Habit> habitList = Habit.getAllHabitsInTag(tag, context);
             organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(habitList,context));
             organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
             return organizerItems;
         }
@@ -72,7 +84,7 @@ public class OrganizerItem {
             List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsInTag(tag, context);
             List<Habit> habitList = Habit.getAllUnArchivedHabitsInTag(tag, context);
             organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(habitList,context));
             organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
             return organizerItems;
         }
@@ -90,7 +102,7 @@ public class OrganizerItem {
             List<CheckList> checkListList = CheckList.getAllCheckListsSandbox(context);
             List<Habit> habitList = Habit.getAllHabitsSandbox(context);
             organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(habitList,context));
             organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
             return organizerItems;
 
@@ -105,7 +117,7 @@ public class OrganizerItem {
         List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsSandbox(context);
         List<Habit> habitList = Habit.getAllUnArchivedHabitsSandbox(context);
         organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-        organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+        organizerItems.addAll(castHabitsToOrganizerItemList(habitList,context));
         organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
         return organizerItems;
 
@@ -127,12 +139,25 @@ public class OrganizerItem {
     }
 
 
-    public static List<OrganizerItem> castHabitsToOrganizerItemList(List<Habit> habitList){
+    public static List<OrganizerItem> castHabitsToOrganizerItemList(List<Habit> habitList ,Context context){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
         for(Habit habit:habitList){
             OrganizerItem organizerItem = new OrganizerItem();
-            organizerItem.setItemText(habit.getHabitText());
+            if(habit.getHabitQuestion()!=null && habit.getHabitQuestion().length()>0){
+                organizerItem.setItemText(habit.getHabitQuestion());
+
+            }else{
+                organizerItem.setItemText(habit.getHabitText());
+
+            }
+            HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
+            habitItemDBHelper.open();
+            if(habit.getHabitItemToday(context)!=null){
+                organizerItem.setSecondaryText((String.valueOf( habit.getHabitItemToday(context).getHabitItemState().getStateValue())));
+
+            }
+            habitItemDBHelper.close();
             organizerItem.setCreatedTime(habit.getCreatedTime());
             organizerItem.setId(habit.getId());
             organizerItem.setType("HABIT");

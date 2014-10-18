@@ -2,6 +2,7 @@ package com.semantic.semanticOrganizer.semanticcalendar.models;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
 
@@ -139,6 +140,12 @@ public class Tag {
         tagDBHelper.archiveTag(tag);
         tagDBHelper.close();
 
+    }
+
+    public static void archiveAllTagItems(Tag tag, Context context){
+        Note.archiveAllNotesInTag(tag,context);
+        CheckList.archiveAllCheckListsInTag(tag,context);
+        Habit.archiveAllHabitsInTag(tag,context);
     }
 
 

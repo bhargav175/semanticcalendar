@@ -173,4 +173,14 @@ public class CheckList {
         checkListDBHelper.close();
         return checkListList;
     }
+
+    public static void archiveAllCheckListsInTag(Tag tag, Context context) {
+        List<CheckList> checkListList = getAllUnArchivedCheckListsInTag(tag,context);
+        CheckListDBHelper checkListDBHelper = new CheckListDBHelper(context);
+        checkListDBHelper.open();
+        for(CheckList checkList : checkListList){
+                checkListDBHelper.archiveCheckList(checkList);
+        }
+        checkListDBHelper.close();
+    }
 }

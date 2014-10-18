@@ -4,9 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.database.HabitItemDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ public class Habit {
 
 
 
-    private int id;
+    private Integer id;
 
     public String getHabitText() {
         return habitText;
@@ -79,6 +81,18 @@ public class Habit {
     private Integer duration;
     private Integer daysCode;
 
+    public HabitItem getHabitItemToday(Context context) {
+        if(this.getId()!=null){
+            HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
+            habitItemDBHelper.open();
+            HabitItem habitItem = habitItemDBHelper.getHabitItemByDate(new Date(),this);
+            habitItemDBHelper.close();
+            return habitItem;
+        }else{
+            return null;
+        }
+
+    }
 
 
     public enum  Type{
@@ -108,11 +122,11 @@ public class Habit {
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -249,6 +263,17 @@ public static List<Habit> getAllUnArchivedHabitsSandbox(Context context) {
         return habitList;
     }
 
+
+    public static void archiveAllHabitsInTag(Tag tag, Context context) {
+        List<Habit> habitList = getAllUnArchivedHabitsInTag(tag,context);
+        HabitDBHelper habitDBHelper = new HabitDBHelper(context);
+        habitDBHelper.open();
+        for(Habit habit : habitList){
+            habitDBHelper.archiveHabit(habit);
+        }
+        habitDBHelper.close();
+
+    }
 
     public Integer getRequestId() {
         return requestId;
