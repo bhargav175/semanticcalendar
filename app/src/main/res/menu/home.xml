@@ -1,46 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-  >
-    <item
-        android:id="@+id/a_More"
-        android:icon="@drawable/abc_ic_menu_moreoverflow_normal_holo_dark"
-        app:showAsAction="always"
-        android:title="More">
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.HomeActivity" >
+    <item android:id="@+id/action_view_notes"
+        android:title="Notes"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 
-        <menu >
-
-            <item android:id="@+id/action_new_event"
-                android:icon="@drawable/ic_action_new"
-                android:title="@string/add_event_string"
-                app:showAsAction="never"
-                />
-            <item android:id="@+id/action_new_habit"
-                android:icon="@drawable/ic_action_new"
-                android:title="@string/add_habit_string"
-                app:showAsAction="never"
-                />
-
-            <item android:id="@+id/action_new_todo"
-                android:icon="@drawable/ic_action_new"
-                android:title="@string/add_todo_string"
-                app:showAsAction="never"
-                />
-            <item android:id="@+id/action_new_note"
-                android:icon="@drawable/ic_action_new"
-                android:title="@string/add_task_string"
-                app:showAsAction="never"
-                />
-            <item android:id="@+id/action_settings"
-                android:title="@string/action_settings"
-                android:orderInCategory="100"
-                app:showAsAction="never"
-                />
-
-        </menu>
-        </item>
-
-
-
-
-
+    <item android:id="@+id/action_view_habits"
+        android:title="Habits"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_view_checklists"
+        android:title="Checklists"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_view_tags"
+        android:title="Tags"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 </menu>

@@ -50,6 +50,7 @@
         <item name="strokeColor">@color/default_circle_indicator_stroke_color</item>
         <item name="strokeWidth">@dimen/default_circle_indicator_stroke_width</item>
     </style>
+
     <style name="CardViewStyle" parent="CardView.Light">
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>

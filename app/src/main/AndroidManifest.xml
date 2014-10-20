@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.semantic.semanticOrganizer.semanticcalendar" >
 
-    <uses-sdk
-        tools:node="replace" />
-
+    <uses-sdk tools:node="replace" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -29,26 +27,19 @@
             android:name=".activities.NoteListActivity"
             android:label="@string/title_list_notes" >
         </activity>
-
         <activity
             android:name=".activities.TutorialActivity"
             android:label="Tutorial" >
-
         </activity>
         <activity
             android:name=".activities.LandingActivity"
             android:label="@string/LandingActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.AddTagActivity"
             android:label="@string/title_activity_add_tag" >
         </activity>
-
         <activity
             android:name=".activities.AddNoteActivity"
             android:label="@string/title_activity_add_note" >
@@ -93,8 +84,21 @@
             android:name=".activities.UpdateTagActivity"
             android:label="@string/title_activity_update_tag" >
         </activity>
-        <receiver android:name=".utils.MyBroadcastReceiver" android:process=":remote">
+
+        <receiver
+            android:name=".utils.MyBroadcastReceiver"
+            android:process=":remote" >
         </receiver>
+
+        <activity
+            android:name=".activities.HomeActivity"
+            android:label="@string/title_activity_home" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

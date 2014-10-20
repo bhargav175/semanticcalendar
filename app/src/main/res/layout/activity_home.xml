@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:id="@+id/parentLayout"
+
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.HomeActivity"
+    android:background="#ddd"
+    android:padding="0dp">
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mainLandingLayout"
+        android:orientation="vertical"
+
+        android:padding="0dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.3"
+            android:id="@+id/noTagsLayout"
+            android:visibility="gone"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="No Tags"
+                android:id="@+id/noTagHeading"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="@color/gray_color"
+                android:textSize="32sp"
+                android:textAlignment="center"
+
+                android:padding="@dimen/material_padding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Add a tag soon"
+                android:layout_below="@id/noTagHeading"
+                android:id="@+id/noTagSubText"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="@color/gray_color"
+                android:textSize="24sp"
+                android:singleLine="false"
+                android:padding="@dimen/material_padding" />
+        </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tagContainerLayout"
+                android:visibility="visible"
+                android:orientation="vertical"
+
+                >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tagBannerContainer"
+                    android:visibility="visible">
+
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tagOrganizerMap"
+                    android:visibility="visible">
+
+
+
+
+                <ListView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textView"
+                        android:scrollbars="none"
+                        android:id="@+id/cardsListView" />
+</RelativeLayout>
+            </LinearLayout>
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/button_floating_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_action_new_light"
+            app:fab_colorNormal="@color/blue_bright"
+            app:fab_colorPressed="@color/blue_color"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
