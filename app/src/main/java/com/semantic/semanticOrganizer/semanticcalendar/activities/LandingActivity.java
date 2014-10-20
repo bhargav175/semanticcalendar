@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,9 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -27,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -35,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
+import com.semantic.semanticOrganizer.semanticcalendar.adapters.ExpandableListAdapter;
 import com.semantic.semanticOrganizer.semanticcalendar.database.CheckListDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
@@ -50,14 +56,19 @@ import com.semantic.semanticOrganizer.semanticcalendar.utils.MyBroadcastReceiver
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class LandingActivity extends Activity {
 
+
     private Button tag_btn,checklist_btn,note_btn,alarm_btn,habit_btn ,add_item;
     private EditText addItemEditText;
     private LinearLayout homeLayout, horizontalLayout;
+    private ExpandableListView expListView;;
+    private RelativeLayout mainLandingLayout;
     private NoteDBHelper noteDBHelper;
     private HabitDBHelper habitDBHelper;
     private TagDBHelper tagDBHelper;
@@ -67,6 +78,9 @@ public class LandingActivity extends Activity {
     private RelativeLayout parentLayout;
     private HashMap<ListView, ArrayAdapter<OrganizerItem>> LISTVIEWADAPTERS;
     private HashMap<Integer, ListView> TAGLISTS;
+    private List<Tag> tagsListGroup;
+    private List<OrganizerItem> organizerItemsChildren;
+    private Map<Tag, List<OrganizerItem>> organizerItemCollections;
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
@@ -160,9 +174,92 @@ public class LandingActivity extends Activity {
 
     }
 
+    public static String toCamelCase(final String init) {
+        if (init==null)
+            return null;
+
+        final StringBuilder ret = new StringBuilder(init.length());
+
+        for (final String word : init.split(" ")) {
+            if (!word.isEmpty()) {
+                ret.append(word.substring(0, 1).toUpperCase());
+                ret.append(word.substring(1).toLowerCase());
+            }
+            if (!(ret.length()==init.length()))
+                ret.append(" ");
+        }
+
+        return ret.toString();
+    }
+
+
+    private View createNewLayout(View newLayoutContainer, int currentId){
+
+
+
+        final RelativeLayout.LayoutParams newLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        newLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        newLayoutParams.addRule(RelativeLayout.BELOW, currentId);
+        newLayoutParams.setMargins(0, 0, 0, 10);
+
+        newLayoutContainer.setLayoutParams(newLayoutParams);
+
+        return newLayoutContainer;
+    }
+
+    private void setGroupIndicatorToRight() {
+        /* Get the screen width */
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+
+        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
+                - getDipsFromPixel(5));
+    }
+
+    // Convert pixel to dip
+    public int getDipsFromPixel(float pixels) {
+        // Get the screen's density scale
+        final float scale = getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (pixels * scale + 0.5f);
+}
+
+
+
     private void populateTags(final List<Tag> tagList) {
         LayoutInflater layoutInflater = (LayoutInflater)
                 this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        if(expListView!=null){
+            if(organizerItemsChildren == null){
+                organizerItemsChildren = new ArrayList<OrganizerItem>();
+            }
+            if(tagsListGroup == null ){
+                tagsListGroup = new ArrayList<Tag>();
+            }
+            if(organizerItemCollections == null){
+                organizerItemCollections = new LinkedHashMap<Tag, List<OrganizerItem>>();
+            }
+            final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
+                    this, tagsListGroup, organizerItemCollections);
+            for(int i = 0; i<tagList.size();i++) {
+                Tag tag = tagList.get(i);
+                new GetUnArchivedOrganizerItems(tag,this,expListAdapter).execute("");
+            }
+
+            expListView.setAdapter(expListAdapter);
+            setGroupIndicatorToRight();
+            expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                public boolean onChildClick(ExpandableListView parent, View v,
+                                            int groupPosition, int childPosition, long id) {
+                    final String selected = (String) expListAdapter.getChild(
+                            groupPosition, childPosition);
+                    Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+                            .show();
+                    return true;
+                }
+            });
+        }
         if(horizontalLayout!=null){
 
             mOrganizerItemList = new ArrayList<OrganizerItem>();
@@ -175,11 +272,6 @@ public class LandingActivity extends Activity {
                 tagTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
-//                        intent.putExtra(DBHelper.TASK_TITLE, tag.getTagText());
-//                        intent.putExtra(DBHelper.COLUMN_ID, tag.getTagId());
-//                        startActivity(intent);
-
                         String names[] ={"Edit Tag","Archive All Tag Items","Archive Tag"};
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LandingActivity.this);
                         LayoutInflater inflater = getLayoutInflater();
@@ -204,14 +296,12 @@ public class LandingActivity extends Activity {
                                         intent.putExtra(DBHelper.COLUMN_ID, tag.getTagId());
                                         intent.putExtra(DBHelper.TAG_DESCRIPTION, tag.getTagDescription());
                                         intent.putExtra(DBHelper.TAG_IS_ARCHIVED, tag.getIsArchived());
-                                        startActivity(intent);
-
+                                       startActivity(intent);
                                         break;
                                     case 1:
                                         str = "Archive Items";
                                         Tag.archiveAllTagItems(tag,getApplicationContext());
                                         Toast.makeText(getApplicationContext(),"Archived",Toast.LENGTH_SHORT).show();
-
                                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -221,8 +311,6 @@ public class LandingActivity extends Activity {
                                                 ad.notifyDataSetChanged();
                                             }
                                         });
-
-
                                         break;
                                     case 2:
                                         str = "Archive Tag";
@@ -235,47 +323,25 @@ public class LandingActivity extends Activity {
                                                 horizontalLayout.invalidate();
                                             }
                                         });
-
                                         break;
                                     default:
                                         str = "Error";
                                         break;
                                 }
-
                             }
                         });
                         lv.setAdapter(adapter);
                         alert.show();
-
-
                     }
                 });
                 tagTitle.setText(tag.getTagText());
                 ListView lv = (ListView) tagLister.findViewById(R.id.listView);
-
-//                final List<Note> noteList = Note.getAllNotesInTag(tag, this);
-//                mNoteList.addAll(noteList);
-//                final ArrayAdapter<Note> adapter = new ArrayAdapter<Note>(this,
-//                        R.layout.card_simple_note,R.id.cardText1, noteList){
-//                    @Override
-//                    public View getView(int position, View convertView, ViewGroup parent) {
-//                        View view = super.getView(position, convertView, parent);
-//                        TextView cardText1 = (TextView) view.findViewById(R.id.cardText1);
-//                        cardText1.setText(noteList.get(position).getNoteText());
-//                        return view;
-//                    }
-//
-//                };
-
                 final List<OrganizerItem> organizerItems = OrganizerItem.getUnArchivedOrganizerItemsWithTag(tag, this);
                 mOrganizerItemList.addAll(organizerItems);
                 final ArrayAdapter<OrganizerItem> adapter = new ArrayAdapter<OrganizerItem>(this,
                         R.layout.card_simple_note,R.id.cardText1, organizerItems){
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
-
-
-
                             View view = super.getView(position, convertView, parent);
                             TextView cardText1 = (TextView) view.findViewById(R.id.cardText1);
                             TextView cardText2 = (TextView) view.findViewById(R.id.cardText2);
@@ -294,40 +360,21 @@ public class LandingActivity extends Activity {
                             }else{
                                 imageView.setImageResource(R.drawable.ic_action_play);
                             }
-
-                            return view;
-
-
-
-
-
-
-
+                           return view;
                     }
-
                 };
                 TAGLISTS.put(tag.getTagId(),lv);
                 LISTVIEWADAPTERS.put(lv,adapter);
-
-
-
-
-
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position,
                                             long id) {
                         OrganizerItem organizerItem = (OrganizerItem) parent.getAdapter().getItem(position);
-
                         if(organizerItem.getType().equals("NOTE")){
-
                             Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
                             intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                             startActivity(intent);
-
-
-
-                        }else if(organizerItem.getType().equals("HABIT")){
+                     }else if(organizerItem.getType().equals("HABIT")){
                             Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
                             Habit habit = Habit.getHabitById(organizerItem.getId(),getApplicationContext());
                             intent.putExtra(DBHelper.HABIT_TEXT, habit.getHabitText());
@@ -346,20 +393,11 @@ public class LandingActivity extends Activity {
                             intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                             startActivity(intent);
                         }else{
-
                         }
-
-
-
                     }
                 });
                 lv.setAdapter(adapter);
-
-
-
-
                     horizontalLayout.addView(tagLister,1);
-
                 }
             }
     }
@@ -377,51 +415,34 @@ public class LandingActivity extends Activity {
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pI = PendingIntent.getBroadcast(this.getApplicationContext(), 17, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-
         if (alarmManager!= null) {
             if(pI==null) {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 17, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + i *1000, pendingIntent);
                 Toast.makeText(this, "Alarm did not exist and is now set in " + i + " seconds",
                         Toast.LENGTH_SHORT).show();
-
             }
         }
+   }
 
-
-
-
-    }
     public void cancelAlert() {
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 17, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
         if (alarmManager!= null) {
             if(pendingIntent!=null){
                 alarmManager.cancel(pendingIntent);
                 Toast.makeText(this, "Alarm cancelled ",
                         Toast.LENGTH_SHORT).show();
-
             }else{
                 Toast.makeText(this, "Alarm does not exist ",
                         Toast.LENGTH_SHORT).show();
-
             }
-
-
         }
-
-
     }
-
-    private void populateSandbox(final List<OrganizerItem> organizerItems) {
+   private void populateSandbox(final List<OrganizerItem> organizerItems) {
         if(homeLayout!=null){
-
-
            ArrayAdapter<OrganizerItem> adapter = new ArrayAdapter<OrganizerItem>(this,
                    R.layout.card_simple_note,R.id.cardText1,organizerItems ){
                @Override
@@ -447,14 +468,7 @@ public class LandingActivity extends Activity {
                        }
 
                        return view;
-
-
-
-
-
                }
-
-
            };
            ListView list = (ListView) findViewById(R.id.sandboxCards);
            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -612,6 +626,9 @@ public class LandingActivity extends Activity {
         homeLayout = (LinearLayout) findViewById(R.id.homeLayout);
         parentLayout =(RelativeLayout) findViewById(R.id.parentLayout);
         horizontalLayout = (LinearLayout) findViewById(R.id.horizontalLayout);
+        mainLandingLayout = (RelativeLayout) findViewById(R.id.mainLandingLayout);
+        expListView = (ExpandableListView) findViewById(R.id.organizedList);
+
 
     }
 
@@ -753,6 +770,54 @@ public class LandingActivity extends Activity {
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
+
+
+    private class GetUnArchivedOrganizerItems extends AsyncTask<String, Void,List<OrganizerItem>> {
+
+        private Tag tag;
+        private Context context;
+        private ExpandableListAdapter expandableListAdapter;
+
+        public GetUnArchivedOrganizerItems(Tag tag,Context context, ExpandableListAdapter expandableListAdapter){
+            this.tag = tag; this.context=context; this.expandableListAdapter = expandableListAdapter;
+        }
+
+        @Override
+        protected List<OrganizerItem> doInBackground(String... params) {
+            List<OrganizerItem> organizerItems =OrganizerItem.getUnArchivedOrganizerItemsWithTag(tag,context);
+            return organizerItems;
+        }
+
+        @Override
+        protected void onPostExecute(final List<OrganizerItem> organizerItems) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if(organizerItems!=null){
+
+                       organizerItemsChildren.addAll(organizerItems);
+                       tagsListGroup.add(tag);
+                       organizerItemCollections.put(tag,organizerItems);
+                        expandableListAdapter.notifyDataSetChanged();
+
+                    }
+                    else{
+
+                    }
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+
 
 
 

@@ -18,5 +18,11 @@
     <color name="primary_color">#536dfe</color>
     <color name="dark_primary_color">#3f51b5</color>
     <color name="indigo_color">#3f51b5</color>
+    <color name="light_blue_500">#03a9f4</color>
+    <color name="blue_color">#34a7ff</color>
+    <color name="gray_color">#808080</color>
+    <color name="light_gray_color">#f2f2f2</color>
+    <color name="light_black">#333</color>
+    <color name="red_color">#ff5177</color>
 
 </resources>

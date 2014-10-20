@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,9 @@
     android:focusableInTouchMode="true"
     android:id="@+id/parentLayout"
 
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity">
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity"
+    android:background="#ddd"
+    android:padding="0dp">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -95,7 +98,7 @@
 
         <Button
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:text="Add"
             android:padding="@dimen/material_padding"
 
@@ -107,6 +110,8 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:id="@+id/someLayout"
+
         android:layout_below="@+id/relativeLayout"
         android:visibility="gone">
 
@@ -162,36 +167,37 @@
         </HorizontalScrollView>
 
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
-            android:layout_gravity="center"
+
+
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp">
+            android:layout_height="match_parent"
+            android:id="@+id/mainLandingLayout"
+            android:layout_below="@+id/someLayout"
 
-            <TextView
-                android:id="@+id/info_text"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:text="asdfasdfasdf"
-                android:padding="@dimen/material_padding" />
-        </android.support.v7.widget.CardView>
+            android:padding="0dp">
+
+            <ExpandableListView
+                android:id="@+id/organizedList"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:padding="0dp"
+                android:background="@color/light_gray_color">
+            </ExpandableListView>
+
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/button_floating_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_action_new"
+                app:fab_colorNormal="@android:color/holo_red_dark"
+                app:fab_colorPressed="@android:color/holo_red_light"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true" />
 
         </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <!-- A RecyclerView with some commonly used attributes -->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/my_recycler_view"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        </RelativeLayout>
 
 </RelativeLayout>
