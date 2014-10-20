@@ -81,11 +81,19 @@ public class HomeActivity extends Activity {
     private void addTagBanner(){
         final LayoutInflater layoutInflater = (LayoutInflater)
                 this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        final View tagBanner =layoutInflater.inflate(R.layout.tag_banner, tagOrganizerMapView, false);
-        tagBannerContainer.addView(tagBanner);
+        cardsListView = (ListView) findViewById(R.id.cardsListView);
+
+        final View tagBanner =layoutInflater.inflate(R.layout.tag_banner, null);
+
+        //tagBannerContainer.addView(tagBanner);
         tagSelector = (Spinner) tagBanner.findViewById(R.id.spinner);
+        cardsListView.addHeaderView(tagBanner);
+
         int lastAddedTAg = 0;
         Tag lastAddedTagObject = tags.get(getLastAddedTagIndex());
+        final Typeface font = Typeface.createFromAsset(
+                getApplicationContext().getAssets(),
+                "fonts/RobotoCondensed-Light.ttf");
         tags.add(new Tag("Untagged"));
         ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
                 android.R.layout.simple_spinner_item, tags);
@@ -93,26 +101,39 @@ public class HomeActivity extends Activity {
         tagDescription = (TextView) tagBanner.findViewById(R.id.description);
         tagSecondaryText = (TextView) tagBanner.findViewById(R.id.secondary_text);
         editTagImageView = (ImageView) tagBanner.findViewById(R.id.edit);
-        cardsListView = (ListView) findViewById(R.id.cardsListView);
+        final List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        final ArrayAdapter<OrganizerItem> listAdapter = new ArrayAdapter<OrganizerItem>(getApplicationContext(),
+                R.layout.card_organizer_item,R.id.info_text, organizerItems){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView cardText1 = (TextView) view.findViewById(R.id.info_text);
+                TextView cardText2 = (TextView) view.findViewById(R.id.secondary_text);
+                cardText1.setText(organizerItems.get(position).getItemText());
+                cardText2.setText(organizerItems.get(position).getCreatedTime());
+                cardText1.setTypeface(font);
+                cardText2.setTypeface(font);
+               return view;
+            }
+        };
+
+        cardsListView.setAdapter(listAdapter);
         tagSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 final Tag currentTag = tags.get(i);
                 tagDescription.setText(currentTag.getTagText());
                 tagSecondaryText.setText(currentTag.getTagText());
-                final Typeface font = Typeface.createFromAsset(
-                        getApplicationContext().getAssets(),
-                        "fonts/RobotoCondensed-Light.ttf");
+
                 tagDescription.setTypeface(font);
                 tagSecondaryText.setTypeface(font);
                 final List<OrganizerItem> organizerItems;
-                if(i == tags.size()-1){
+                if (i == tags.size() - 1) {
                     //Sandbox
                     editTagImageView.setVisibility(View.GONE);
                     organizerItems = tagOrganizerMap.get(new Tag("Untagged"));
 
-                }
-                else{
+                } else {
                     //Normal tag
                     editTagImageView.setVisibility(View.VISIBLE);
                     editTagImageView.setOnClickListener(new View.OnClickListener() {
@@ -126,64 +147,13 @@ public class HomeActivity extends Activity {
                             startActivity(intent);
                         }
                     });
-
                     organizerItems = tagOrganizerMap.get(currentTag);
-
                 }
+                listAdapter.clear();
+                listAdapter.addAll(organizerItems);
+                listAdapter.notifyDataSetChanged();
 
-//                final ArrayAdapter<OrganizerItem> adapter = new ArrayAdapter<OrganizerItem>(getApplicationContext(),
-//                        R.layout.card_organizer_item,R.id.info_text, organizerItems){
-//                    @Override
-//                    public View getView(int position, View convertView, ViewGroup parent) {
-//                        View view = super.getView(position, convertView, parent);
-//                        TextView cardText1 = (TextView) view.findViewById(R.id.info_text);
-//                        TextView cardText2 = (TextView) view.findViewById(R.id.secondary_text);
-//                        cardText1.setText(organizerItems.get(position).getItemText());
-//                        cardText2.setText(organizerItems.get(position).getCreatedTime());
-//                        cardText1.setTypeface(font);
-//                        cardText2.setTypeface(font);
-//
-////                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_top);
-////                            view.startAnimation(animation);
-//                        return view;
-//                    }
-//                };
-
-                final ArrayAdapter<OrganizerItem> adapter = new ArrayAdapter<OrganizerItem>(getApplicationContext(),
-                        R.layout.card_organizer_item,R.id.info_text, organizerItems){
-                    @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
-                        View view = super.getView(position, convertView, parent);
-                        TextView cardText1 = (TextView) view.findViewById(R.id.info_text);
-                        TextView cardText2 = (TextView) view.findViewById(R.id.secondary_text);
-                        cardText1.setText(organizerItems.get(position).getItemText());
-                        cardText2.setText(organizerItems.get(position).getCreatedTime());
-                        cardText1.setTypeface(font);
-                        cardText2.setTypeface(font);
-
-                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_top);
-                            view.startAnimation(animation);
-                        return view;
-                    }
-                };
-
-                cardsListView.addHeaderView(tagBanner);
-                cardsListView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-//                for(OrganizerItem organizerItem : organizerItems){
-//                    final View organizerCard =layoutInflater.inflate(R.layout.card_organizer_item, cardsLayout, false);
-//                    cardsLayout.addView(organizerCard);
-//                    TextView infoText = (TextView)  organizerCard.findViewById(R.id.info_text);
-//                    TextView secondaryText = (TextView)  organizerCard.findViewById(R.id.secondary_text);
-//                    infoText.setText(organizerItem.getItemText());
-//                    secondaryText.setText(organizerItem.getCreatedTime());
-//                    infoText.setTypeface(font);
-//                    secondaryText.setTypeface(font);
-//
-//                }
             }
-
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
