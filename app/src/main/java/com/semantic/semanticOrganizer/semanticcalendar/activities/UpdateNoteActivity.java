@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -95,18 +94,16 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                         if (noteId != null) {
 
                             if (noteText.getText().toString().length() == 0) {
-                                Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
 
                             } else {
-
                                 updateNote(noteId);
-
-                                Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
-                                startActivity(lIntent);
+                                Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                                startActivity(intent);
                             }
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -150,7 +147,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         if (note != null) {
 
             noteId = note.getId();
-            noteText.setText(note.getNoteText());
+            noteText.setText(note.getNoteTitle());
 
             isArchived.setChecked(note.getIsArchived());
 
@@ -191,7 +188,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
         } else {
-            Toast.makeText(this, "Could not load note", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not load note", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -199,7 +196,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
     private void initUi() {
-        noteText = (EditText) findViewById(R.id.noteText);
+        noteText = (EditText) findViewById(R.id.noteTitle );
         addReminderButton = (Button) findViewById(R.id.addReminder);
         remainderContainer = (LinearLayout) findViewById(R.id.remainderContainer);
         noteDBHelper = new NoteDBHelper(this);
@@ -529,10 +526,10 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         Tag noteTag = (Tag) tag.getSelectedItem();
         if(hasReminder){
             if (requestId != null) {
-                Toast.makeText(this, "Note already has reminder", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Note already has reminder", Toast.LENGTH_SHORT).show();
             } else {
                 requestId = Reminder.getNextReminderId(this);
-                Toast.makeText(this, "Note has no reminder", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Note has no reminder", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -573,8 +570,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
             noteDBHelper.updateNote(noteCurrent, noteTextString, isArchived.isChecked(), noteTag.getTagId(), requestId);
             noteDBHelper.close();
-            Intent intent = new Intent(this, LandingActivity.class);
-            startActivity(intent);
+
 
         } else {
 

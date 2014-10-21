@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -41,7 +40,7 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
                     public void onClick(View v) {
                         // "Done"
                         Note note = new Note();
-                        note.setNoteText(noteText.getText().toString());
+                        note.setNoteTitle(noteText.getText().toString());
                         Tag noteTag = (Tag) tag.getSelectedItem();
                         noteDBHelper.open();
                         noteDBHelper.saveNote(note);
@@ -77,7 +76,7 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
         initUi();
     }
     private void initUi() {
-        noteText = (EditText) findViewById(R.id.noteText);
+        noteText = (EditText) findViewById(R.id.noteTitle);
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         tag = (Spinner) findViewById(R.id.selectSpinner);

@@ -3,7 +3,6 @@ package com.semantic.semanticOrganizer.semanticcalendar.models;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class Note {
 
     public Note(int id, String description, String createdTime){
         this.id = id;
-        this.noteText = description;
+        this.noteTitle = description;
         this.createdTime = createdTime;
     }
 
@@ -32,12 +31,12 @@ public class Note {
         this.id = id;
     }
 
-    public String getNoteText() {
-        return noteText;
+    public String getNoteTitle() {
+        return noteTitle;
     }
 
-    public void setNoteText(String noteText) {
-        this.noteText = noteText;
+    public void setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
     }
 
     public String getCreatedTime() {
@@ -49,7 +48,8 @@ public class Note {
     }
 
     private Integer id;
-    private String noteText;
+    private String noteTitle;
+    private String noteDescription;
     private String createdTime;
 
     public Integer getRemainderId() {
@@ -76,7 +76,7 @@ public class Note {
     // Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
-        return noteText;
+        return noteTitle;
     }
 
     private Boolean isArchived;

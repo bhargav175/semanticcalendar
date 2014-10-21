@@ -56,13 +56,12 @@ public class UpdateCheckListActivity extends Activity {
                     public void onClick(View v) {
                         // "Done"
                         if(checkListId!=null){
-
                             updateCheckList(checkListId);
-                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
-                            startActivity(lIntent);
+                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                            startActivity(intent);
                         }
                         else{
-                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -101,7 +100,7 @@ public class UpdateCheckListActivity extends Activity {
             new GetCheckList(checkListId).execute("");
 
         }else{
-            Toast.makeText(this, "Could not load checkList", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not load checkList", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -219,7 +218,7 @@ public class UpdateCheckListActivity extends Activity {
 
         if(checkList!=null){
             if(checkListTextString.length()==0){
-                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_SHORT).show();
             }
             else{
                 checkListItemDBHelper.open();
@@ -299,14 +298,12 @@ public class UpdateCheckListActivity extends Activity {
 
                 checkListDBHelper.close();
 
-                Intent intent = new Intent(this, LandingActivity.class);
-                startActivity(intent);
             }
 
         }
         else{
             checkListDBHelper.close();
-            Toast.makeText(this,"Update Failed",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Update Failed",Toast.LENGTH_SHORT).show();
         }
 
 

@@ -40,7 +40,7 @@ public class ListNotesActivity extends Activity {
                 TextView text1 = (TextView) view.findViewById(R.id.text1);
                 TextView text2 = (TextView) view.findViewById(R.id.text2);
 
-                text1.setText(noteList.get(position).getNoteText());
+                text1.setText(noteList.get(position).getNoteTitle());
                 text2.setText(noteList.get(position).getCreatedTime());
                 return view;
             }
@@ -53,7 +53,7 @@ public class ListNotesActivity extends Activity {
                                     long id) {
                 Note note= (Note) parent.getAdapter().getItem(position);
                 Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
-                intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
+                intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
                 intent.putExtra(DBHelper.COLUMN_ID,note.getId());
                 intent.putExtra(DBHelper.NOTE_REQUEST_ID,note.getRemainderId());
                 intent.putExtra(DBHelper.NOTE_IS_ARCHIVED,note.getIsArchived());

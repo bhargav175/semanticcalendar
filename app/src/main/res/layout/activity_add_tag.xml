@@ -2,21 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-       tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddTagActivity">
+       tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddTagActivity"
+    android:padding="@dimen/material_left_padding">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/blue_bright"
-        android:padding="16dp">
+        android:background="@color/light_gray_color"
+        android:padding="@dimen/material_padding">
 
         <TextView
             android:text="Tag Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#fff"
+            android:textColor="@color/light_black"
             android:textSize="20sp"
-            android:id="@+id/titleLabel" />
+            android:id="@+id/titleLabel"
+            android:padding="@dimen/material_padding" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -28,29 +30,25 @@
             android:layout_marginTop="23dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:textColor="#fff" />
-
-        <TextView
-            android:text="Tag Description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tagTitle"
-            android:layout_marginTop="23dp"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:id="@+id/descriptionLabel" />
+            android:textColor="@color/light_black"
+            android:padding="@dimen/material_padding"
+            android:textColorHint="@color/gray_color"
+            android:hint="Title" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/descriptionText"
-            android:layout_below="@+id/descriptionLabel"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="23dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:textColor="#fff" />
+            android:textColor="@color/light_black"
+            android:padding="@dimen/material_padding"
+            android:layout_below="@id/tagTitle"
+            android:hint="Desciption"
+            android:textColorHint="@color/gray_color" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -62,7 +60,8 @@
             android:layout_alignParentStart="true"
             android:checked="false"
             android:layout_alignRight="@+id/descriptionText"
-            android:layout_alignEnd="@+id/descriptionText" />
+            android:layout_alignEnd="@+id/descriptionText"
+            android:padding="@dimen/material_padding" />
 
     </RelativeLayout>
 

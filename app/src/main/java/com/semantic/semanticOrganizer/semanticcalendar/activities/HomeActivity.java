@@ -8,33 +8,27 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
-import com.semantic.semanticOrganizer.semanticcalendar.adapters.ExpandableListAdapter;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.OrganizerItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
-import org.w3c.dom.Text;
+import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,16 +37,17 @@ import java.util.Map;
 
 public class HomeActivity extends Activity {
 
-    private Spinner tagSelector;
-    private RelativeLayout noTagLayout,tagBannerContainer ,tagOrganizerMapView;
-    private LinearLayout tagContainerLayout;
+    private RelativeLayout noTagLayout,tagBannerContainer ,tagOrganizerMapView,flowLayout;
+    private LinearLayout tagContainerLayout,tagDetail;
+    private FlowLayout tagsAsTags;
     private List<Tag> tags;
     private  TextView tagDescription ;
     private  TextView tagSecondaryText;
-    private ImageView editTagImageView;
+    private ImageView editTagImageView, tagsLableView, closeFlowLayoutView;
     private ListView cardsListView;
 
     private Map<Tag, List<OrganizerItem>> tagOrganizerMap;
+    private Map<Tag, TextView> tagTextViewMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,32 +67,51 @@ public class HomeActivity extends Activity {
         //tags is already initialized and its size is greater than 0. Hence there definitely is a tag present
         tagBannerContainer = (RelativeLayout) findViewById(R.id.tagBannerContainer);
         tagOrganizerMapView = (RelativeLayout) findViewById(R.id.tagOrganizerMap);
+
         addTagBanner();
 
     }
     private void setListeners(){
 
     }
+
+    private void toggleTagDetail(){
+        if(flowLayout.getVisibility()==View.GONE){
+            flowLayout.setVisibility(View.VISIBLE);
+            tagDetail.setVisibility(View.GONE);
+            cardsListView.setVisibility(View.GONE);
+        }else{
+            flowLayout.setVisibility(View.GONE);
+            tagDetail.setVisibility(View.VISIBLE);
+            cardsListView.setVisibility(View.VISIBLE);
+        }
+
+    }
     private void addTagBanner(){
         final LayoutInflater layoutInflater = (LayoutInflater)
                 this.getSystemService(LAYOUT_INFLATER_SERVICE);
         cardsListView = (ListView) findViewById(R.id.cardsListView);
-
         final View tagBanner =layoutInflater.inflate(R.layout.tag_banner, null);
-
-        //tagBannerContainer.addView(tagBanner);
-        tagSelector = (Spinner) tagBanner.findViewById(R.id.spinner);
-        cardsListView.addHeaderView(tagBanner);
-
-        int lastAddedTAg = 0;
-        Tag lastAddedTagObject = tags.get(getLastAddedTagIndex());
         final Typeface font = Typeface.createFromAsset(
                 getApplicationContext().getAssets(),
                 "fonts/RobotoCondensed-Light.ttf");
-        tags.add(new Tag("Untagged"));
-        ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                android.R.layout.simple_spinner_item, tags);
-        tagSelector.setAdapter(adapter);
+        //tagBannerContainer.addView(tagBanner);
+        cardsListView.addHeaderView(tagBanner,null,false);
+        tagDetail = (LinearLayout) tagBanner.findViewById(R.id.tagDetail);
+        flowLayout = (RelativeLayout) findViewById(R.id.flowLayout);
+        tagsLableView = (ImageView) tagBanner.findViewById(R.id.tagLabelsImage);
+        closeFlowLayoutView = (ImageView) findViewById(R.id.clearFlowLayout);
+        flowLayout.setVisibility(View.VISIBLE);
+        View.OnClickListener toggleTagDetailClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleTagDetail();
+            }
+        };
+        tagsLableView.setOnClickListener(toggleTagDetailClickListener);
+        closeFlowLayoutView.setOnClickListener(toggleTagDetailClickListener);
+        int lastAddedTAg = 0;
+        Tag lastAddedTagObject = tags.get(getLastAddedTagIndex());
         tagDescription = (TextView) tagBanner.findViewById(R.id.description);
         tagSecondaryText = (TextView) tagBanner.findViewById(R.id.secondary_text);
         editTagImageView = (ImageView) tagBanner.findViewById(R.id.edit);
@@ -109,58 +123,121 @@ public class HomeActivity extends Activity {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.info_text);
                 TextView cardText2 = (TextView) view.findViewById(R.id.secondary_text);
-                cardText1.setText(organizerItems.get(position).getItemText());
-                cardText2.setText(organizerItems.get(position).getCreatedTime());
+                cardText1.setText(toCamelCase(organizerItems.get(position).getItemText()));
+                cardText2.setText(toCamelCase(organizerItems.get(position).getCreatedTime()));
+                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
+                cardText2.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
                 cardText1.setTypeface(font);
                 cardText2.setTypeface(font);
                return view;
             }
         };
 
-        cardsListView.setAdapter(listAdapter);
-        tagSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        cardsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                final Tag currentTag = tags.get(i);
-                tagDescription.setText(currentTag.getTagText());
-                tagSecondaryText.setText(currentTag.getTagText());
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                OrganizerItem organizerItem = (OrganizerItem) parent.getAdapter().getItem(position);
 
-                tagDescription.setTypeface(font);
-                tagSecondaryText.setTypeface(font);
-                final List<OrganizerItem> organizerItems;
-                if (i == tags.size() - 1) {
-                    //Sandbox
-                    editTagImageView.setVisibility(View.GONE);
-                    organizerItems = tagOrganizerMap.get(new Tag("Untagged"));
+                if(organizerItem.getType().equals("NOTE")){
+                    new GetNote(organizerItem.getId()).execute("");
 
-                } else {
-                    //Normal tag
-                    editTagImageView.setVisibility(View.VISIBLE);
-                    editTagImageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
-                            intent.putExtra(DBHelper.TAG_TITLE, currentTag.getTagText());
-                            intent.putExtra(DBHelper.COLUMN_ID, currentTag.getTagId());
-                            intent.putExtra(DBHelper.TAG_DESCRIPTION, currentTag.getTagDescription());
-                            intent.putExtra(DBHelper.TAG_IS_ARCHIVED, currentTag.getIsArchived());
-                            startActivity(intent);
-                        }
-                    });
-                    organizerItems = tagOrganizerMap.get(currentTag);
+                }else if(organizerItem.getType().equals("HABIT")){
+                    Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
+                    intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
+                    intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
+                    startActivity(intent);
+                }else if(organizerItem.getType().equals("CHECKLIST")){
+                    Intent intent = new Intent(getApplicationContext(), UpdateCheckListActivity.class);
+                    intent.putExtra(DBHelper.CHECKLIST_TITLE,  organizerItem.getItemText());
+                    intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
+                    startActivity(intent);
+                }else{
+
                 }
-                listAdapter.clear();
-                listAdapter.addAll(organizerItems);
-                listAdapter.notifyDataSetChanged();
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-        tagSelector.setSelection(lastAddedTAg);
 
+        cardsListView.setAdapter(listAdapter);
+        tagsAsTags = (FlowLayout) findViewById(R.id.tagsAsTags);
+        tagsAsTags.setOrientation(FlowLayout.HORIZONTAL);
+        tagTextViewMap = new LinkedHashMap<Tag, TextView>();
+        for(final Tag tagItem:tags){
+            final TextView tv = new TextView(getApplicationContext());
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+            if(tags.indexOf(tagItem)==tags.size()-1){
+                tv.setTextColor(getResources().getColor(R.color.light_black));
+                tv.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
+            }else{
+                tv.setTextColor(getResources().getColor(R.color.light_black));
+                tv.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            tv.setLayoutParams(params);
+            int dp = (int) getResources().getDimension(R.dimen.material_left_padding);
+            tv.setPadding(dp,dp,dp,dp);
+            tv.setText(toCamelCase(tagItem.getTagText()));
+            tv.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
+            tv.setTypeface(font);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Tag currentTag = tagItem;
+
+                    for(int i =0; i<tagTextViewMap.size(); i++){
+                        TextView tk = tagTextViewMap.get(tags.get(i));
+                        if(i==tagTextViewMap.size()-1){
+                            tk.setTextColor(getResources().getColor(R.color.light_black));
+                            tk.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
+                        }else{
+                            tk.setTextColor(getResources().getColor(R.color.light_black));
+                            tk.setBackgroundColor(getResources().getColor(R.color.white));
+                        }
+
+                    }
+                    tv.setTextColor(getResources().getColor(R.color.white));
+                    tv.setBackgroundColor(getResources().getColor(R.color.blue_color));
+                    tagDescription.setText(toCamelCase(currentTag.getTagText()));
+                    tagSecondaryText.setText(toCamelCase(currentTag.getTagDescription()));
+                    tagDescription.setTypeface(font);
+                    tagSecondaryText.setTypeface(font);
+                    tagDescription.setTextSize(getResources().getDimension(R.dimen.material_medium_text_size));
+                    tagSecondaryText.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
+                    final List<OrganizerItem> organizerItems;
+                    if (tags.indexOf(tagItem) == tags.size() - 1) {
+                        //Sandbox
+                        editTagImageView.setVisibility(View.GONE);
+                        organizerItems = tagOrganizerMap.get(currentTag);
+                    } else {
+                        //Normal tag
+                        editTagImageView.setVisibility(View.VISIBLE);
+                        editTagImageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
+                                intent.putExtra(DBHelper.TAG_TITLE, currentTag.getTagText());
+                                intent.putExtra(DBHelper.COLUMN_ID, currentTag.getTagId());
+                                intent.putExtra(DBHelper.TAG_DESCRIPTION, currentTag.getTagDescription());
+                                intent.putExtra(DBHelper.TAG_IS_ARCHIVED, currentTag.getIsArchived());
+                                startActivity(intent);
+                            }
+                        });
+                        organizerItems = tagOrganizerMap.get(currentTag);
+                    }
+                    listAdapter.clear();
+                    listAdapter.addAll(organizerItems);
+                    listAdapter.notifyDataSetChanged();
+                    toggleTagDetail();
+                }
+            });
+            tagsAsTags.addView(tv,0);
+            tagTextViewMap.put(tagItem,tv);
+        }
+        Tag lastAddedTagObj = tags.get(getLastAddedTagIndex());
+        TextView t = tagTextViewMap.get(lastAddedTagObj);
+        t.performClick();
     }
 
     private int getLastAddedTagIndex(){
@@ -176,7 +253,23 @@ public class HomeActivity extends Activity {
         return lastAddedTAg;
     }
 
+    public static String toCamelCase(final String init) {
+        if (init==null)
+            return null;
 
+        final StringBuilder ret = new StringBuilder(init.length());
+
+        for (final String word : init.split(" ")) {
+            if (!word.isEmpty()) {
+                ret.append(word.substring(0, 1).toUpperCase());
+                ret.append(word.substring(1).toLowerCase());
+            }
+            if (!(ret.length()==init.length()))
+                ret.append(" ");
+        }
+
+        return ret.toString();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -266,6 +359,7 @@ public class HomeActivity extends Activity {
                 public void run() {
                     tags = new ArrayList<Tag>();
                     tags.addAll(tagList);
+                    tags.add(new Tag("Untagged"));
                     if(tagOrganizerMap ==null){
                         tagOrganizerMap = new LinkedHashMap<Tag, List<OrganizerItem>>();
                     }
@@ -320,7 +414,7 @@ public class HomeActivity extends Activity {
                 public void run() {
                     if(note!=null){
                         Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
-                        intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
+                        intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
                         intent.putExtra(DBHelper.COLUMN_ID,note.getId());
                         intent.putExtra(DBHelper.NOTE_REQUEST_ID,note.getRemainderId());
                         intent.putExtra(DBHelper.NOTE_IS_ARCHIVED,note.getIsArchived());

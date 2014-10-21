@@ -7,19 +7,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
-import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -528,7 +522,7 @@ public class LandingActivity extends Activity {
                                str = "Simple Note";
 
                                Note note = new Note();
-                               note.setNoteText(addItemEditText.getText().toString());
+                               note.setNoteTitle(addItemEditText.getText().toString());
                                noteDBHelper.open();
                                noteDBHelper.saveNote(note);
                                noteDBHelper.close();
@@ -749,7 +743,7 @@ public class LandingActivity extends Activity {
                 public void run() {
                     if(note!=null){
                         Intent intent = new Intent(getApplicationContext(), UpdateNoteActivity.class);
-                        intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
+                        intent.putExtra(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
                         intent.putExtra(DBHelper.COLUMN_ID,note.getId());
                         intent.putExtra(DBHelper.NOTE_REQUEST_ID,note.getRemainderId());
                         intent.putExtra(DBHelper.NOTE_IS_ARCHIVED,note.getIsArchived());

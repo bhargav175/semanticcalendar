@@ -129,8 +129,9 @@ public class OrganizerItem {
 
         for(Note note:noteList){
             OrganizerItem organizerItem = new OrganizerItem();
-            organizerItem.setItemText(note.getNoteText());
+            organizerItem.setItemText(note.getNoteTitle());
             organizerItem.setCreatedTime(note.getCreatedTime());
+            organizerItem.setSecondaryText(note.getCreatedTime());
             organizerItem.setId(note.getId());
             organizerItem.setType("NOTE");
             organizerItems.add(organizerItem);

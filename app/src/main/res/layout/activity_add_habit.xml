@@ -4,23 +4,21 @@
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/indigo_color"
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddHabitActivity">
+    android:background="@color/light_gray_color"
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddHabitActivity"
+    android:padding="@dimen/material_left_padding">
 
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/linearLayout2">
+        android:id="@+id/linearLayout2"
+        android:padding="@dimen/material_padding">
 
         <TextView
             android:layout_width="match_parent"
@@ -31,7 +29,7 @@
             android:gravity="center_vertical"
             android:textSize="24sp"
             android:paddingStart="8dp"
-            android:textColor="#fff" />
+            android:textColor="@color/light_black" />
     </LinearLayout>
 
 
@@ -42,7 +40,7 @@
         android:layout_below="@id/linearLayout2"
         android:orientation="horizontal"
         android:id="@+id/linearLayout3"
-        >
+        android:padding="@dimen/material_padding">
 
         <EditText
             android:layout_width="match_parent"
@@ -51,7 +49,7 @@
             android:hint="@string/write_habit_text_hint"
             android:layout_gravity="center_horizontal"
             android:gravity="top"
-            android:textColorHint="#ffdddddd" />
+            android:textColorHint="@color/gray_color" />
     </LinearLayout>
 
 
@@ -62,7 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout3"
         android:orientation="horizontal"
-        android:id="@+id/linearLayout5" >
+        android:id="@+id/linearLayout5"
+        android:padding="@dimen/material_padding">
 
         <EditText
             android:layout_width="match_parent"
@@ -71,7 +70,7 @@
             android:hint="Habit Question"
             android:layout_gravity="center_horizontal"
             android:gravity="top"
-            android:textColorHint="#ffdddddd" />
+            android:textColorHint="@color/gray_color" />
     </LinearLayout>
 
     <LinearLayout
@@ -79,7 +78,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout5"
         android:orientation="horizontal"
-        android:id="@+id/linearLayout6" >
+        android:id="@+id/linearLayout6"
+        android:padding="@dimen/material_padding">
 
         <EditText
             android:layout_width="match_parent"
@@ -88,7 +88,7 @@
             android:hint="Duration"
             android:layout_gravity="center_horizontal"
             android:gravity="top"
-            android:textColorHint="#ffdddddd" />
+            android:textColorHint="@color/gray_color" />
     </LinearLayout>
 
     <LinearLayout
@@ -98,7 +98,8 @@
         android:layout_below="@id/linearLayout6"
         android:orientation="horizontal"
         android:id="@+id/linearLayout4"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:padding="@dimen/material_padding">
 
 
         <Spinner
@@ -115,7 +116,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:checked="false" />
+            android:checked="false"
+            android:padding="@dimen/material_padding" />
 
     </LinearLayout>
 
@@ -128,7 +130,8 @@
         android:id="@+id/linearLayout7"
         android:weightSum="1"
         android:layout_alignRight="@+id/linearLayout4"
-        android:layout_alignEnd="@+id/linearLayout4">
+        android:layout_alignEnd="@+id/linearLayout4"
+        android:padding="@dimen/material_padding">
 
 
         <Spinner
@@ -146,7 +149,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout7"
-        android:id="@+id/typeContainerUi">
+        android:id="@+id/typeContainerUi"
+        android:padding="@dimen/material_padding">
 
         <LinearLayout
             android:orientation="vertical"
@@ -253,12 +257,13 @@
                     android:layout_height="match_parent"
                     android:id="@+id/habitFrequency"
                     android:hint="Days per"
-                    android:textColorHint="#fff"
+                    android:textColorHint="@color/gray_color"
                     android:paddingTop="15dp"
                     android:paddingRight="30dp"
                     android:paddingBottom="15dp"
                     android:paddingLeft="5dp"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:textColor="@color/light_black" />
 
             </LinearLayout>
 
@@ -270,7 +275,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/typeContainerUi"
         android:orientation="horizontal"
-        android:id="@+id/remainderContainer" >
+        android:id="@+id/remainderContainer"
+        android:padding="@dimen/material_padding">
 
         <Button
             android:layout_width="wrap_content"
@@ -279,8 +285,7 @@
             android:id="@+id/addReminder"
             android:background="#fff"
             android:textColor="@color/blue_bright"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp" />
+            android:padding="@dimen/material_padding" />
     </LinearLayout>
 
 

@@ -50,13 +50,12 @@ public class UpdateHabitActivity extends Activity {
                     public void onClick(View v) {
                         // "Done"
                         if(habitId!=null){
-
                             updateHabit(habitId);
-                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
-                            startActivity(lIntent);
+                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                            startActivity(intent);
                         }
                         else{
-                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -107,7 +106,7 @@ public class UpdateHabitActivity extends Activity {
 
 
         }else{
-            Toast.makeText(this, "Could not load habit", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not load habit", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -174,19 +173,18 @@ public class UpdateHabitActivity extends Activity {
 
         if(habit!=null){
             if(habitTextString.length()==0){
-                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_SHORT).show();
             }
             else{
                 habitDBHelper.updateHabit(habit, habitTextString,habitTag.getTagId());
                 habitDBHelper.close();
-                Intent intent = new Intent(this, LandingActivity.class);
-                startActivity(intent);
+
             }
 
         }
         else{
             habitDBHelper.close();
-            Toast.makeText(this,"Update Failed",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Update Failed",Toast.LENGTH_SHORT).show();
         }
 
 

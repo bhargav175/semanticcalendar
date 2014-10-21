@@ -43,16 +43,13 @@ public class UpdateTagActivity extends Activity {
                     public void onClick(View v) {
                         // "Done"
                         if(tagId!=null){
-
                             updateTag(tagId);
-                            Intent lIntent = new Intent(getApplicationContext(), LandingActivity.class);
-                            startActivity(lIntent);
+                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                            startActivity(intent);
                         }
                         else{
-                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
                         }
-
                         finish();
                     }
                 });
@@ -88,7 +85,7 @@ public class UpdateTagActivity extends Activity {
             tagDescription.setText(extras.getString(DBHelper.TAG_DESCRIPTION));
             tagIsArchived.setChecked(extras.getBoolean(DBHelper.TAG_IS_ARCHIVED));
         }else{
-            Toast.makeText(this, "Could not load tag", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not load tag", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -115,19 +112,17 @@ public class UpdateTagActivity extends Activity {
         if(tag!=null){
             if(tagTextString.length()==0){
                 tagDBHelper.close();
-                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_SHORT).show();
             }
             else{
                 tagDBHelper.updateTag(tag, tagTextString,tagDescriptionString,tagArchived);
                 tagDBHelper.close();
-                Intent intent = new Intent(this, LandingActivity.class);
-                startActivity(intent);
             }
 
         }
         else{
             tagDBHelper.close();
-            Toast.makeText(this,"Update Failed",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Update Failed",Toast.LENGTH_SHORT).show();
         }
 
 

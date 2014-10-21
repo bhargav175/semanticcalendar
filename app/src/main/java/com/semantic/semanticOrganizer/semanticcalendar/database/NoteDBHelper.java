@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
@@ -84,12 +83,12 @@ public class NoteDBHelper {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevNoteId(NOTES_TABLE)) + 1)));
-        values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteText());
+        values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         database.insert(NOTES_TABLE, null, values);
-        Log.d( TAG,"Note saved" + note.getNoteText());
+        Log.d( TAG,"Note saved" + note.getNoteTitle());
 
     }
     private String getPrevNoteId(String tableName) {
@@ -105,7 +104,7 @@ public class NoteDBHelper {
     public Note cursorToNote(Cursor cursor) {
         Note note = new Note();
         note.setId(cursor.getInt(0));
-        note.setNoteText(cursor.getString(1));
+        note.setNoteTitle(cursor.getString(1));
         note.setIsArchived(cursor.getInt(2)>0);
         note.setCreatedTime(cursor.getString(3));
                 if (!cursor.isNull(4)){
@@ -149,7 +148,7 @@ public class NoteDBHelper {
         // updating row
         database.update(NOTES_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(note.getId()) });
-        Log.d( TAG,"Note archived" + note.getNoteText());
+        Log.d( TAG,"Note archived" + note.getNoteTitle());
 
 
 
