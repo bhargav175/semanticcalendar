@@ -37,7 +37,7 @@
     <string name="task_text_label">Task Text </string>
     <string name="update_task_button">Update Task</string>
     <string name="set_date_task">Set Date</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Home</string>
 
     <string-array name="nav_drawer_items">
         <item>Dashboard</item>

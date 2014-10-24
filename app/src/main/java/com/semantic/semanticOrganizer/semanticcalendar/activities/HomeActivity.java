@@ -12,17 +12,22 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
+import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.OrganizerItem;
@@ -30,6 +35,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 import org.apmem.tools.layouts.FlowLayout;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,17 +43,21 @@ import java.util.Map;
 
 public class HomeActivity extends Activity {
 
-    private RelativeLayout noTagLayout,tagBannerContainer ,tagOrganizerMapView,flowLayout;
-    private LinearLayout tagContainerLayout,tagDetail;
+    private RelativeLayout noTagLayout,tagBannerContainer ,tagOrganizerMapView;
+    private ScrollView flowLayout;
+    private LinearLayout tagContainerLayout,tagDetail,addingTag;
     private FlowLayout tagsAsTags;
     private List<Tag> tags;
     private  TextView tagDescription ;
     private  TextView tagSecondaryText;
-    private ImageView editTagImageView, tagsLableView, closeFlowLayoutView;
+    private ImageView editTagImageView, tagsLableView, closeFlowLayoutView,addTagDonebutton, addTagCancelButton;
     private ListView cardsListView;
-
+    private Button addTagButton;
+    private EditText addTagEditText;
     private Map<Tag, List<OrganizerItem>> tagOrganizerMap;
     private Map<Tag, TextView> tagTextViewMap;
+    private ArrayAdapter<OrganizerItem> listAdapter;
+    private Typeface font;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +72,12 @@ public class HomeActivity extends Activity {
         noTagLayout = (RelativeLayout) findViewById(R.id.noTagsLayout);
         tagContainerLayout = (LinearLayout) findViewById(R.id.tagContainerLayout);
             new GetTags().execute("");
+
     }
+
     private void initializeUi(){
         //tags is already initialized and its size is greater than 0. Hence there definitely is a tag present
-        tagBannerContainer = (RelativeLayout) findViewById(R.id.tagBannerContainer);
         tagOrganizerMapView = (RelativeLayout) findViewById(R.id.tagOrganizerMap);
-
         addTagBanner();
 
     }
@@ -91,16 +101,71 @@ public class HomeActivity extends Activity {
         final LayoutInflater layoutInflater = (LayoutInflater)
                 this.getSystemService(LAYOUT_INFLATER_SERVICE);
         cardsListView = (ListView) findViewById(R.id.cardsListView);
+        cardsListView.removeAllViewsInLayout();
         final View tagBanner =layoutInflater.inflate(R.layout.tag_banner, null);
-        final Typeface font = Typeface.createFromAsset(
+       font = Typeface.createFromAsset(
                 getApplicationContext().getAssets(),
                 "fonts/RobotoCondensed-Light.ttf");
+        LinearLayout mCustomHeaders=new LinearLayout(getApplicationContext());
+        mCustomHeaders.setOrientation(LinearLayout.VERTICAL);
         //tagBannerContainer.addView(tagBanner);
-        cardsListView.addHeaderView(tagBanner,null,false);
+        //if cardsListView has a header then remove it
+        //flush cardslistview
+        mCustomHeaders.removeAllViews();
+        mCustomHeaders.addView(tagBanner);
+        cardsListView.addHeaderView(mCustomHeaders,null,false);
         tagDetail = (LinearLayout) tagBanner.findViewById(R.id.tagDetail);
-        flowLayout = (RelativeLayout) findViewById(R.id.flowLayout);
+        flowLayout = (ScrollView) findViewById(R.id.flowLayout);
         tagsLableView = (ImageView) tagBanner.findViewById(R.id.tagLabelsImage);
         closeFlowLayoutView = (ImageView) findViewById(R.id.clearFlowLayout);
+        addTagButton = (Button) findViewById(R.id.addTagButton);
+        addTagDonebutton = (ImageView) findViewById(R.id.doneButton);
+        addTagCancelButton = (ImageView) findViewById(R.id.delete);
+        addingTag = (LinearLayout) findViewById(R.id.addingTag);
+        addTagEditText = (EditText) findViewById(R.id.addTagEditText);
+        addTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addingTag.setVisibility(View.VISIBLE);
+                addTagButton.setVisibility(View.GONE);
+            }
+        });
+
+        addTagCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTagEditText.setText("");
+                addingTag.setVisibility(View.GONE);
+                addTagButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        addTagDonebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(addTagEditText.getText().toString().length()>0){
+                    TagDBHelper tagDBHelper = new TagDBHelper(getApplicationContext());
+                    Tag tag = new Tag();
+                    tag.setTagText(addTagEditText.getText().toString());
+                    tagDBHelper.open();
+                    Tag tagItem =tagDBHelper.saveTag(tag);
+                    tags.add(tags.size()-2,tagItem);
+                    tagOrganizerMap.put(tagItem,new ArrayList<OrganizerItem>());
+                    addTagToTagsAsTags(tagItem);
+
+                    tagDBHelper.close();
+                    addTagEditText.setText("");
+                    addingTag.setVisibility(View.GONE);
+                    addTagButton.setVisibility(View.VISIBLE);
+
+                }else{
+                    Toast.makeText(getApplicationContext(),"Tag Title Cannot Be Empty",Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
         flowLayout.setVisibility(View.VISIBLE);
         View.OnClickListener toggleTagDetailClickListener = new View.OnClickListener() {
             @Override
@@ -116,7 +181,7 @@ public class HomeActivity extends Activity {
         tagSecondaryText = (TextView) tagBanner.findViewById(R.id.secondary_text);
         editTagImageView = (ImageView) tagBanner.findViewById(R.id.edit);
         final List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
-        final ArrayAdapter<OrganizerItem> listAdapter = new ArrayAdapter<OrganizerItem>(getApplicationContext(),
+        listAdapter = new ArrayAdapter<OrganizerItem>(getApplicationContext(),
                 R.layout.card_organizer_item,R.id.info_text, organizerItems){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -163,81 +228,89 @@ public class HomeActivity extends Activity {
         cardsListView.setAdapter(listAdapter);
         tagsAsTags = (FlowLayout) findViewById(R.id.tagsAsTags);
         tagsAsTags.setOrientation(FlowLayout.HORIZONTAL);
+
+        //Flush tagsAsTags
+
+        tagsAsTags.removeAllViews();
         tagTextViewMap = new LinkedHashMap<Tag, TextView>();
         for(final Tag tagItem:tags){
-            final TextView tv = new TextView(getApplicationContext());
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-            if(tags.indexOf(tagItem)==tags.size()-1){
-                tv.setTextColor(getResources().getColor(R.color.light_black));
-                tv.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
-            }else{
-                tv.setTextColor(getResources().getColor(R.color.light_black));
-                tv.setBackgroundColor(getResources().getColor(R.color.white));
-            }
-            tv.setLayoutParams(params);
-            int dp = (int) getResources().getDimension(R.dimen.material_left_padding);
-            tv.setPadding(dp,dp,dp,dp);
-            tv.setText(toCamelCase(tagItem.getTagText()));
-            tv.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-            tv.setTypeface(font);
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final Tag currentTag = tagItem;
-
-                    for(int i =0; i<tagTextViewMap.size(); i++){
-                        TextView tk = tagTextViewMap.get(tags.get(i));
-                        if(i==tagTextViewMap.size()-1){
-                            tk.setTextColor(getResources().getColor(R.color.light_black));
-                            tk.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
-                        }else{
-                            tk.setTextColor(getResources().getColor(R.color.light_black));
-                            tk.setBackgroundColor(getResources().getColor(R.color.white));
-                        }
-
-                    }
-                    tv.setTextColor(getResources().getColor(R.color.white));
-                    tv.setBackgroundColor(getResources().getColor(R.color.blue_color));
-                    tagDescription.setText(toCamelCase(currentTag.getTagText()));
-                    tagSecondaryText.setText(toCamelCase(currentTag.getTagDescription()));
-                    tagDescription.setTypeface(font);
-                    tagSecondaryText.setTypeface(font);
-                    tagDescription.setTextSize(getResources().getDimension(R.dimen.material_medium_text_size));
-                    tagSecondaryText.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                    final List<OrganizerItem> organizerItems;
-                    if (tags.indexOf(tagItem) == tags.size() - 1) {
-                        //Sandbox
-                        editTagImageView.setVisibility(View.GONE);
-                        organizerItems = tagOrganizerMap.get(currentTag);
-                    } else {
-                        //Normal tag
-                        editTagImageView.setVisibility(View.VISIBLE);
-                        editTagImageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
-                                intent.putExtra(DBHelper.TAG_TITLE, currentTag.getTagText());
-                                intent.putExtra(DBHelper.COLUMN_ID, currentTag.getTagId());
-                                intent.putExtra(DBHelper.TAG_DESCRIPTION, currentTag.getTagDescription());
-                                intent.putExtra(DBHelper.TAG_IS_ARCHIVED, currentTag.getIsArchived());
-                                startActivity(intent);
-                            }
-                        });
-                        organizerItems = tagOrganizerMap.get(currentTag);
-                    }
-                    listAdapter.clear();
-                    listAdapter.addAll(organizerItems);
-                    listAdapter.notifyDataSetChanged();
-                    toggleTagDetail();
-                }
-            });
-            tagsAsTags.addView(tv,0);
-            tagTextViewMap.put(tagItem,tv);
+            addTagToTagsAsTags( tagItem);
         }
         Tag lastAddedTagObj = tags.get(getLastAddedTagIndex());
         TextView t = tagTextViewMap.get(lastAddedTagObj);
         t.performClick();
+    }
+
+    private void addTagToTagsAsTags(final Tag tagItem) {
+        final TextView tv = new TextView(getApplicationContext());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+        if(tags.indexOf(tagItem)==tags.size()-1){
+            tv.setTextColor(getResources().getColor(R.color.light_black));
+            tv.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
+        }else{
+            tv.setTextColor(getResources().getColor(R.color.light_black));
+            tv.setBackgroundColor(getResources().getColor(R.color.white));
+        }
+        tv.setLayoutParams(params);
+        int dp = (int) getResources().getDimension(R.dimen.material_left_padding);
+        tv.setPadding(dp,dp,dp,dp);
+        tv.setText(toCamelCase(tagItem.getTagText()));
+        tv.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
+        tv.setTypeface(font);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Tag currentTag = tagItem;
+
+                for(int i =0; i<tagTextViewMap.size(); i++){
+                    TextView tk = tagTextViewMap.get(tags.get(i));
+                    if(i==tagTextViewMap.size()-1){
+                        tk.setTextColor(getResources().getColor(R.color.light_black));
+                        tk.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
+                    }else{
+                        tk.setTextColor(getResources().getColor(R.color.light_black));
+                        tk.setBackgroundColor(getResources().getColor(R.color.white));
+                    }
+
+                }
+                tv.setTextColor(getResources().getColor(R.color.white));
+                tv.setBackgroundColor(getResources().getColor(R.color.blue_color));
+                tagDescription.setText(toCamelCase(currentTag.getTagText()));
+                tagSecondaryText.setText(toCamelCase(currentTag.getTagDescription()));
+                tagDescription.setTypeface(font);
+                tagSecondaryText.setTypeface(font);
+                tagDescription.setTextSize(getResources().getDimension(R.dimen.material_medium_text_size));
+                tagSecondaryText.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
+                final List<OrganizerItem> organizerItems;
+                if (tags.indexOf(tagItem) == tags.size() - 1) {
+                    //Sandbox
+                    editTagImageView.setVisibility(View.GONE);
+                    organizerItems = tagOrganizerMap.get(currentTag);
+                } else {
+                    //Normal tag
+                    editTagImageView.setVisibility(View.VISIBLE);
+                    editTagImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), UpdateTagActivity.class);
+                            intent.putExtra(DBHelper.TAG_TITLE, currentTag.getTagText());
+                            intent.putExtra(DBHelper.COLUMN_ID, currentTag.getTagId());
+                            intent.putExtra(DBHelper.TAG_DESCRIPTION, currentTag.getTagDescription());
+                            intent.putExtra(DBHelper.TAG_IS_ARCHIVED, currentTag.getIsArchived());
+                            startActivity(intent);
+                        }
+                    });
+                    organizerItems = tagOrganizerMap.get(currentTag);
+                }
+                listAdapter.clear();
+                listAdapter.addAll(organizerItems);
+                listAdapter.notifyDataSetChanged();
+                toggleTagDetail();
+            }
+        });
+        tagsAsTags.addView(tv,tagsAsTags.getChildCount()-1);
+        tagTextViewMap.put(tagItem,tv);
     }
 
     private int getLastAddedTagIndex(){
@@ -360,9 +433,7 @@ public class HomeActivity extends Activity {
                     tags = new ArrayList<Tag>();
                     tags.addAll(tagList);
                     tags.add(new Tag("Untagged"));
-                    if(tagOrganizerMap ==null){
-                        tagOrganizerMap = new LinkedHashMap<Tag, List<OrganizerItem>>();
-                    }
+                    tagOrganizerMap = new LinkedHashMap<Tag, List<OrganizerItem>>();
                     new GetAllUnArchivedOrganizerItems(tags,getApplicationContext()).execute("");
                     noTagLayout.setVisibility(View.GONE);
                     tagContainerLayout.setVisibility(View.VISIBLE);

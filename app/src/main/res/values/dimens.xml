@@ -7,6 +7,7 @@
     <dimen name="default_element_height">64dp</dimen>
     <dimen name="checklist_element_height">40dp</dimen>
     <dimen name="material_padding">16dp</dimen>
+    <dimen name="material_light_padding">8dp</dimen>
     <dimen name="material_actionbar_size">48dp</dimen>
     <dimen name="material_micro_text_size">12sp</dimen>
     <dimen name="material_simple_text_size">14sp</dimen>

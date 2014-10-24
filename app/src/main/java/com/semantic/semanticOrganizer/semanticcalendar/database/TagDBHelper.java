@@ -107,9 +107,10 @@ public class TagDBHelper {
         return tag;
     }
 
-    public void saveTag(Tag tag) {
+    public Tag saveTag(Tag tag) {
         ContentValues values = new ContentValues();
-        values.put("id", (Integer.toString(Integer.parseInt(getPrevTagId(TAGS_TABLE)) + 1)));
+        Integer id =Integer.parseInt(getPrevTagId(TAGS_TABLE)) + 1;
+        values.put("id", (Integer.toString(id)));
         values.put("title", tag.getTagText());
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
@@ -117,6 +118,7 @@ public class TagDBHelper {
         database.insert(TAGS_TABLE, null, values);
 
         Toast.makeText(context,tag.getTagText(), Toast.LENGTH_LONG).show();
+        return getTag(id);
     }
 
 

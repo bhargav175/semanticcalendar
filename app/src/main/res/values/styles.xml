@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Theme.AppTheme" parent="android:Theme.Holo.Light">
+    <style name="Theme.MyTheme" parent="android:Theme.Holo">
         <!-- Customize your theme here. -->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
@@ -21,14 +21,22 @@
         <item name="android:dateTextAppearance">@style/TextAppearance.AppCompat.Widget.PopupMenu.Small</item>
     </style>
     <style name="MyActionBar"
-        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/primary_color</item>
+        parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/teal_color</item>
         <item name="actionBarDivider">@null</item>
         <item name="android:actionBarDivider">@null</item>
         <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <item name="actionBarTabStyle">@style/MyActionBarTab</item>
         <item name="android:height">56dp</item>
+        <item name="actionBarSize">56dp</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarSize">56dp</item>
 
+
+    </style>
+    <style name="MyActionBarTab"
+        parent="@style/Widget.AppCompat.ActionBar.TabView">
+        <item name="android:height">56dp</item>
     </style>
     <style name="CircleStyle" parent="Widget.CirclePageIndicator">
         <item name="unselectedColor">@android:color/white</item>
