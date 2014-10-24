@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libraries" />
             <option value="$PROJECT_DIR$/libraries/datetimepicker-library" />
+            <option value="$PROJECT_DIR$/libraries/floatingActionMenu" />
             <option value="$PROJECT_DIR$/libraries/flowLayout" />
             <option value="$PROJECT_DIR$/libraries/viewPagerIndicator" />
           </set>

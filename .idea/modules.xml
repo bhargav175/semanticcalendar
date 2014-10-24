@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/SemanticCalendar.iml" filepath="$PROJECT_DIR$/SemanticCalendar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/datetimepicker-library/datetimepicker-library.iml" filepath="$PROJECT_DIR$/libraries/datetimepicker-library/datetimepicker-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/floatingActionMenu/floatingActionMenu.iml" filepath="$PROJECT_DIR$/libraries/floatingActionMenu/floatingActionMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/flowLayout/flowLayout.iml" filepath="$PROJECT_DIR$/libraries/flowLayout/flowLayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/viewPagerIndicator/viewPagerIndicator.iml" filepath="$PROJECT_DIR$/libraries/viewPagerIndicator/viewPagerIndicator.iml" />
     </modules>

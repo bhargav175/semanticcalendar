@@ -23,14 +23,14 @@
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/teal_color</item>
-        <item name="actionBarDivider">@null</item>
-        <item name="android:actionBarDivider">@null</item>
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
-        <item name="actionBarTabStyle">@style/MyActionBarTab</item>
-        <item name="android:height">56dp</item>
-        <item name="actionBarSize">56dp</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:actionBarSize">56dp</item>
+        <!--<item name="actionBarDivider">@null</item>-->
+        <!--<item name="android:actionBarDivider">@null</item>-->
+        <!--<item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
+        <!--<item name="actionBarTabStyle">@style/MyActionBarTab</item>-->
+        <!--<item name="android:height">56dp</item>-->
+        <!--<item name="actionBarSize">56dp</item>-->
+        <!--&lt;!&ndash;<item name="android:windowActionBarOverlay">true</item>&ndash;&gt;-->
+        <!--<item name="android:actionBarSize">56dp</item>-->
 
 
     </style>

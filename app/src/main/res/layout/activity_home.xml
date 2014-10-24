@@ -223,5 +223,31 @@
 
     </LinearLayout>
 
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
 
+        android:id="@+id/multiple_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        fab:fab_addButtonColorNormal="@color/blue_color"
+        fab:fab_addButtonColorPressed="@color/light_blue_500"
+        fab:fab_addButtonPlusIconColor="@color/white"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/gray_color"
+            fab:fab_colorPressed="@color/white"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/gray_color"
+            fab:fab_colorPressed="@color/white"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </RelativeLayout>
