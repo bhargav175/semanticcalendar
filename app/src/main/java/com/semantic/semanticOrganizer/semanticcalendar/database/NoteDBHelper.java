@@ -153,4 +153,17 @@ public class NoteDBHelper {
 
 
     }
+
+    public void saveNoteWithTag(Note note, Tag currentTagInView) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevNoteId(NOTES_TABLE)) + 1)));
+        values.put(DBHelper.NOTE_TAG, currentTagInView.getTagId());
+        values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
+
+        //values.put("image_path", draft.getDraftImagePath());
+        //TODO Location Insertion
+        database.insert(NOTES_TABLE, null, values);
+        Log.d( TAG,"Note saved" + note.getNoteTitle());
+    }
 }

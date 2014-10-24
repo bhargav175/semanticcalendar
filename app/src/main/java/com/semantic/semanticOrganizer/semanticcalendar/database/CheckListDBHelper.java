@@ -146,4 +146,18 @@ public class CheckListDBHelper {
                 new String[]{String.valueOf(checkList.getId())});
         Log.d( TAG,"CheckList archived" + checkList.getCheckListText());
     }
+
+    public void saveCheckListWithTag(CheckList checkList, Tag tag) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevCheckListId(CHECKLISTS_TABLE)) + 1)));
+        values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListText());
+        values.put(DBHelper.CHECKLIST_TAG, tag.getTagId());
+
+        //TODO Location Insertion
+        Log.d(TAG, values.toString());
+        database.insert(CHECKLISTS_TABLE, null, values);
+        Log.d( TAG,"CheckList saved" + checkList.getCheckListText());
+        ;
+    }
 }

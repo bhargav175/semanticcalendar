@@ -1,7 +1,9 @@
 package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,9 +29,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
+import com.semantic.semanticOrganizer.semanticcalendar.database.CheckListDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.models.CheckList;
+import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.OrganizerItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
@@ -54,13 +63,17 @@ public class HomeActivity extends Activity {
     private ListView cardsListView;
     private Button addTagButton;
     private EditText addTagEditText;
+    private Tag currentTagInView;
     private Map<Tag, List<OrganizerItem>> tagOrganizerMap;
     private Map<Tag, TextView> tagTextViewMap;
     private ArrayAdapter<OrganizerItem> listAdapter;
     private Typeface font;
+    private Integer doSave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
         setContentView(R.layout.activity_home);
 
         init();
@@ -79,10 +92,120 @@ public class HomeActivity extends Activity {
         //tags is already initialized and its size is greater than 0. Hence there definitely is a tag present
         tagOrganizerMapView = (RelativeLayout) findViewById(R.id.tagOrganizerMap);
         addTagBanner();
+        addFloatingActionButtons();
 
     }
     private void setListeners(){
 
+    }
+
+    private void saveStuff(String str){
+        if(doSave==1){
+            Note note = new Note();
+            NoteDBHelper noteDbHelper = new NoteDBHelper(getApplicationContext());
+            note.setNoteTitle(str);
+            noteDbHelper.open();
+            noteDbHelper.saveNoteWithTag(note, currentTagInView);
+            noteDbHelper.close();
+        }else if(doSave ==2){
+            CheckList checkList = new CheckList();
+            CheckListDBHelper checkListDBHelper = new CheckListDBHelper(getApplicationContext());
+            checkList.setCheckListText(str);
+            checkListDBHelper.open();
+            checkListDBHelper.saveCheckListWithTag(checkList, currentTagInView);
+            checkListDBHelper.close();
+        }else if(doSave==3){
+            Habit habit = new Habit();
+            HabitDBHelper habitDBHelper = new HabitDBHelper(getApplicationContext());
+            habit.setHabitText(str);
+            habitDBHelper.open();
+            habitDBHelper.saveHabitWithTag(habit,currentTagInView);
+            habitDBHelper.close();
+        }
+    }
+
+    private void addFloatingActionButtons(){
+
+        FloatingActionButton addNote = (FloatingActionButton) findViewById(R.id.addNoteFab);
+        FloatingActionButton addCheckList = (FloatingActionButton) findViewById(R.id.addCheckListab);
+        FloatingActionButton addHabit = (FloatingActionButton) findViewById(R.id.addHabitFab);
+        final LayoutInflater layoutInflater = (LayoutInflater)
+                getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+
+
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+        // Setting Dialog Title
+        alertDialog.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        // closed
+        // Showing Alert Message
+        addNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSave = 1;
+                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                alertDialog.setTitle("Add Note To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                // Write your code here to execute after dialog
+                                String str = editInput.getText().toString();
+                                if(str.length()>0){
+                                    saveStuff(editInput.getText().toString());
+                                    dialog.cancel();
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }}).create().show();            }
+        });
+        addCheckList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSave = 2;
+                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                alertDialog.setTitle("Add CheckList To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                // Write your code here to execute after dialog
+                                String str = editInput.getText().toString();
+                                if(str.length()>0){
+                                    saveStuff(editInput.getText().toString());
+                                    dialog.cancel();
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }}).create().show();
+            }
+        });
+        addHabit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSave =3;
+                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                // Write your code here to execute after dialog
+                                String str = editInput.getText().toString();
+                                if(str.length()>0){
+                                    saveStuff(editInput.getText().toString());
+                                    dialog.cancel();
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }}).create().show();
+            }
+        });
     }
 
     private void toggleTagDetail(){
@@ -194,6 +317,7 @@ public class HomeActivity extends Activity {
                 cardText2.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
                 cardText1.setTypeface(font);
                 cardText2.setTypeface(font);
+                cardText2.setVisibility(View.GONE);
                return view;
             }
         };
@@ -262,7 +386,7 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 final Tag currentTag = tagItem;
-
+                currentTagInView = tagItem;
                 for(int i =0; i<tagTextViewMap.size(); i++){
                     TextView tk = tagTextViewMap.get(tags.get(i));
                     if(i==tagTextViewMap.size()-1){

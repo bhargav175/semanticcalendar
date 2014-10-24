@@ -181,4 +181,20 @@ public class HabitDBHelper {
         Log.d( TAG,"Habit archived" + habit.getHabitText());
 
     }
+
+    public void saveHabitWithTag(Habit habit, Tag tag) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitId(TABLE)) + 1)));
+        values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
+        values.put(DBHelper.HABIT_TAG, tag.getTagId());
+
+        //values.put("image_path", draft.getDraftImagePath());
+        //TODO Location Insertion
+        Log.d(TAG, values.toString());
+        database.insert(TABLE, null, values);
+        Log.d( TAG,"Habit saved" + habit.getHabitText());
+
+
+    }
 }

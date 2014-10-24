@@ -240,14 +240,30 @@
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/gray_color"
-            fab:fab_colorPressed="@color/white"/>
+            fab:fab_colorNormal="@color/blue_color"
+            fab:fab_colorPressed="@color/light_blue_500"
+            fab:fab_icon="@drawable/ic_note_add_white_36dp"
+            android:id="@+id/addNoteFab"
+            />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/gray_color"
-            fab:fab_colorPressed="@color/white"/>
+            fab:fab_colorNormal="@color/blue_color"
+            fab:fab_colorPressed="@color/light_blue_500"
+            fab:fab_icon="@drawable/ic_check_box_white_36dp"
+            android:id="@+id/addCheckListab"
+
+            />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/blue_color"
+            fab:fab_colorPressed="@color/light_blue_500"
+            fab:fab_icon="@drawable/ic_repeat_white_36dp"
+            android:id="@+id/addHabitFab"
+            />
+
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </RelativeLayout>
