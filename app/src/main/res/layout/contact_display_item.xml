@@ -16,7 +16,7 @@
     <TextView
         style="?android:attr/dropDownItemStyle"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/textView"
+        android:id="@+id/loading"
         android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
         android:singleLine="true"
         android:layout_weight="6"

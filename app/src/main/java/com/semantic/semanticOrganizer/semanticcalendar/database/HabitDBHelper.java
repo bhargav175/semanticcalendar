@@ -62,19 +62,25 @@ public class HabitDBHelper {
 
 
 
-    public int updateHabit(Habit habit, String habitText ,Integer habitTag) {
+    public int updateHabit(Habit habit) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.HABIT_TEXT, habitText);
-        values.put(DBHelper.HABIT_TAG, habitTag);
-
+        values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
+        values.put(DBHelper.HABIT_QUESTION, habit.getHabitQuestion());
+        values.put(DBHelper.HABIT_REQUEST_ID,habit.getRequestId());
+        values.put(DBHelper.HABIT_IS_ARCHIVED,habit.getIsArchived());
+        values.put(DBHelper.HABIT_TAG, habit.getTag());
+        values.put(DBHelper.HABIT_TYPE,habit.getHabitType().getTypeValue());
+        values.put(DBHelper.HABIT_DAYS_CODE,habit.getDaysCode());
+        values.put(DBHelper.HABIT_DURATION,habit.getDuration());
+        values.put(DBHelper.HABIT_FREQUENCY,habit.getFrequency());
 
 
         // updating row
         database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(habit.getId()) });
-        Log.d( TAG,"Habit updated" + habitText);
+        Log.d( TAG,"Habit updated" + habit.getHabitText());
 
 
         return 0;

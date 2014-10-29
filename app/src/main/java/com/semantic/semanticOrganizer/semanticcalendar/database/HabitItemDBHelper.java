@@ -13,15 +13,19 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 import com.semantic.semanticOrganizer.semanticcalendar.models.HabitItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Admin on 16-09-2014.
  */
 public class HabitItemDBHelper {
 
-    private final static String TABLE = DBHelper.HABITS_TABLE;
+    private final static String TABLE = DBHelper.HABIT_ITEMS_TABLE;
     private final static String TAG = "HabitSave";
 
     private DBHelper dbHelper;
@@ -50,8 +54,7 @@ public class HabitItemDBHelper {
     }
 
     public HabitItem getHabitItem(int id) {
-        Cursor cursor = database.query(TABLE,null, DBHelper.COLUMN_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = database.query(TABLE,null,null, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -62,52 +65,63 @@ public class HabitItemDBHelper {
 
     public HabitItem getHabitItemByDate(Date date, Habit habit) {
         Cursor cursor = database.query(DBHelper.HABIT_ITEMS_TABLE,null, DBHelper.HABIT_ITEM_DATE + "= ? AND "+DBHelper.HABIT_ITEM_HABIT + " = ?",
-                new String[] { new SimpleDateFormat("yyyy-MM-dd").format(new Date()) , habit.getId().toString()}, null, null, null, null);
+                new String[] { new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date) , habit.getId().toString()}, null, null, null, null);
         HabitItem habitItem = null;
         if ( cursor.moveToNext())
         {
-
             habitItem =cursorToHabitItem(cursor);
-
         }
 
         // return contact
         return habitItem;
     }
 
+    public List<HabitItem> getHabitItemByHabits(Habit habit) {
+        Cursor cursor = database.query(DBHelper.HABIT_ITEMS_TABLE,null,DBHelper.HABIT_ITEM_HABIT + " = ?",
+                new String[] {  habit.getId().toString()}, null, null, null, null);
+        List<HabitItem> habitItemList = new ArrayList<HabitItem>();
 
-
-    public int updateHabitItem(Habit habit, String habitText ,Integer habitTag) {
-
-        database = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DBHelper.HABIT_TEXT, habitText);
-        values.put(DBHelper.HABIT_TAG, habitTag);
-
-
-
-        // updating row
-        database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
-                new String[] { String.valueOf(habit.getId()) });
-        Toast.makeText(context,"Habit "+ habitText+" updated", Toast.LENGTH_SHORT).show();
-
-
-        return 0;
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            HabitItem habitItem =cursorToHabitItem(cursor);
+            habitItemList.add(habitItem);
+            cursor.moveToNext();
+        }
+          // return contact
+        return habitItemList;
     }
 
 
-    public void saveHabitItem(Habit habit) {
+
+    public HabitItem updateHabitItem(HabitItem habitItem) {
+
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.HABIT_ITEM_DATE,
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(habitItem.getCurrentDate().getTime()));
+        values.put(DBHelper.HABIT_ITEM_HABIT, habitItem.getHabit());
+        values.put(DBHelper.HABIT_ITEM_STATE, habitItem.getHabitItemState().getStateValue());
+        // updating row
+        database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[] { String.valueOf(habitItem.getId()) });
+        HabitItem habitItem1 = getHabitItem(habitItem.getId());
+        return habitItem1;
+    }
+
+
+    public HabitItem saveHabitItem(Date date,Habit habit) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitItemId(TABLE)) + 1)));
-        values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
+        values.put(DBHelper.HABIT_ITEM_HABIT, habit.getId());
         values.put( DBHelper.HABIT_ITEM_DATE,
-                new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(TABLE, null, values);
-        Toast.makeText(context,"Habit "+ habit.getHabitText()+" saved", Toast.LENGTH_SHORT).show();
+        HabitItem habitItem = getHabitItem(Integer.parseInt(getPrevHabitItemId(TABLE)) + 1);
+        return habitItem;
 
     }
     private String getPrevHabitItemId(String tableName) {
@@ -138,7 +152,15 @@ public class HabitItemDBHelper {
         HabitItem habitItem = new HabitItem();
 
         habitItem.setId(cursor.getInt(0));
-        habitItem.setCurrentDate(cursor.getString(1));
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            cal.setTime(sdf.parse(cursor.getString(1)));
+            habitItem.setCurrentDate(cal);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         habitItem.setHabitItemState(HabitItem.State.values()[(cursor.getInt(2))]);
         habitItem.setCreatedTime(cursor.getString(3));
         if(cursor.getString(4)!=null) {

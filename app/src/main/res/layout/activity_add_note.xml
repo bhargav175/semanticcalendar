@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:text="@string/write_note_label"
-            android:id="@+id/textView"
+            android:id="@+id/loading"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
             android:textSize="24sp"

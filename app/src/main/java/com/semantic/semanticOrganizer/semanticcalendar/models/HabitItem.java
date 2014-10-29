@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.database.HabitItemDBHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,11 +32,11 @@ public class HabitItem {
         this.createdTime = createdTime;
     }
 
-    public String getCurrentDate() {
+    public Calendar getCurrentDate() {
         return currentDate;
     }
 
-    public void setCurrentDate(String currentDate) {
+    public void setCurrentDate(Calendar currentDate) {
         this.currentDate = currentDate;
     }
 
@@ -56,14 +58,14 @@ public class HabitItem {
 
     private int id;
     private String createdTime;
-    private String currentDate;
+    private Calendar currentDate;
      private Integer Habit;
     private State habitItemState;
 
 
 
     public enum  State{
-        NOT_STARTED(0), STARTED(1), INCOMPLETE(2),COMPLETED_UNSUCCESSFULLY(3),COMPLETED_SUCCESSFULLY(4);
+        UNSET(0), SKIPPED(1), COMPLETED_UNSUCCESSFULLY(2),COMPLETED_SUCCESSFULLY(3);
 
         private int stateValue;
         State(int stateValue) {
@@ -82,6 +84,50 @@ public class HabitItem {
 
     public HabitItem(){
 
+    }
+    public static HabitItem getHabitItemByHabitAndDate(Context context, Habit habit, Calendar date){
+        HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
+        habitItemDBHelper.open();
+        HabitItem habitItem = habitItemDBHelper.getHabitItemByDate(date.getTime(),habit);
+        habitItemDBHelper.close();
+        return habitItem;
+
+    }
+    public static  List<HabitItem> getAllHabitItemsInHabit(Context context, Habit habit){
+        HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
+        habitItemDBHelper.open();
+        List<HabitItem> habitItemList = habitItemDBHelper.getHabitItemByHabits(habit);
+        habitItemDBHelper.close();
+        return habitItemList;
+
+    }
+
+    public static HabitItem saveHabitItem(Context context, Habit habit, Calendar date){
+        HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
+        habitItemDBHelper.open();
+        HabitItem habitItem = habitItemDBHelper.saveHabitItem(date.getTime(),habit);
+        habitItemDBHelper.close();
+        return habitItem;
+
+    }
+    public static HabitItem updateHabitItem(Context context, HabitItem habitItem){
+        HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
+        habitItemDBHelper.open();
+        habitItem = habitItemDBHelper.updateHabitItem(habitItem);
+        habitItemDBHelper.close();
+        return habitItem;
+
+    }
+    public static String getStateString(State state){
+        if(state == State.UNSET){
+            return "Unset";
+        }else if(state == State.SKIPPED){
+            return "Skipped";
+        }else if (state == State.COMPLETED_UNSUCCESSFULLY){
+            return "Completed Unsuccessfully";
+        }else{
+            return "Completed Successfully";
+        }
     }
 
 

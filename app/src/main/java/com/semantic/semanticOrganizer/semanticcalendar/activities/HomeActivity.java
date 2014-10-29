@@ -24,12 +24,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.CheckListDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
@@ -69,6 +71,8 @@ public class HomeActivity extends Activity {
     private ArrayAdapter<OrganizerItem> listAdapter;
     private Typeface font;
     private Integer doSave;
+    private FloatingActionsMenu fam;
+    private LinearLayout mainLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +86,14 @@ public class HomeActivity extends Activity {
 
 
     private void init(){
+        mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
+        fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         noTagLayout = (RelativeLayout) findViewById(R.id.noTagsLayout);
         tagContainerLayout = (LinearLayout) findViewById(R.id.tagContainerLayout);
-            new GetTags().execute("");
+
+        new GetTags().execute("");
+
+
 
     }
 
@@ -272,7 +281,7 @@ public class HomeActivity extends Activity {
                     tag.setTagText(addTagEditText.getText().toString());
                     tagDBHelper.open();
                     Tag tagItem =tagDBHelper.saveTag(tag);
-                    tags.add(tags.size()-2,tagItem);
+                    tags.add(tags.size()-1,tagItem);
                     tagOrganizerMap.put(tagItem,new ArrayList<OrganizerItem>());
                     addTagToTagsAsTags(tagItem);
 
@@ -333,7 +342,7 @@ public class HomeActivity extends Activity {
                     new GetNote(organizerItem.getId()).execute("");
 
                 }else if(organizerItem.getType().equals("HABIT")){
-                    Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), HabitStreakActivity.class);
                     intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
                     intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                     startActivity(intent);
@@ -439,14 +448,19 @@ public class HomeActivity extends Activity {
 
     private int getLastAddedTagIndex(){
         int lastAddedTAg =0;
-        for(Tag tag:tags){
-            if(tags.indexOf(tag)>0 && tags.indexOf(tag)<tags.size()){
-                if(tags.get(0).getCreatedMillis()> tag.getCreatedMillis()){
-                    lastAddedTAg = tags.indexOf(tag);
-                }
-            }
+        if(tags.size()>1){
+            lastAddedTAg = 1;
+            for(int i=1 ;i<tags.size();i++){
+                Tag tag = tags.get(i);
 
+                    if(tags.get(lastAddedTAg).getCreatedMillis()> tag.getCreatedMillis()){
+                        lastAddedTAg = i;
+                    }
+
+
+            }
         }
+
         return lastAddedTAg;
     }
 
@@ -547,6 +561,7 @@ public class HomeActivity extends Activity {
         @Override
         protected void onPostExecute(final List<Tag> tagList) {
 
+
         if(tagList.size()>0){
 
 
@@ -554,6 +569,10 @@ public class HomeActivity extends Activity {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
+                    RelativeLayout pg = (RelativeLayout) findViewById(R.id.loadingLayout);
+                    pg.setVisibility(View.GONE);
+                    mainLayout.setVisibility(View.VISIBLE);
+                    fam.setVisibility(View.VISIBLE);
                     tags = new ArrayList<Tag>();
                     tags.addAll(tagList);
                     tags.add(new Tag("Untagged"));
@@ -567,13 +586,35 @@ public class HomeActivity extends Activity {
 
         }else{
 
+//            new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    RelativeLayout pg = (RelativeLayout) findViewById(R.id.loadingLayout);
+//                    pg.setVisibility(View.GONE);
+//                    mainLayout.setVisibility(View.VISIBLE);
+//                    fam.setVisibility(View.VISIBLE);
+//                    noTagLayout.setVisibility(View.VISIBLE);
+//                    tagContainerLayout.setVisibility(View.GONE);
+//                }
+//            });
+
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    noTagLayout.setVisibility(View.VISIBLE);
-                    tagContainerLayout.setVisibility(View.GONE);
+                    RelativeLayout pg = (RelativeLayout) findViewById(R.id.loadingLayout);
+                    pg.setVisibility(View.GONE);
+                    mainLayout.setVisibility(View.VISIBLE);
+                    fam.setVisibility(View.VISIBLE);
+                    tags = new ArrayList<Tag>();
+                    tags.addAll(tagList);
+                    tags.add(new Tag("Untagged"));
+                    tagOrganizerMap = new LinkedHashMap<Tag, List<OrganizerItem>>();
+                    new GetAllUnArchivedOrganizerItems(tags,getApplicationContext()).execute("");
+                    noTagLayout.setVisibility(View.GONE);
+                    tagContainerLayout.setVisibility(View.VISIBLE);
                 }
             });
+
 
 
         }

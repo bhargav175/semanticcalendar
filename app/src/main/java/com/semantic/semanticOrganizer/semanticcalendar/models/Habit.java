@@ -19,6 +19,8 @@ public class Habit {
 
 
 
+    public static String[] frequencyStrings = {"4 times a week","3 times a week", "2 times a week","Once a week","Once every 2 weeks","Once a month","Once every 2 months", "Once every 6 months", "Once a year" };
+    public static String[] durationStrings = {"1 week", "2 weeks","3 weeks" ,"1 month", "2 months", "3 months", "6 months", "1 year" ,"Forever" };
     private Integer id;
 
     public String getHabitText() {
@@ -281,5 +283,66 @@ public static List<Habit> getAllUnArchivedHabitsSandbox(Context context) {
 
     public void setRequestId(Integer requestId) {
         this.requestId = requestId;
+    }
+
+    public static int toDaysCode(Boolean sun,Boolean mon,Boolean tue,Boolean wed,Boolean thu,Boolean fri,Boolean sat){
+        int suns = sun?1:0;
+        int muns = mon?1:0;
+        int tues = tue?1:0;
+        int weds = wed?1:0;
+        int thus = thu?1:0;
+        int fris = fri?1:0;
+        int sats = sat?1:0;
+        return suns*1000000+muns*100000+tues*10000+weds*1000+thus*100+fris*10+sats;
+    }
+
+    public static List<Boolean> getBooleansFromDayCode(int daysCode){
+        int rem = daysCode;
+        int suns = rem/1000000;
+        rem = rem % 1000000;
+        int mons = rem/100000;
+        rem = rem % 100000;
+        int tues = rem/10000;
+        rem = rem%10000;
+        int weds = rem/1000;
+        rem = rem%1000;
+        int thus = rem/100;
+        rem = rem %100;
+        int fris = rem/10;
+        rem = rem%10;
+        int sats = rem;
+        List<Boolean> daysBoolean = new ArrayList<Boolean>();
+        daysBoolean.add(suns>0);
+        daysBoolean.add(mons>0);
+        daysBoolean.add(tues>0);
+        daysBoolean.add(weds>0);
+        daysBoolean.add(thus>0);
+        daysBoolean.add(fris>0);
+        daysBoolean.add(sats>0);
+        return daysBoolean;
+    }
+    public static int getDurationCountFromDurationString(int durationIndex){
+        switch(durationIndex){
+            case 0:
+                return 7;
+            case 1:
+                return 14;
+            case 2:
+                return 21;
+            case 3:
+                return 30;
+            case 4:
+                return 60;
+            case 5:
+                return 90;
+            case 6:
+                return 180;
+            case 7:
+                return 360;
+            case 8:
+                return 10000;
+            default:
+                return 10000;
+        }
     }
 }

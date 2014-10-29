@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:text="@string/write_checklist_label"
-            android:id="@+id/textView"
+            android:id="@+id/loading"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
             android:textSize="24sp"
@@ -51,7 +51,8 @@
             android:hint="@string/write_checklist_text_hint"
             android:layout_gravity="center_horizontal"
             android:gravity="top"
-            android:textColorHint="@color/gray_color" />
+            android:textColorHint="@color/gray_color"
+            android:textColor="@color/pitch_black" />
     </LinearLayout>
 
 
@@ -110,7 +111,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:checked="false"
-            android:padding="@dimen/material_padding" />
+            android:padding="@dimen/material_padding"
+            android:textColor="@color/pitch_black" />
 
     </LinearLayout>
 

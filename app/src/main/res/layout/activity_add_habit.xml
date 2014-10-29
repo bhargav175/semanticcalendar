@@ -4,7 +4,7 @@
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/light_gray_color"
+    android:background="@color/white"
     tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddHabitActivity"
     android:padding="@dimen/material_left_padding">
 
@@ -18,18 +18,37 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/linearLayout2"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+
         android:padding="@dimen/material_padding">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="64dp"
             android:text="@string/write_habit_label"
-            android:id="@+id/textView"
+            android:id="@+id/loading"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
             android:textSize="24sp"
             android:paddingStart="8dp"
-            android:textColor="@color/light_black" />
+            android:textColor="@color/light_black"
+            android:layout_weight="0.6" />
+
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Archived"
+            android:id="@+id/isArchived"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:checked="false"
+            android:padding="@dimen/material_padding"
+            android:textColor="@color/pitch_black"
+            android:textSize="12sp"
+            android:layout_weight="0.4"
+            android:gravity="center_vertical|center_horizontal" />
     </LinearLayout>
 
 
@@ -42,17 +61,32 @@
         android:id="@+id/linearLayout3"
         android:padding="@dimen/material_padding">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:id="@+id/textView6"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:paddingStart="8dp"
+            android:textColor="@color/light_black"
+            android:layout_weight="0.4"
+            android:padding="@dimen/material_padding" />
+
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/habitText"
             android:hint="@string/write_habit_text_hint"
+
             android:layout_gravity="center_horizontal"
+            android:textColorHint="@color/gray_color"
+            android:textColor="@color/pitch_black"
+            android:layout_weight="0.6"
             android:gravity="top"
-            android:textColorHint="@color/gray_color" />
+            android:padding="@dimen/material_padding" />
     </LinearLayout>
-
-
 
 
     <LinearLayout
@@ -61,7 +95,8 @@
         android:layout_below="@id/linearLayout3"
         android:orientation="horizontal"
         android:id="@+id/linearLayout5"
-        android:padding="@dimen/material_padding">
+        android:padding="@dimen/material_padding"
+        android:visibility="gone">
 
         <EditText
             android:layout_width="match_parent"
@@ -70,7 +105,8 @@
             android:hint="Habit Question"
             android:layout_gravity="center_horizontal"
             android:gravity="top"
-            android:textColorHint="@color/gray_color" />
+            android:textColorHint="@color/gray_color"
+            android:textColor="@color/pitch_black" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,14 +117,26 @@
         android:id="@+id/linearLayout6"
         android:padding="@dimen/material_padding">
 
-        <EditText
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/duration"
-            android:hint="Duration"
+            android:text="Duration"
+            android:id="@+id/textView7"
             android:layout_gravity="center_horizontal"
-            android:gravity="top"
-            android:textColorHint="@color/gray_color" />
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:paddingStart="8dp"
+            android:textColor="@color/light_black"
+            android:layout_weight="0.4"
+            android:padding="@dimen/material_padding" />
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/durationSpinner"
+            android:layout_weight="0.6"
+            android:padding="@dimen/material_padding" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -102,21 +150,24 @@
         android:padding="@dimen/material_padding">
 
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tag"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:paddingStart="8dp"
+            android:textColor="@color/light_black"
+            android:layout_weight="0.4"
+            android:padding="@dimen/material_padding" />
+
         <Spinner
-            android:layout_width="158dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/selectSpinner"
-            android:layout_weight="0.50" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Archived"
-            android:id="@+id/isArchived"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:checked="false"
+            android:layout_weight="0.6"
             android:padding="@dimen/material_padding" />
 
     </LinearLayout>
@@ -134,11 +185,25 @@
         android:padding="@dimen/material_padding">
 
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Habit Type"
+            android:id="@+id/textView4"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:paddingStart="8dp"
+            android:textColor="@color/light_black"
+            android:layout_weight="0.4"
+            android:padding="@dimen/material_padding" />
+
         <Spinner
-            android:layout_width="158dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/selectHabitType"
-            android:layout_weight="0.50" />
+            android:layout_weight="0.6"
+            android:padding="@dimen/material_padding" />
 
 
     </LinearLayout>
@@ -176,7 +241,7 @@
                 android:paddingTop="15dp"
                 android:paddingRight="15dp"
                 android:paddingBottom="15dp"
-                android:textColor="#fff"
+                android:textColor="@color/pitch_black"
                 android:paddingLeft="5dp"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -252,18 +317,25 @@
                 android:id="@+id/linearLayout11"
                 android:weightSum="1" >
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/habitFrequency"
-                    android:hint="Days per"
-                    android:textColorHint="@color/gray_color"
-                    android:paddingTop="15dp"
-                    android:paddingRight="30dp"
-                    android:paddingBottom="15dp"
-                    android:paddingLeft="5dp"
-                    android:inputType="number"
-                    android:textColor="@color/light_black" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Frequency"
+                    android:id="@+id/textView5"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:paddingStart="8dp"
+                    android:textColor="@color/light_black"
+                    android:layout_weight="0.4"
+                    android:padding="@dimen/material_padding" />
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/frequencyBase"
+                    android:layout_weight="0.6"
+                    android:padding="@dimen/material_padding" />
 
             </LinearLayout>
 

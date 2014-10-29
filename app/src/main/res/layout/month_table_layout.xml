@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_horizontal">
+
+
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="October, 2014"
+        android:textSize="@dimen/material_heading_text_size"
+        android:textColor="@color/gray_color"
+        android:padding="@dimen/material_padding"
+        android:gravity="center_horizontal" />
+
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/material_padding"
+        android:id="@+id/monthTableLayout"
+        android:background="@color/white">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/monthTable" >
+
+            <TextView
+                android:id="@+id/button1"
+                android:layout_gravity="center"
+                android:text="S"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/button2"
+                android:layout_gravity="left|top"
+                android:text="M"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/button3"
+                android:layout_gravity="left|top"
+                android:text="T"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/button4"
+                android:layout_gravity="left|top"
+                android:text="W"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/button5"
+                android:layout_gravity="left|top"
+                android:text="Th"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/button6"
+                android:layout_gravity="left|top"
+                android:text="F"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/button7"
+                android:layout_gravity="left|top"
+                android:text="S"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

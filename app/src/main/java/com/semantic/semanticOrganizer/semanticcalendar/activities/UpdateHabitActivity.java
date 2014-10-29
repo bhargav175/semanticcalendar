@@ -3,12 +3,16 @@ package com.semantic.semanticOrganizer.semanticcalendar.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
@@ -25,17 +30,20 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UpdateHabitActivity extends Activity {
     private HabitDBHelper habitDBHelper;
     private EditText habitText, habitQuestion, habitDuration, habitFrequency;
-    private Spinner tag, frequencyBase, habitType;
+    private Spinner tag, frequencyBase, habitType,habitDurationSpinner;
     private LinearLayout fixedHabitLayout, flexibleHabitLayout;
     private CheckBox isArchived;
     private Boolean sun, mon,tue,wed,thu,fri,sat;
+    private Habit habitCurrent;
     private Button sundayButton, mondayButton, tuesdayButton, wednesdayButton,thursdayButton, fridayButton, saturdayButton;
-    Integer habitId;
+    Integer habitId,currentHabitDuration,currentHabitFrequency;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +57,8 @@ public class UpdateHabitActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        if(habitId!=null){
-                            updateHabit(habitId);
+                        if(habitCurrent!=null){
+                            updateHabit();
                             Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
                             startActivity(intent);
                         }
@@ -72,7 +80,6 @@ public class UpdateHabitActivity extends Activity {
                 });
         // Show the custom action bar view and hide the normal Home icon and title.
         setContentView(R.layout.activity_add_habit);
-        initUi();
 
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayOptions(
@@ -89,21 +96,7 @@ public class UpdateHabitActivity extends Activity {
         Bundle extras= intent.getExtras();
         if(extras!=null){
             habitId = extras.getInt(DBHelper.COLUMN_ID);
-            String habitTextString = extras.getString(DBHelper.HABIT_TEXT);
-            String habitQuestionString = extras.getString(DBHelper.HABIT_QUESTION);
-            Integer habitDurationInt = extras.getInt(DBHelper.HABIT_DURATION);
-            Integer habitFrequency = extras.getInt(DBHelper.HABIT_FREQUENCY);
-            Boolean isArchived = extras.getInt(DBHelper.HABIT_IS_ARCHIVED)>0;
-            Integer tagId = extras.getInt(DBHelper.HABIT_TAG);
-            Integer habitTypeInt = extras.getInt(DBHelper.HABIT_TYPE);
-            Integer habitDaysCode = extras.getInt(DBHelper.HABIT_DAYS_CODE);
-            Integer requestId = extras.getInt(DBHelper.HABIT_REQUEST_ID);
-            String habitCreatedTime = extras.getString(DBHelper.COLUMN_CREATED_TIME);
-
-            habitText.setText(habitTextString);
-            habitQuestion.setText(habitQuestionString);
-            habitDuration.setText(habitDurationInt.toString());
-
+            new GetHabit(habitId).execute("");
 
         }else{
             Toast.makeText(this, "Could not load habit", Toast.LENGTH_SHORT).show();
@@ -117,12 +110,13 @@ public class UpdateHabitActivity extends Activity {
         //4 edittexts
         habitText = (EditText) findViewById(R.id.habitText);
         habitQuestion = (EditText) findViewById(R.id.habitQuestion);
-        habitDuration = (EditText) findViewById(R.id.duration);
-        habitFrequency = (EditText) findViewById(R.id.habitFrequency);
+        habitDurationSpinner = (Spinner) findViewById(R.id.durationSpinner);
 
         //2 spinners
         habitType = (Spinner) findViewById(R.id.selectHabitType);
         tag = (Spinner) findViewById(R.id.selectSpinner);
+        frequencyBase = (Spinner) findViewById(R.id.frequencyBase);
+
 
         isArchived = (CheckBox) findViewById(R.id.isArchived);
 
@@ -147,36 +141,204 @@ public class UpdateHabitActivity extends Activity {
         fridayButton = (Button) findViewById(R.id.fridayButton);
         saturdayButton = (Button) findViewById(R.id.saturdayButton);
 
+        setButtonState(sundayButton,sun);
+        setButtonState(mondayButton,mon);
+        setButtonState(tuesdayButton,tue);
+        setButtonState(wednesdayButton,wed);
+        setButtonState(thursdayButton,thu);
+        setButtonState(fridayButton,fri);
+        setButtonState(saturdayButton,sat);
+
 
 
         habitDBHelper = new HabitDBHelper(this);
         habitDBHelper.open();
         flexibleHabitLayout = (LinearLayout) findViewById(R.id.linearLayoutFlexible);
         fixedHabitLayout = (LinearLayout) findViewById(R.id.linearLayoutFixed);
-        List<Tag> tags = Tag.getAllTags(new ArrayList<Tag>(),getApplicationContext());
-        tags.add(new Tag("No Tag"));
-        ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                android.R.layout.simple_spinner_item,tags );
-        tag.setAdapter(adapter);
+
+        //Duration
+        List<String> durationStrings = new ArrayList<String>();
+        durationStrings.addAll(Arrays.asList(Habit.durationStrings));
+
+
+        ArrayAdapter<String> durationAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,durationStrings);
+        habitDurationSpinner.setAdapter(durationAdapter);
+        habitDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               currentHabitDuration = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+ //habit Type
+        List<String> habitTypeStrings = new ArrayList<String>();
+        habitTypeStrings.add("Fixed");
+        habitTypeStrings.add("Flexible");
+        ArrayAdapter<String> habitTypeAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,habitTypeStrings);
+        habitType.setAdapter(habitTypeAdapter);
+        habitType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    habitCurrent.setHabitType(Habit.Type.FIXED);
+                    fixedHabitLayout.setVisibility(View.VISIBLE);
+                    flexibleHabitLayout.setVisibility(View.GONE);
+                }else{
+                    habitCurrent.setHabitType(Habit.Type.FLEXIBLE);
+                    fixedHabitLayout.setVisibility(View.GONE);
+                    flexibleHabitLayout.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        habitType.setSelection(0);
+        //Frequency
+        List<String> habitFrequencyStrings = new ArrayList<String>();
+        habitFrequencyStrings.addAll(Arrays.asList(Habit.frequencyStrings));
+        ArrayAdapter<String> habitFrequencyAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,habitFrequencyStrings);
+        frequencyBase.setAdapter(habitFrequencyAdapter);
+        frequencyBase.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentHabitFrequency = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        frequencyBase.setSelection(0);
+    }
+    private void updateUi(){
+        habitText.setText(habitCurrent.getHabitText());
+
+        if(habitCurrent.getDuration()!=null){
+            habitDurationSpinner.setSelection(habitCurrent.getDuration());
+        }
+        if(habitCurrent.getIsArchived()!=null){
+           isArchived.setChecked(habitCurrent.getIsArchived());
+        }
+        if(habitCurrent.getHabitType()!=null){
+            if(habitCurrent.getHabitType() == Habit.Type.FIXED){
+                habitType.setSelection(0);
+
+                int habitCurrentDaysCode = habitCurrent.getDaysCode();
+                List<Boolean> daysBoolean = Habit.getBooleansFromDayCode(habitCurrentDaysCode);
+                sun = daysBoolean.get(0);
+                mon = daysBoolean.get(1);
+                tue = daysBoolean.get(2);
+                wed = daysBoolean.get(3);
+                thu = daysBoolean.get(4);
+                fri = daysBoolean.get(5);
+                sat = daysBoolean.get(6);
+
+                setButtonState(sundayButton,sun);
+                setButtonState(mondayButton,mon);
+                setButtonState(tuesdayButton,tue);
+                setButtonState(wednesdayButton,wed);
+                setButtonState(thursdayButton,thu);
+                setButtonState(fridayButton,fri);
+                setButtonState(saturdayButton,sat);
+
+            }else{
+                habitType.setSelection(1);
+                if(habitCurrent.getFrequency()!=null){
+                    frequencyBase.setSelection(habitCurrent.getFrequency());
+                }else{
+                    frequencyBase.setSelection(0);
+                }
+
+            }
+        }
+        new GetTags().execute("");
+
     }
     private void setListeners() {
-
+        sundayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sun = !sun;
+                setButtonState(sundayButton,sun);
+            }
+        });
+        mondayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mon = !mon;
+                setButtonState(mondayButton,mon);
+            }
+        });
+        tuesdayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tue = !tue;
+                setButtonState(tuesdayButton,tue);
+            }
+        });
+        wednesdayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wed = !wed;
+                setButtonState(wednesdayButton,wed);
+            }
+        });
+        thursdayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                thu = !thu;
+                setButtonState(thursdayButton,thu);
+            }
+        });
+        fridayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fri = !fri;
+                setButtonState(fridayButton,fri);
+            }
+        });
+        saturdayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sat = !sat;
+                setButtonState(saturdayButton,sat);
+            }
+        });
 
     }
 
-    private void updateHabit(Integer habitId) {
+    private void updateHabit() {
         String habitTextString=habitText.getText().toString();
         habitDBHelper = new HabitDBHelper(this);
         habitDBHelper.open();
-        Habit habit = habitDBHelper.getHabit(habitId);
         Tag habitTag = (Tag) tag.getSelectedItem();
+        habitCurrent.setHabitText(habitTextString);
+        habitCurrent.setTag(habitTag.getTagId());
+        habitCurrent.setDuration(currentHabitDuration);
+        habitCurrent.setIsArchived(isArchived.isChecked());
+        if(habitCurrent.getHabitType()== Habit.Type.FIXED){
+            habitCurrent.setFrequency(null);
+            habitCurrent.setDaysCode(Habit.toDaysCode(sun,mon,tue,wed,thu,fri,sat));
+        }else{
+            habitCurrent.setDaysCode(null);
+            habitCurrent.setFrequency(currentHabitFrequency);
+        }
 
-        if(habit!=null){
+        if(habitCurrent!=null){
             if(habitTextString.length()==0){
                 Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_SHORT).show();
             }
             else{
-                habitDBHelper.updateHabit(habit, habitTextString,habitTag.getTagId());
+                habitDBHelper.updateHabit(habitCurrent);
                 habitDBHelper.close();
 
             }
@@ -216,4 +378,115 @@ public class UpdateHabitActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private class GetHabit extends AsyncTask<String, Void, Habit> {
+
+        private int id;
+
+        public GetHabit(int id) {
+            this.id = id;
+        }
+
+        @Override
+        protected Habit doInBackground(String... params) {
+
+            habitCurrent = Habit.getHabitById(id, getApplicationContext());
+            return habitCurrent;
+        }
+
+        @Override
+        protected void onPostExecute(final Habit habit) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (habitCurrent != null) {
+                        initUi();
+                        setListeners();
+
+                        updateUi();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
+
+
+
+private class GetTags extends AsyncTask<String, Void, List<Tag>> {
+
+
+
+    public GetTags() {
+
+    }
+
+    @Override
+    protected List<Tag> doInBackground(String... params) {
+        List<Tag> tags = Tag.getAllTags(new ArrayList<Tag>(),getApplicationContext());
+        return tags;
+
+    }
+
+    @Override
+    protected void onPostExecute(final List<Tag> tags) {
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                tags.add(new Tag("No Tag"));
+                ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(getApplicationContext(),
+                        android.R.layout.simple_spinner_item,tags );
+                tag.setAdapter(adapter);
+
+                if(habitCurrent.getTag()!=null){
+                    for(Tag tagD : tags){
+                        if(tagD.getTagId() == habitCurrent.getTag()){
+                            Integer pos = tags.indexOf(tagD);
+                            tag.setSelection(pos);
+                            break;
+                        }
+                    }
+                }else{
+                    tag.setSelection(tags.size()-1);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPreExecute() {
+    }
+
+    @Override
+    protected void onProgressUpdate(Void... values) {
+    }
+}
+
+    public void setButtonState(Button button, Boolean bool){
+        if(bool){
+            button.setBackgroundColor(getResources().getColor(R.color.light_blue_500));
+            button.setTextColor(getResources().getColor(R.color.white));
+        }
+        else{
+            button.setBackgroundColor(getResources().getColor(R.color.white));
+            button.setTextColor(getResources().getColor(R.color.light_blue_500));
+        }
+
+    }
+
 }

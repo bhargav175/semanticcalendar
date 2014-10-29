@@ -26,6 +26,8 @@
     <color name="light_black">#333</color>
     <color name="red_color">#e51c23</color>
     <color name="teal_color">#009688</color>
+    <color name="lime_color">#cddc39</color>
+    <color name="green_color">#14e715</color>
 <color name="background">#e5e5e5</color>
 <color name="half_black">#808080</color>
 <color name="white_pressed">#f1f1f1</color>

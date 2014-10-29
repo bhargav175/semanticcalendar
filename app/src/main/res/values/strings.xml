@@ -118,5 +118,6 @@
     <string name="write_checklist_text_hint">Add CheckList</string>
     <string name="write_checklist_label">Check List</string>
     <string name="title_activity_update_tag">UpdateTagActivity</string>
+    <string name="title_activity_habit_streak">Habit Streak</string>
 
 </resources>

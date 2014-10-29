@@ -126,7 +126,7 @@ public class UpdateCheckListActivity extends Activity {
                 final View add_checklist_item = getLayoutInflater().inflate(R.layout.add_checklist_item_view, checkListItemContainer, false);
                 checkListItemContainer.addView(add_checklist_item);
                 EditText checkListItemText =(EditText) add_checklist_item.findViewById(R.id.editText);
-                CheckBox checkListItemCheckBox =(CheckBox) add_checklist_item.findViewById(R.id.checkBox);
+                CheckBox checkListItemCheckBox =(CheckBox) add_checklist_item.findViewById(R.id.isArchived);
                 TextView idStore =(TextView) add_checklist_item.findViewById(R.id.idStore);
                 idStore.setText(null);
                 Button close =(Button) add_checklist_item.findViewById(R.id.removeCheckListItemButton);
@@ -158,7 +158,7 @@ public class UpdateCheckListActivity extends Activity {
             final View add_checklist_item = getLayoutInflater().inflate(R.layout.add_checklist_item_view, checkListItemContainer, false);
             checkListItemContainer.addView(add_checklist_item);
             EditText checkListItemText =(EditText) add_checklist_item.findViewById(R.id.editText);
-            CheckBox checkListItemCheckBox =(CheckBox) add_checklist_item.findViewById(R.id.checkBox);
+            CheckBox checkListItemCheckBox =(CheckBox) add_checklist_item.findViewById(R.id.isArchived);
             TextView idStore =(TextView) add_checklist_item.findViewById(R.id.idStore);
             idStore.setText(String.valueOf(checkListItem.getId()));
             Button close =(Button) add_checklist_item.findViewById(R.id.removeCheckListItemButton);
@@ -240,7 +240,7 @@ public class UpdateCheckListActivity extends Activity {
                     }
 
                     EditText checkListItemText =(EditText) view.findViewById(R.id.editText);
-                    CheckBox checkListItemCheckBox =(CheckBox) view.findViewById(R.id.checkBox);
+                    CheckBox checkListItemCheckBox =(CheckBox) view.findViewById(R.id.isArchived);
                     if(checkListItemId==null){
                         //create checklistitem in database
                         CheckListItem checkListItem = new CheckListItem();

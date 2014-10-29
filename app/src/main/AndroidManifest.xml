@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.semantic.semanticOrganizer.semanticcalendar" >
-
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -33,7 +31,6 @@
         <activity
             android:name=".activities.LandingActivity"
             android:label="@string/LandingActivity" >
-
         </activity>
         <activity
             android:name=".activities.AddTagActivity"
@@ -97,6 +94,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.HabitStreakActivity"
+            android:label="@string/title_activity_habit_streak" >
         </activity>
     </application>
 
