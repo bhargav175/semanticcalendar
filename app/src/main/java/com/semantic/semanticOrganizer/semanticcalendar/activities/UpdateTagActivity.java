@@ -2,8 +2,12 @@ package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +33,7 @@ public class UpdateTagActivity extends Activity {
     private EditText tagDescription;
     private CheckBox tagIsArchived;
     Integer tagId;
+    private Tag currentTagInView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +47,19 @@ public class UpdateTagActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        if(tagId!=null){
-                            updateTag(tagId);
-                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
-                            startActivity(intent);
+                        if(currentTagInView!=null){
+                            if (tagText.getText().toString().length() == 0) {
+                                Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                updateTag(tagId);
+                                Intent intent = new Intent(UpdateTagActivity.this,TagActivity.class);
+                                if(currentTagInView.getTagId()!=null) {
+                                    intent.putExtra(DBHelper.COLUMN_ID,currentTagInView.getTagId());
+                                }
+                                startActivity(intent);
+                            }
+
                         }
                         else{
                             Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
@@ -81,9 +95,13 @@ public class UpdateTagActivity extends Activity {
         if(extras!=null){
             String tagTextString = extras.getString(DBHelper.TAG_TITLE);
             tagId = extras.getInt(DBHelper.COLUMN_ID);
-            tagText.setText(tagTextString);
-            tagDescription.setText(extras.getString(DBHelper.TAG_DESCRIPTION));
-            tagIsArchived.setChecked(extras.getBoolean(DBHelper.TAG_IS_ARCHIVED));
+            if(tagId!=null){
+                new GetTag(this,tagId).execute("");
+            }
+            else{
+                Toast.makeText(this, "Could not load tag", Toast.LENGTH_SHORT).show();
+
+            }
         }else{
             Toast.makeText(this, "Could not load tag", Toast.LENGTH_SHORT).show();
         }
@@ -98,6 +116,13 @@ public class UpdateTagActivity extends Activity {
     }
     private void setListeners() {
 
+
+    }
+
+    private void init(){
+        tagText.setText(currentTagInView.getTagText());
+        tagDescription.setText(currentTagInView.getTagDescription());
+        tagIsArchived.setChecked(currentTagInView.getIsArchived());
 
     }
 
@@ -153,5 +178,40 @@ public class UpdateTagActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class GetTag extends AsyncTask<String, Void,Void> {
+
+        private Context context;
+        private Integer tagId;
+
+        public GetTag(Context context,Integer tagId){
+            this.context=context;
+            this.tagId = tagId;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            currentTagInView =Tag.getTagById(tagId,context);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    init();
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 }

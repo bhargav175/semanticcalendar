@@ -96,6 +96,23 @@ public class Habit {
 
     }
 
+    public static List<Habit> getAllArchivedHabits(Context context) {
+        List<Habit> habitList = new ArrayList<Habit>();
+        HabitDBHelper habitDBHelper = new HabitDBHelper(context);
+        habitDBHelper.open();
+        Cursor cursor= habitDBHelper.fetchAllArchivedHabits();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Habit habit = habitDBHelper.cursorToHabit(cursor);
+            habitList.add(habit);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        habitDBHelper.close();
+        return habitList;
+    }
+
 
     public enum  Type{
         FIXED(0), FLEXIBLE(1);

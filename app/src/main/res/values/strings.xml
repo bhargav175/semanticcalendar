@@ -119,5 +119,9 @@
     <string name="write_checklist_label">Check List</string>
     <string name="title_activity_update_tag">UpdateTagActivity</string>
     <string name="title_activity_habit_streak">Habit Streak</string>
+    <string name="title_activity_tag_list_view">Your Lists</string>
+    <string name="title_activity_tag">TagActivity</string>
+    <string name="title_activity_super_main">SuperMain</string>
+    <string name="title_activity_archives">ArchivesActivity</string>
 
 </resources>

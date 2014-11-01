@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +68,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
     private Note noteCurrent;
     private Button addReminderButton, close;
-    private LinearLayout remainderContainer;
+    private RelativeLayout remainderContainer;
     private Boolean hadReminder, hasReminder;
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
@@ -91,14 +93,18 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        if (noteId != null) {
+                        if (noteCurrent != null) {
 
                             if (noteText.getText().toString().length() == 0) {
                                 Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 updateNote(noteId);
-                                Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                                Intent intent = new Intent(UpdateNoteActivity.this,TagActivity.class);
+                                if(noteCurrent.getTag()!=null){
+                                    intent.putExtra(DBHelper.COLUMN_ID,noteCurrent.getTag());
+
+                                }
                                 startActivity(intent);
                             }
 
@@ -198,7 +204,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     private void initUi() {
         noteText = (EditText) findViewById(R.id.noteTitle );
         addReminderButton = (Button) findViewById(R.id.addReminder);
-        remainderContainer = (LinearLayout) findViewById(R.id.remainderContainer);
+        remainderContainer = (RelativeLayout) findViewById(R.id.remainderContainer);
         noteDBHelper = new NoteDBHelper(this);
         reminderDBHelper = new ReminderDBHelper(this);
         noteDBHelper.open();

@@ -43,6 +43,7 @@ public class UpdateCheckListActivity extends Activity {
     private List<Integer> checkListItemIds;
     private CheckBox isArchived;
     Integer checkListId;
+    private CheckList currentCheckList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +56,21 @@ public class UpdateCheckListActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         // "Done"
-                        if(checkListId!=null){
-                            updateCheckList(checkListId);
-                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
-                            startActivity(intent);
+                        if(currentCheckList!=null){
+                            if (checkListText.getText().toString().length() == 0) {
+                                Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                updateCheckList(checkListId);
+                                Intent intent = new Intent(UpdateCheckListActivity.this,TagActivity.class);
+                                if(currentCheckList.getTag()!=null){
+                                    intent.putExtra(DBHelper.COLUMN_ID,currentCheckList.getTag());
+
+                                }
+                                startActivity(intent);
+                            }
+
+
                         }
                         else{
                             Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
@@ -347,6 +359,7 @@ public class UpdateCheckListActivity extends Activity {
         @Override
         protected CheckList doInBackground(String... params) {
             CheckList checkList  = CheckList.getCheckListById(id,getApplicationContext());
+            currentCheckList = checkList;
             return checkList;
         }
 

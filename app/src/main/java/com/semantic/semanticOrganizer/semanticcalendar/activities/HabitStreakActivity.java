@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -28,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.R;
+import com.semantic.semanticOrganizer.semanticcalendar.adapters.InfinitePagerAdapter;
+import com.semantic.semanticOrganizer.semanticcalendar.adapters.WrapContentHeightViewPager;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.HabitButton;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.MonthLayout;
@@ -68,9 +72,14 @@ public class HabitStreakActivity extends Activity {
     private LinearLayout calendarMonthView;
     private TextView ViewFullHabitStats;
     private HorizontalScrollView calendarHorizontalScrollView;
-
-
-
+    private WrapContentHeightViewPager habitStreakPager;
+    private InfinitePagerAdapter habitStreakAdapter;
+    private static final int PAGE_LEFT = 0;
+    private static final int PAGE_MIDDLE = 1;
+    private static final int PAGE_RIGHT = 2;
+    private int mSelectedPageIndex = 1;
+    private List<MonthLayout> monthLayouts = new ArrayList<MonthLayout>();
+    private Calendar currMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,8 +293,8 @@ public class HabitStreakActivity extends Activity {
             }
 
             //Create calendar
-            Calendar c = Calendar.getInstance();
-
+            currMonth = Calendar.getInstance();
+            Calendar c = (Calendar) currMonth.clone();
             // Set the calendar to sunday of the current week
             c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
             // Print dates of the current week starting on Sunday
@@ -295,40 +304,112 @@ public class HabitStreakActivity extends Activity {
             c.add(Calendar.DAY_OF_WEEK,
                     c.getFirstDayOfWeek() - c.get(Calendar.DAY_OF_WEEK));
             for (int i = 0; i < 7; i++) {
-                Calendar temp = (Calendar) c.clone();
-                HabitButton habitButton =  new HabitButton(this,temp,habitCurrent);
+                c = (Calendar) c.clone();
+                HabitButton habitButton =  new HabitButton(this,c,habitCurrent);
                 weekHabitItemsTableRow.addView(habitButton,weekHabitItemsTableRow.getChildCount());
                 c.add(Calendar.DATE, 1);
             }
             weekTableLayout.addView(weekHabitItemsTableRow);
             weekTableLayout.requestLayout();
-            calendarHorizontalScrollView = (HorizontalScrollView) findViewById(R.id.calendarHorizontalScrollView);
-            calendarMonthView = (LinearLayout) findViewById(R.id.calendarMonthView);
+            habitStreakPager = (WrapContentHeightViewPager) findViewById(R.id.habitStreakPager);
+            habitStreakAdapter = new InfinitePagerAdapter(habitCurrent,this,monthLayouts);
+            weekTableLayout.setVisibility(View.GONE);
 
-            final List<MonthLayout> linearLayouts = new ArrayList<MonthLayout>();
+            initMonths();
+            habitStreakPager.setCurrentItem(PAGE_MIDDLE,false);
 
-            Calendar nextMonth = Calendar.getInstance();
-            nextMonth.set(Calendar.MONTH,0);
+            habitStreakPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i2) {
+                }
 
-            for(int i = 0 ; i <12;i++){
-                nextMonth = (Calendar)nextMonth.clone();
-                nextMonth.add(Calendar.MONTH,1);
-                MonthLayout next = new MonthLayout(this,nextMonth,habitCurrent);
-                calendarMonthView.addView(next);
-                calendarHorizontalScrollView.requestLayout();
+                @Override
+                public void onPageSelected(int position) {
+                    mSelectedPageIndex = position;
 
-            }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    if (state == ViewPager.SCROLL_STATE_IDLE) {
+
+                        final MonthLayout leftPage = monthLayouts.get(PAGE_LEFT);
+                        final MonthLayout middlePage = monthLayouts.get(PAGE_MIDDLE);
+                        final MonthLayout rightPage = monthLayouts.get(PAGE_RIGHT);
+
+                        final int oldLeftIndex = leftPage.getIndex();
+                        final int oldMiddleIndex = middlePage.getIndex();
+                        final int oldRightIndex = rightPage.getIndex();
+
+                        // user swiped to right direction --> left page
+                        if (mSelectedPageIndex == PAGE_LEFT) {
+
+                            // moving each page content one page to the right
+                            leftPage.setIndex(oldLeftIndex - 1);
+                            middlePage.setIndex(oldLeftIndex);
+                            rightPage.setIndex(oldMiddleIndex);
+
+                            setContent(PAGE_RIGHT);
+                            setContent(PAGE_MIDDLE);
+                            setContent(PAGE_LEFT);
+
+                            // user swiped to left direction --> right page
+                        } else if (mSelectedPageIndex == PAGE_RIGHT) {
+
+                            leftPage.setIndex(oldMiddleIndex);
+                            middlePage.setIndex(oldRightIndex);
+                            rightPage.setIndex(oldRightIndex + 1);
+
+                            setContent(PAGE_LEFT);
+                            setContent(PAGE_MIDDLE);
 
 
-
-
-            //checking habit items
-
-
-
-
+                            setContent(PAGE_RIGHT);
+                        }
+                        habitStreakPager.setCurrentItem(PAGE_MIDDLE, false);
+                    }
+                }
+            });
         }
 
+    }
+
+
+    private void setContent(int index) {
+        final MonthLayout monthLayout =  monthLayouts.get(index);
+        Calendar month =(Calendar) currMonth.clone();
+        month.add(Calendar.MONTH,index);
+        new SetMonthLayoutMonth(monthLayout,month).execute("");
+    }
+
+
+
+
+
+    private void initMonths() {
+        Calendar currMonth = Calendar.getInstance() ;
+        MonthLayout v0 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout, null);
+        MonthLayout v1 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout, null);
+        MonthLayout v2 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout, null);
+
+        Calendar nextMonth = (Calendar) currMonth.clone();
+        Calendar prevMonth = (Calendar) currMonth.clone();
+        nextMonth.add(Calendar.MONTH,1);
+        prevMonth.add(Calendar.MONTH,-1);
+        v0.initializeWith(this,currMonth,habitCurrent);
+        v1.initializeWith(this,nextMonth,habitCurrent);
+        v2.initializeWith(this,prevMonth,habitCurrent);
+        monthLayouts.add(v2);
+        monthLayouts.add(v0);
+        monthLayouts.add(v1);
+        v2.setIndex(-1);
+        v0.setIndex(0);
+        v1.setIndex(1);
+        habitStreakAdapter.addView(v2, 0);
+        habitStreakAdapter.addView(v0, 0);
+        habitStreakAdapter.addView(v1, 0);
+        habitStreakPager.setAdapter(habitStreakAdapter);
+        habitStreakAdapter.notifyDataSetChanged();
     }
 
     private class GetHabit extends AsyncTask<String, Void, Habit> {
@@ -361,6 +442,40 @@ public class HabitStreakActivity extends Activity {
                     }
                 }
             });
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
+
+    private class SetMonthLayoutMonth extends AsyncTask<String, Void, Void> {
+
+        private int id;
+        private MonthLayout monthLayout;
+        private Calendar calendar;
+
+        public SetMonthLayoutMonth(MonthLayout monthLayout, Calendar calendar) {
+            this.monthLayout = monthLayout;
+            this.calendar = (Calendar) calendar.clone();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            monthLayout.setMonth(calendar);
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void v){
 
         }
 

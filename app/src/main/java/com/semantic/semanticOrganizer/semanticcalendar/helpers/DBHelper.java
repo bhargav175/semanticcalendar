@@ -15,6 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //Common Columns
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_CREATED_TIME = "createdTime";
+    public static final String COLUMN_DUE_TIME = "dueTime";
 
     //Declare Tables
     public static final String TASKS_TABLE ="tasks";
@@ -96,7 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 24;
+    private static final int DATABASE_VERSION = 25;
 
 
 
@@ -110,7 +111,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + NOTE_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + NOTE_TAG + " integer DEFAULT null, "
-            + NOTE_REQUEST_ID + " integer DEFAULT null"
+            + NOTE_REQUEST_ID + " integer DEFAULT null, "
+            + COLUMN_DUE_TIME + " DATETIME DEFAULT null"
             +");";
 
     private static final String CREATE_TABLE_TAGS = "create table if not exists "
@@ -130,7 +132,9 @@ public class DBHelper extends SQLiteOpenHelper {
             + CHECKLIST_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
             + CHECKLIST_TAG + " integer DEFAULT null, "
-            + CHECKLIST_REQUEST_ID + " integer DEFAULT null"
+            + CHECKLIST_REQUEST_ID + " integer DEFAULT null, "
+            + COLUMN_DUE_TIME + " DATETIME DEFAULT null"
+
 
             +");";
 
@@ -155,9 +159,11 @@ public class DBHelper extends SQLiteOpenHelper {
             + HABIT_FREQUENCY + " integer DEFAULT null, "
             + HABIT_DURATION + " integer DEFAULT null, "
          + HABIT_TAG + " integer DEFAULT null, "
-         + HABIT_REQUEST_ID + " integer DEFAULT null"
+         + HABIT_REQUEST_ID + " integer DEFAULT null, "
+         + COLUMN_DUE_TIME + " DATETIME DEFAULT null"
 
-            +");";
+
+         +");";
 
 
     private static final String CREATE_TABLE_HABIT_ITEMS = "create table if not exists "

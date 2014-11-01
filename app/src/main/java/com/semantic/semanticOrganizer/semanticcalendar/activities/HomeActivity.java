@@ -248,7 +248,6 @@ public class HomeActivity extends Activity {
         cardsListView.addHeaderView(mCustomHeaders,null,false);
         tagDetail = (LinearLayout) tagBanner.findViewById(R.id.tagDetail);
         flowLayout = (ScrollView) findViewById(R.id.flowLayout);
-        tagsLableView = (ImageView) tagBanner.findViewById(R.id.tagLabelsImage);
         closeFlowLayoutView = (ImageView) findViewById(R.id.clearFlowLayout);
         addTagButton = (Button) findViewById(R.id.addTagButton);
         addTagDonebutton = (ImageView) findViewById(R.id.doneButton);

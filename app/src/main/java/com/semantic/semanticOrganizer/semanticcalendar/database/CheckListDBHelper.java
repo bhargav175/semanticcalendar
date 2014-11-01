@@ -147,10 +147,11 @@ public class CheckListDBHelper {
         Log.d( TAG,"CheckList archived" + checkList.getCheckListText());
     }
 
-    public void saveCheckListWithTag(CheckList checkList, Tag tag) {
+    public CheckList saveCheckListWithTag(CheckList checkList, Tag tag) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevCheckListId(CHECKLISTS_TABLE)) + 1)));
+        Integer id = Integer.parseInt(getPrevCheckListId(CHECKLISTS_TABLE))+ 1;
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
         values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListText());
         values.put(DBHelper.CHECKLIST_TAG, tag.getTagId());
 
@@ -158,6 +159,10 @@ public class CheckListDBHelper {
         Log.d(TAG, values.toString());
         database.insert(CHECKLISTS_TABLE, null, values);
         Log.d( TAG,"CheckList saved" + checkList.getCheckListText());
-        ;
+        return getCheckList(id) ;
+    }
+
+    public Cursor fetchAllArchivedCheckLists() {
+        return database.query(CHECKLISTS_TABLE, null, DBHelper.CHECKLIST_IS_ARCHIVED+" = 1"  , null, null, null, null);
     }
 }

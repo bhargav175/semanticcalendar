@@ -293,33 +293,11 @@
             android:background="@color/white">
 
 
-            <LinearLayout
-                android:id="@+id/footerWrapperLayoutToGetAroundCenteringIssue"
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:background="@color/white">
-
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/calendarHorizontalScrollView"
-                    android:fillViewport="true"
-                    android:background="@color/white"
-                    >
-                    <LinearLayout
-                        android:id="@+id/calendarMonthView"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:background="@color/white"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
-
-                   </LinearLayout>
-                </HorizontalScrollView>
-            </LinearLayout>
+            <com.semantic.semanticOrganizer.semanticcalendar.adapters.WrapContentHeightViewPager
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/habitStreakPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
 
 

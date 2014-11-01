@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="240dp"
+    android:layout_height="fill_parent"
+    android:layout_gravity="start"
+    android:background="@color/white"
+   >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:id="@+id/home"
+        android:textColor="@color/pitch_black"
+        android:padding="@dimen/material_light_padding"
+        android:textSize="@dimen/material_medium_text_size"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Archives"
+        android:id="@+id/archiveLink"
+        android:textColor="@color/pitch_black"
+        android:padding="@dimen/material_light_padding"
+        android:textSize="@dimen/material_medium_text_size"
+        android:gravity="center_horizontal" />
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="My Lists"
+        android:id="@+id/drawer_layout_header_text"
+        android:textColor="@color/pitch_black"
+        android:padding="@dimen/material_light_padding"
+        android:textSize="@dimen/material_medium_text_size"
+        android:gravity="center_horizontal"/>
+
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="@color/white"
+        android:layout_weight="1" />
+</LinearLayout>

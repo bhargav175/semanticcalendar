@@ -89,6 +89,25 @@
         <activity
             android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home" >
+        </activity>
+        <activity
+            android:name=".activities.HabitStreakActivity"
+            android:label="@string/title_activity_habit_streak" >
+        </activity>
+        <activity
+            android:name=".activities.TagListView"
+            android:label="@string/title_activity_tag_list_view" >
+        </activity>
+        <activity
+            android:name=".activities.TagActivity"
+            android:label="@string/title_activity_tag" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.semantic.semanticOrganizer.semanticcalendar.activities.TagListView" />
+        </activity>
+        <activity
+            android:name=".activities.SuperMain"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -96,8 +115,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.HabitStreakActivity"
-            android:label="@string/title_activity_habit_streak" >
+            android:name=".activities.ArchivesActivity"
+            android:label="@string/title_activity_archives" >
         </activity>
     </application>
 

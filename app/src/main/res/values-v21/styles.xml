@@ -7,6 +7,9 @@
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
         <item name="android:windowBackground">@color/white_opaque</item>
         <item name="android:colorBackground">@color/pitch_black</item>
+        <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
+        <item name="android:dropDownListViewStyle">@style/MySpinnerDropDownListViewStyle</item>
 
     </style>
 
@@ -54,5 +57,17 @@
     <style name="CardViewStyle" parent="CardView.Light">
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
+    <style name="SpinnerItem">
+        <item name="android:textColor">@color/pitch_black</item>
+        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
 
+    </style>
+    <style name="SpinnerDropDownItem">
+        <item name="android:textColor">@color/pitch_black</item>
+        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
+    </style>
+    <style name="MySpinnerDropDownListViewStyle">
+        <item name="android:textColor">@color/pitch_black</item>
+        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
+    </style>
 </resources>

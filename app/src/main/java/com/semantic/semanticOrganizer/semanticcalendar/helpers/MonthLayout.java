@@ -1,6 +1,7 @@
 package com.semantic.semanticOrganizer.semanticcalendar.helpers;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -36,55 +38,80 @@ public class MonthLayout extends LinearLayout {
     private Context context;
     private Calendar firstDayOfMonth;
     private ViewGroup view;
+    private int index;
 
 
     public MonthLayout(Context context) {
         super(context);
-        init();
     }
 
     public MonthLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
 
     }
 
     public MonthLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
 
     }
 
     public MonthLayout(Context context, Calendar calendar, Habit habit) {
         super(context);
-        initWithDate(context,calendar,habit);
 
     }
+
+    private void clearTableDateRows(){
+        for(int i=0;i<this.mTableRows.size();i++){
+            this.mTableLayout.removeView(this.mTableRows.get(i));
+        }
+    }
+    public void setMonth(Calendar calendar){
+        clearTableDateRows();
+        this.mMonth=calendar;
+        initializeCalendarView();
+
+    }
+    public Calendar getMonth(){
+        return this.mMonth;
+    }
+
 
     private void init(){
 
             inflate(context,R.layout.month_table_layout, this);
             this.mMonthTitle = (TextView) view.findViewById(R.id.heading);
             this.mTableLayout = (TableLayout) view.findViewById(R.id.monthTableLayout);
-            setMonth();
+        setExactMonth();
 
 
     }
     private void initWithDate(Context context, Calendar calendar, Habit habit){
 
-            View view = inflate(context,R.layout.month_table_layout, this);
-            this.mMonthTitle = (TextView) view.findViewById(R.id.heading);
-            this.mTableLayout = (TableLayout) view.findViewById(R.id.monthTableLayout);
+            this.mMonthTitle = (TextView) findViewById(R.id.heading);
+            this.mTableLayout = (TableLayout) findViewById(R.id.monthTableLayout);
+            this.mTableLayout.setStretchAllColumns(true);
+            this.mTableRows = new ArrayList<TableRow>();
             this.habit = habit;
             this.context = context;
             this.mMonth = calendar;
-            setMonth();
-            this.mTableLayout.setStretchAllColumns(true);
-            this.firstDayOfMonth = (Calendar) this.mMonth.clone();
-            addDatesToTableRow();
+            initializeCalendarView();
 
     }
-    private void setMonth(){
+    public void setIndex(int i){
+        this.index = i;
+    }
+
+    public int getIndex(){
+        return this.index;
+    }
+
+    private void initializeCalendarView(){
+        this.setId(Calendar.getInstance().getActualMaximum(Calendar.YEAR) * 1000 + Calendar.getInstance().getActualMaximum(Calendar.MONTH));
+        setExactMonth();
+        this.firstDayOfMonth = (Calendar) this.mMonth.clone();
+        addDatesToTableRow();
+    }
+    private void setExactMonth(){
         this.mMonth.set(Calendar.DAY_OF_MONTH,1);
         this.mMonth.set(Calendar.HOUR_OF_DAY,0);
         this.mMonth.set(Calendar.MINUTE,0);
@@ -129,6 +156,7 @@ public class MonthLayout extends LinearLayout {
 
         this.datesRow = new TableRow(this.context);
         this.datesRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        this.mTableRows.add(this.datesRow);
         this.mTableLayout.addView(this.datesRow);
 
 
@@ -156,5 +184,9 @@ public class MonthLayout extends LinearLayout {
     }
 
 
+    public void initializeWith(Context context, Calendar currMonth, Habit habitCurrent) {
+        initWithDate(context,currMonth,habitCurrent);
 
+
+    }
 }

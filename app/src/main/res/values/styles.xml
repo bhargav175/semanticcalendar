@@ -7,7 +7,10 @@
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
         <item name="android:windowBackground">@color/white_opaque</item>
         <item name="android:colorBackground">@color/pitch_black</item>
+        <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+        <item name="android:spinnerStyle">@style/Spinner</item>
 
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
     </style>
 
 
@@ -22,15 +25,15 @@
     </style>
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/teal_color</item>
-        <!--<item name="actionBarDivider">@null</item>-->
-        <!--<item name="android:actionBarDivider">@null</item>-->
-        <!--<item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-        <!--<item name="actionBarTabStyle">@style/MyActionBarTab</item>-->
-        <!--<item name="android:height">56dp</item>-->
-        <!--<item name="actionBarSize">56dp</item>-->
-        <!--&lt;!&ndash;<item name="android:windowActionBarOverlay">true</item>&ndash;&gt;-->
-        <!--<item name="android:actionBarSize">56dp</item>-->
+        <item name="android:background">@color/blue_color</item>
+        <item name="actionBarDivider">@null</item>
+        <item name="android:actionBarDivider">@null</item>
+        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+        <item name="actionBarTabStyle">@style/MyActionBarTab</item>
+        <item name="android:height">56dp</item>
+        <item name="actionBarSize">56dp</item>
+        <!--<item name="android:windowActionBarOverlay">true</item>-->
+        <item name="android:actionBarSize">56dp</item>
 
 
     </style>
@@ -49,6 +52,21 @@
         <item name="android:padding">@dimen/material_padding</item>
     </style>
 
+    <style name="Spinner">
+        <item name="android:textColor">@color/pitch_black</item>
+        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
+
+    </style>
+
+    <style name="SpinnerItem">
+        <item name="android:textColor">@color/pitch_black</item>
+        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
+
+    </style>
+    <style name="SpinnerDropDownItem">
+        <item name="android:textColor">@color/pitch_black</item>
+        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
+    </style>
     <style name="Widget.CirclePageIndicator" parent="Widget">
         <item name="centered">@bool/default_circle_indicator_centered</item>
         <item name="fillColor">@color/default_circle_indicator_fill_color</item>

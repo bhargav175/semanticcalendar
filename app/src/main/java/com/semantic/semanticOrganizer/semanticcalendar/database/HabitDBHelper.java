@@ -188,10 +188,11 @@ public class HabitDBHelper {
 
     }
 
-    public void saveHabitWithTag(Habit habit, Tag tag) {
+    public Habit saveHabitWithTag(Habit habit, Tag tag) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitId(TABLE)) + 1)));
+        Integer id = Integer.parseInt(getPrevHabitId(TABLE)) + 1;
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
         values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
         values.put(DBHelper.HABIT_TAG, tag.getTagId());
 
@@ -200,7 +201,11 @@ public class HabitDBHelper {
         Log.d(TAG, values.toString());
         database.insert(TABLE, null, values);
         Log.d( TAG,"Habit saved" + habit.getHabitText());
+        return getHabit(id);
 
+    }
 
+    public Cursor fetchAllArchivedHabits() {
+        return database.query(TABLE, null, DBHelper.HABIT_IS_ARCHIVED +" = 1 " , null, null, null, null);
     }
 }

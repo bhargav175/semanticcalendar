@@ -128,15 +128,21 @@ public class OrganizerItem {
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
         for(Note note:noteList){
+            organizerItems.add(OrganizerItem.castNoteToOrganizerItem(note));
+        }
+        return organizerItems;
+    }
+
+
+    public static OrganizerItem castNoteToOrganizerItem( Note note){
             OrganizerItem organizerItem = new OrganizerItem();
             organizerItem.setItemText(note.getNoteTitle());
             organizerItem.setCreatedTime(note.getCreatedTime());
             organizerItem.setSecondaryText(note.getCreatedTime());
             organizerItem.setId(note.getId());
             organizerItem.setType("NOTE");
-            organizerItems.add(organizerItem);
-        }
-        return organizerItems;
+
+        return organizerItem;
     }
 
 
@@ -144,7 +150,14 @@ public class OrganizerItem {
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
         for(Habit habit:habitList){
-            OrganizerItem organizerItem = new OrganizerItem();
+            organizerItems.add(castHabitToOrganizerItem(habit));
+        }
+        return organizerItems;
+    }
+
+    public static OrganizerItem castHabitToOrganizerItem(Habit habit){
+        OrganizerItem organizerItem = new OrganizerItem();
+
             if(habit.getHabitQuestion()!=null && habit.getHabitQuestion().length()>0){
                 organizerItem.setItemText(habit.getHabitQuestion());
 
@@ -152,33 +165,49 @@ public class OrganizerItem {
                 organizerItem.setItemText(habit.getHabitText());
 
             }
-            HabitItemDBHelper habitItemDBHelper = new HabitItemDBHelper(context);
-            habitItemDBHelper.open();
-            if(habit.getHabitItemToday(context)!=null){
-                organizerItem.setSecondaryText((String.valueOf( habit.getHabitItemToday(context).getHabitItemState().getStateValue())));
-
-            }
-            habitItemDBHelper.close();
+            organizerItem.setSecondaryText(habit.getCreatedTime());
             organizerItem.setCreatedTime(habit.getCreatedTime());
             organizerItem.setId(habit.getId());
             organizerItem.setType("HABIT");
-            organizerItems.add(organizerItem);
-        }
-        return organizerItems;
+
+        return organizerItem;
     }
+
+
 
     public static List<OrganizerItem> castCheckListsToOrganizerItemList( List<CheckList> checkListList){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
         for(CheckList checkList:checkListList){
+            organizerItems.add(castCheckListToOrganizerItem(checkList));
+        }
+        return organizerItems;
+    }
+
+
+    public static OrganizerItem castCheckListToOrganizerItem( CheckList checkList){
+
             OrganizerItem organizerItem = new OrganizerItem();
             organizerItem.setItemText(checkList.getCheckListText());
             organizerItem.setCreatedTime(checkList.getCreatedTime());
             organizerItem.setId(checkList.getId());
             organizerItem.setType("CHECKLIST");
-            organizerItems.add(organizerItem);
-        }
+
+        return organizerItem;
+    }
+
+
+    public static List<OrganizerItem> getAllArchivedItems(Context context) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<Note> noteList = Note.getAllArchivedNotes(context);
+        List<CheckList> checkListList = CheckList.getAllArchivedCheckLists(context);
+        List<Habit> habitList = Habit.getAllArchivedHabits(context);
+        organizerItems.addAll(castNotesToOrganizerItemList(noteList));
+        organizerItems.addAll(castHabitsToOrganizerItemList(habitList,context));
+        organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
         return organizerItems;
+
+
     }
 
 

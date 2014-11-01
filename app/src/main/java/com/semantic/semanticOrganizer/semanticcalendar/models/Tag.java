@@ -149,4 +149,20 @@ public class Tag {
     }
 
 
+    public static List<Tag> getAllArchivedTags(Context context) {
+        List<Tag> taskList = new ArrayList<Tag>();
+        TagDBHelper tagDBHelper = new TagDBHelper(context);
+        tagDBHelper.open();
+        Cursor cursor= tagDBHelper.fetchAllArchivedTags();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Tag tag = tagDBHelper.cursorToTag(cursor);
+            taskList.add(tag);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        tagDBHelper.close();
+        return taskList;
+    }
 }

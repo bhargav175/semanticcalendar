@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -179,6 +180,24 @@ public class Note {
     }
 
 
+    public static List<Note> getAllUnArchivedNotesByDueDate(Calendar calendar, Context context) {
+        List<Note> noteList = new ArrayList<Note>();
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+        Cursor cursor= noteDBHelper.fetchAllUnarchivedNotesWithDueDate(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Note note = noteDBHelper.cursorToNote(cursor);
+            noteList.add(note);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        noteDBHelper.close();
+        return noteList;
+    }
+
+
     public static List<Note> getAllUnArchivedNotesInTag(Tag tag, Context context) {
         List<Note> noteList = new ArrayList<Note>();
         NoteDBHelper noteDBHelper = new NoteDBHelper(context);
@@ -205,5 +224,22 @@ public class Note {
             noteDBHelper.archiveNote(note);
         }
         noteDBHelper.close();
+    }
+
+    public static List<Note> getAllArchivedNotes(Context context) {
+        List<Note> noteList = new ArrayList<Note>();
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+        Cursor cursor= noteDBHelper.fetchAllArchivedNotes();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Note note = noteDBHelper.cursorToNote(cursor);
+            noteList.add(note);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        noteDBHelper.close();
+        return noteList;
     }
 }

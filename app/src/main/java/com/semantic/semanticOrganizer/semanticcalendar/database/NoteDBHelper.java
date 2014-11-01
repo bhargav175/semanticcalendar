@@ -11,6 +11,8 @@ import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
+import java.util.Calendar;
+
 /**
  * Created by Admin on 16-09-2014.
  */
@@ -154,16 +156,29 @@ public class NoteDBHelper {
 
     }
 
-    public void saveNoteWithTag(Note note, Tag currentTagInView) {
+    public Note saveNoteWithTag(Note note, Tag currentTagInView) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevNoteId(NOTES_TABLE)) + 1)));
+        Integer id = Integer.parseInt(getPrevNoteId(NOTES_TABLE)) + 1;
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
         values.put(DBHelper.NOTE_TAG, currentTagInView.getTagId());
         values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         database.insert(NOTES_TABLE, null, values);
+
         Log.d( TAG,"Note saved" + note.getNoteTitle());
+        return getNote(id);
+    }
+
+    public Cursor fetchAllUnarchivedNotesWithDueDate(Calendar calendar) {
+        return null;
+
+
+    }
+
+    public Cursor fetchAllArchivedNotes() {
+        return database.query(NOTES_TABLE, null, DBHelper.NOTE_IS_ARCHIVED +" = 1 " , null, null, null, null);
     }
 }

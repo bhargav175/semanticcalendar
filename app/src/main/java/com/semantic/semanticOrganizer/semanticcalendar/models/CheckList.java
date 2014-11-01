@@ -183,4 +183,21 @@ public class CheckList {
         }
         checkListDBHelper.close();
     }
+
+    public static List<CheckList> getAllArchivedCheckLists(Context context) {
+        List<CheckList> checkListList = new ArrayList<CheckList>();
+        CheckListDBHelper checkListDBHelper = new CheckListDBHelper(context);
+        checkListDBHelper.open();
+        Cursor cursor= checkListDBHelper.fetchAllArchivedCheckLists();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            CheckList checkList = checkListDBHelper.cursorToCheckList(cursor);
+            checkListList.add(checkList);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        checkListDBHelper.close();
+        return checkListList;
+    }
 }

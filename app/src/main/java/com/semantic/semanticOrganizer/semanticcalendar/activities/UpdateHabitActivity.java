@@ -58,9 +58,19 @@ public class UpdateHabitActivity extends Activity {
                     public void onClick(View v) {
                         // "Done"
                         if(habitCurrent!=null){
-                            updateHabit();
-                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
-                            startActivity(intent);
+                            if (habitText.getText().toString().length() == 0) {
+                                Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                updateHabit();
+                                Intent intent = new Intent(UpdateHabitActivity.this,TagActivity.class);
+                                if(habitCurrent.getTag()!=null){
+                                    intent.putExtra(DBHelper.COLUMN_ID,habitCurrent.getTag());
+
+                                }
+                                startActivity(intent);
+                            }
+
                         }
                         else{
                             Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();

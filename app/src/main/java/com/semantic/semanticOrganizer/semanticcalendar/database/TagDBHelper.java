@@ -135,4 +135,7 @@ public class TagDBHelper {
     }
 
 
+    public Cursor fetchAllArchivedTags() {
+        return database.query(TAGS_TABLE, null,DBHelper.TAG_IS_ARCHIVED +  " = 1",  null, null, null, null);
+    }
 }
