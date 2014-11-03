@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +33,6 @@ import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.CheckListDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.HabitDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
-import com.semantic.semanticOrganizer.semanticcalendar.database.TagDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.CheckList;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
@@ -43,12 +40,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.OrganizerItem;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
-import org.apmem.tools.layouts.FlowLayout;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TagActivity extends Activity {
 
@@ -204,7 +196,7 @@ public class TagActivity extends Activity {
         }else if(doSave ==2){
             CheckList checkList = new CheckList();
             CheckListDBHelper checkListDBHelper = new CheckListDBHelper(getApplicationContext());
-            checkList.setCheckListText(str);
+            checkList.setCheckListTitle(str);
             checkListDBHelper.open();
             CheckList c = checkListDBHelper.saveCheckListWithTag(checkList, currentTagInView);
             organizerItem = OrganizerItem.castCheckListToOrganizerItem(c);
@@ -251,7 +243,7 @@ public class TagActivity extends Activity {
             public void onClick(View v) {
                 doSave = 1;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 alertDialog.setTitle("Add Note To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
@@ -271,7 +263,7 @@ public class TagActivity extends Activity {
             public void onClick(View v) {
                 doSave = 2;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 alertDialog.setTitle("Add CheckList To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
@@ -292,7 +284,7 @@ public class TagActivity extends Activity {
             public void onClick(View v) {
                 doSave =3;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
@@ -372,7 +364,7 @@ public class TagActivity extends Activity {
 
                 }else if(organizerItem.getType().equals("HABIT")){
                     Intent intent = new Intent(getApplicationContext(), HabitStreakActivity.class);
-                    intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
+                    intent.putExtra(DBHelper.HABIT_TITLE,  organizerItem.getItemText());
                     intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                     startActivity(intent);
                 }else if(organizerItem.getType().equals("CHECKLIST")){

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.semantic.semanticOrganizer.semanticcalendar.database.CheckListDBHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -14,9 +15,13 @@ import java.util.List;
 public class CheckList {
     private Integer Tag;
     private Integer id;
+    private int reminderId;
     private String createdTime;
-    private String checkListText;
+    private String checkListTitle;
+    private String checkListDescription;
     private Boolean isArchived;
+    private Calendar dueTime;
+
     public int getReminderId() {
         return reminderId;
     }
@@ -25,15 +30,14 @@ public class CheckList {
         this.reminderId = reminderId;
     }
 
-    private int reminderId;
 
     public CheckList(Integer id) {
         this.id = id;
     }
 
 
-    public CheckList(String checkListText) {
-        this.checkListText = checkListText;
+    public CheckList(String checkListTitle) {
+        this.checkListTitle = checkListTitle;
     }
     public CheckList() {
 
@@ -72,12 +76,12 @@ public class CheckList {
         this.id = id;
     }
 
-    public String getCheckListText() {
-        return checkListText;
+    public String getCheckListTitle() {
+        return checkListTitle;
     }
 
-    public void setCheckListText(String checkListText) {
-        this.checkListText = checkListText;
+    public void setCheckListTitle(String checkListTitle) {
+        this.checkListTitle = checkListTitle;
     }
 
     public static List<CheckList> getAllCheckLists(List<CheckList> checkListList, Context context) {
@@ -199,5 +203,21 @@ public class CheckList {
         cursor.close();
         checkListDBHelper.close();
         return checkListList;
+    }
+
+    public Calendar getDueTime() {
+        return dueTime;
+    }
+
+    public void setDueTime(Calendar dueTime) {
+        this.dueTime = dueTime;
+    }
+
+    public String getCheckListDescription() {
+        return checkListDescription;
+    }
+
+    public void setCheckListDescription(String checkListDescription) {
+        this.checkListDescription = checkListDescription;
     }
 }

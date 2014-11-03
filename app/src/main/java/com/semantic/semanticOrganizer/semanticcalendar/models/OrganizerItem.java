@@ -2,8 +2,6 @@ package com.semantic.semanticOrganizer.semanticcalendar.models;
 
 import android.content.Context;
 
-import com.semantic.semanticOrganizer.semanticcalendar.database.HabitItemDBHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +136,7 @@ public class OrganizerItem {
             OrganizerItem organizerItem = new OrganizerItem();
             organizerItem.setItemText(note.getNoteTitle());
             organizerItem.setCreatedTime(note.getCreatedTime());
-            organizerItem.setSecondaryText(note.getCreatedTime());
+            organizerItem.setSecondaryText(note.getNoteDescription());
             organizerItem.setId(note.getId());
             organizerItem.setType("NOTE");
 
@@ -158,8 +156,8 @@ public class OrganizerItem {
     public static OrganizerItem castHabitToOrganizerItem(Habit habit){
         OrganizerItem organizerItem = new OrganizerItem();
 
-            if(habit.getHabitQuestion()!=null && habit.getHabitQuestion().length()>0){
-                organizerItem.setItemText(habit.getHabitQuestion());
+            if(habit.getHabitDescription()!=null && habit.getHabitDescription().length()>0){
+                organizerItem.setItemText(habit.getHabitDescription());
 
             }else{
                 organizerItem.setItemText(habit.getHabitText());
@@ -188,8 +186,9 @@ public class OrganizerItem {
     public static OrganizerItem castCheckListToOrganizerItem( CheckList checkList){
 
             OrganizerItem organizerItem = new OrganizerItem();
-            organizerItem.setItemText(checkList.getCheckListText());
+            organizerItem.setItemText(checkList.getCheckListTitle());
             organizerItem.setCreatedTime(checkList.getCreatedTime());
+            organizerItem.setSecondaryText(checkList.getCheckListDescription());
             organizerItem.setId(checkList.getId());
             organizerItem.setType("CHECKLIST");
 

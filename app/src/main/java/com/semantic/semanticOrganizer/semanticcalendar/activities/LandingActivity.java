@@ -371,15 +371,7 @@ public class LandingActivity extends Activity {
                      }else if(organizerItem.getType().equals("HABIT")){
                             Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
                             Habit habit = Habit.getHabitById(organizerItem.getId(),getApplicationContext());
-                            intent.putExtra(DBHelper.HABIT_TEXT, habit.getHabitText());
-                            intent.putExtra(DBHelper.HABIT_QUESTION, habit.getHabitQuestion());
-                            intent.putExtra(DBHelper.HABIT_DURATION, habit.getDuration());
-                            intent.putExtra(DBHelper.HABIT_DAYS_CODE, habit.getDaysCode());
-                            intent.putExtra(DBHelper.HABIT_FREQUENCY, habit.getFrequency());
-                            intent.putExtra(DBHelper.HABIT_IS_ARCHIVED, habit.getIsArchived());
-                            intent.putExtra(DBHelper.HABIT_TYPE, habit.getHabitType());
-                            intent.putExtra(DBHelper.COLUMN_CREATED_TIME, habit.getCreatedTime());
-                            intent.putExtra(DBHelper.HABIT_REQUEST_ID, habit.getRequestId());
+
                             intent.putExtra(DBHelper.COLUMN_ID,habit.getId());
                             startActivity(intent);
                         }else if(organizerItem.getType().equals("CHECKLIST")){
@@ -476,7 +468,7 @@ public class LandingActivity extends Activity {
 
                    }else if(organizerItem.getType().equals("HABIT")){
                        Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
-                       intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
+                       intent.putExtra(DBHelper.HABIT_TITLE,  organizerItem.getItemText());
                        intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                        startActivity(intent);
                    }else if(organizerItem.getType().equals("CHECKLIST")){
@@ -530,7 +522,7 @@ public class LandingActivity extends Activity {
                            case 1:
                                str = "CheckList";
                                CheckList checkList = new CheckList();
-                               checkList.setCheckListText(addItemEditText.getText().toString());
+                               checkList.setCheckListTitle(addItemEditText.getText().toString());
                                checkListDBHelper.open();
                                checkListDBHelper.saveCheckList(checkList);
                                checkListDBHelper.close();

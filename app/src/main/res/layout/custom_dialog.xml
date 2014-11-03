@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#3E80B4"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:id="@+id/noDueLayout"
+        android:padding="@dimen/material_padding">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#3E80B4"
+            android:orientation="horizontal"
+            android:id="@+id/noDueDateText"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Due Time "
+                android:id="@+id/textView"
+                android:textColor="@color/white"
+                android:textSize="@dimen/material_heading_text_size"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:padding="@dimen/material_padding" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#3E80B4"
+            android:orientation="horizontal"
+            android:id="@+id/noDueDate"
+            android:layout_below="@+id/noDueDateText"
+            android:layout_marginTop="@dimen/material_padding"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/addDueDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:text="Add Due Date"
+                android:textColor="#5DBCD2"
+                android:textStyle="bold"
+                android:padding="@dimen/material_padding" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/dueLayout"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/material_padding"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Due Date Set At :"
+            android:id="@+id/textView2"
+            android:textColor="@color/white"
+            android:textSize="@dimen/material_heading_text_size"
+            android:padding="@dimen/material_padding"
+            android:gravity="center_horizontal" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:id="@+id/spinnerLayout"
+            android:layout_below="@id/textView2"
+            android:layout_marginTop="@dimen/material_padding"
+            android:visibility="visible"
+            android:padding="@dimen/material_padding"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Button"
+                android:id="@+id/dateButton"
+                android:background="@color/white"
+                android:padding="@dimen/material_padding"
+                android:layout_marginRight="@dimen/material_padding"
+                android:textColor="#5DBCD2" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Button"
+                android:id="@+id/timeButton"
+                android:background="@color/white"
+                android:padding="@dimen/material_padding"
+                android:textColor="#5DBCD2" />
+        </LinearLayout>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x"
+            android:id="@+id/close"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+</LinearLayout>

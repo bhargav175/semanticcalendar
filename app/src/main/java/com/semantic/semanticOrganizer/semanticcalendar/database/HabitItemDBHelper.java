@@ -136,7 +136,7 @@ public class HabitItemDBHelper {
 
     public HabitItem cursorToHabitItem(Cursor cursor) {
 //        + COLUMN_ID+ " integer primary key autoincrement, "
-//                + HABIT_TEXT + " text not null, "
+//                + HABIT_TITLE + " text not null, "
 //                + HABIT_QUESTION+ " text , "
 //                + HABIT_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
 //                + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "

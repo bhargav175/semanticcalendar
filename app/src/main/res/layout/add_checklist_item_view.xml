@@ -21,7 +21,7 @@
          android:layout_centerHorizontal="true"
         android:layout_height="@dimen/checklist_element_height"
         android:layout_toRightOf="@+id/isArchived"
-        android:id="@+id/editText"
+        android:id="@+id/noteTitle"
         android:hint="Add Item"
         android:layout_weight="0.6" />
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/checklist_element_height"
         android:text="New Text"
-        android:layout_toRightOf="@+id/editText"
+        android:layout_toRightOf="@+id/noteTitle"
 
         android:id="@+id/idStore"
         android:hint="Id"

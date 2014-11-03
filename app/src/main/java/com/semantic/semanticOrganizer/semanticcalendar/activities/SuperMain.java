@@ -1,22 +1,17 @@
 package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -137,7 +132,7 @@ public class SuperMain extends FragmentActivity {
         }else if(doSave ==2){
             CheckList checkList = new CheckList();
             CheckListDBHelper checkListDBHelper = new CheckListDBHelper(getApplicationContext());
-            checkList.setCheckListText(str);
+            checkList.setCheckListTitle(str);
             checkListDBHelper.open();
             checkListDBHelper.saveCheckListWithTag(checkList, t);
             checkListDBHelper.close();
@@ -185,7 +180,7 @@ public class SuperMain extends FragmentActivity {
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
                 final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
                 spinner.setVisibility(View.GONE);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 editInput.setCursorVisible(true);
                 alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
@@ -213,7 +208,7 @@ public class SuperMain extends FragmentActivity {
                 ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
                 spinner.setAdapter(tagArrayAdapter);
                 spinner.setSelection(tags.size()-1);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 editInput.setCursorVisible(true);
 
                 alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
@@ -240,7 +235,7 @@ public class SuperMain extends FragmentActivity {
                 ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
                 spinner.setAdapter(tagArrayAdapter);
                 spinner.setSelection(tags.size()-1);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 editInput.setCursorVisible(true);
                 alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
@@ -266,7 +261,7 @@ public class SuperMain extends FragmentActivity {
                 ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
                 spinner.setAdapter(tagArrayAdapter);
                 spinner.setSelection(tags.size()-1);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 editInput.setCursorVisible(true);
 
                 alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",

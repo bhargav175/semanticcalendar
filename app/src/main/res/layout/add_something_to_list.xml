@@ -19,7 +19,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Name"
-                    android:id="@+id/editText"
+                    android:id="@+id/noteTitle"
                     android:padding="@dimen/material_padding"
                     android:textSize="@dimen/material_medium_text_size"
                     android:textColor="@color/pitch_black"

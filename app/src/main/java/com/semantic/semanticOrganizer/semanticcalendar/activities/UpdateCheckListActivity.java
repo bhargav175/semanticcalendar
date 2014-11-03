@@ -122,7 +122,7 @@ public class UpdateCheckListActivity extends Activity {
     private void initUi() {
 
 
-        checkListText = (EditText) findViewById(R.id.checkListText);
+        checkListText = (EditText) findViewById(R.id.checkListTitle);
 
         tag = (Spinner) findViewById(R.id.selectSpinner);
         checkListItemContainer = (LinearLayout) findViewById(R.id.checkListItemsContainer);
@@ -137,7 +137,7 @@ public class UpdateCheckListActivity extends Activity {
             public void onClick(View view) {
                 final View add_checklist_item = getLayoutInflater().inflate(R.layout.add_checklist_item_view, checkListItemContainer, false);
                 checkListItemContainer.addView(add_checklist_item);
-                EditText checkListItemText =(EditText) add_checklist_item.findViewById(R.id.editText);
+                EditText checkListItemText =(EditText) add_checklist_item.findViewById(R.id.noteTitle);
                 CheckBox checkListItemCheckBox =(CheckBox) add_checklist_item.findViewById(R.id.isArchived);
                 TextView idStore =(TextView) add_checklist_item.findViewById(R.id.idStore);
                 idStore.setText(null);
@@ -162,14 +162,14 @@ public class UpdateCheckListActivity extends Activity {
 
         checkListItemDBHelper.open();
 
-        checkListText.setText(checkList.getCheckListText());
+        checkListText.setText(checkList.getCheckListTitle());
         isArchived.setChecked(checkList.getIsArchived());
 
 
         for(CheckListItem checkListItem : checkListItems){
             final View add_checklist_item = getLayoutInflater().inflate(R.layout.add_checklist_item_view, checkListItemContainer, false);
             checkListItemContainer.addView(add_checklist_item);
-            EditText checkListItemText =(EditText) add_checklist_item.findViewById(R.id.editText);
+            EditText checkListItemText =(EditText) add_checklist_item.findViewById(R.id.noteTitle);
             CheckBox checkListItemCheckBox =(CheckBox) add_checklist_item.findViewById(R.id.isArchived);
             TextView idStore =(TextView) add_checklist_item.findViewById(R.id.idStore);
             idStore.setText(String.valueOf(checkListItem.getId()));
@@ -235,8 +235,12 @@ public class UpdateCheckListActivity extends Activity {
             else{
                 checkListItemDBHelper.open();
 
+                checkList.setCheckListTitle(checkListTextString);
+                checkList.setCheckListDescription(null);
+                checkList.setTag(checkListTag.getTagId());
+                checkList.setIsArchived(isArchived.isChecked());
 
-                checkListDBHelper.updateCheckList(checkList, checkListTextString,checkListTag.getTagId(), isArchived.isChecked());
+                checkListDBHelper.updateCheckList(checkList);
                 List<Integer> newCheckListItems =new ArrayList<Integer>();
                 for(int i=0; i< checkListItemContainer.getChildCount();i++){
 
@@ -251,7 +255,7 @@ public class UpdateCheckListActivity extends Activity {
                         newCheckListItems.add(checkListItemId);
                     }
 
-                    EditText checkListItemText =(EditText) view.findViewById(R.id.editText);
+                    EditText checkListItemText =(EditText) view.findViewById(R.id.noteTitle);
                     CheckBox checkListItemCheckBox =(CheckBox) view.findViewById(R.id.isArchived);
                     if(checkListItemId==null){
                         //create checklistitem in database

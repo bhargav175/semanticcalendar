@@ -1,59 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddNoteActivity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:focusable="true" android:focusableInTouchMode="true"
+    android:background="@color/light_gray_color"
+    >
+
+
+
+<ScrollView
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/light_gray_color"
+    android:padding="@dimen/material_left_padding">
+
+
+<RelativeLayout
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/light_gray_color"
     tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddNoteActivity"
     android:padding="@dimen/material_light_padding"
+    android:focusable="false" android:focusableInTouchMode="false"
     android:id="@+id/re">
 
     <android.support.v7.widget.CardView
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/parentLayout"
         android:padding="@dimen/material_padding"
+        android:id="@+id/parentLayout"
         android:background="@color/white">
 
-<RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-
-
-    <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
                 android:id="@+id/noteTitle"
-                android:hint="@string/write_note_text_hint"
-                android:layout_gravity="center_horizontal"
-                android:gravity="top"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:inputType="textMultiLine"
+                android:maxLines="10"
+                android:minLines="1"
+                android:scrollbars="vertical"
+                android:textColor="@color/light_black"
                 android:textColorHint="@color/gray_color"
-                android:textColor="@color/light_black" />
+                android:background="@drawable/inline_editable"
+                android:padding="@dimen/material_light_padding"/>
 
-</RelativeLayout>
+
     </android.support.v7.widget.CardView >
 
 
-      <android.support.v7.widget.CardView
-          android:orientation="vertical"
-          android:id="@+id/parentLayout2"
+
+    <android.support.v7.widget.CardView
+        android:orientation="vertical"
+        android:id="@+id/parentLayout2"
         android:layout_width="fill_parent"
         android:layout_below="@id/parentLayout"
         android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/material_padding"
-          android:padding="@dimen/material_padding"
-          android:background="@color/white">
+        android:layout_marginTop="@dimen/material_padding"
+        android:padding="@dimen/material_padding"
+        android:background="@color/white">
 
         <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/relativeLayout4"
-            >
+            android:id="@+id/infoLayout">
+
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Archived"
+                android:layout_below="@id/noteTitle"
                 android:id="@+id/isArchived"
                 android:checked="false" />
 
@@ -61,40 +86,62 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/selectSpinner"
-                android:layout_below="@+id/isArchived"
-                android:layout_marginTop="@dimen/material_padding" />
-
-
+                android:layout_toRightOf="@+id/isArchived"
+                android:layout_marginLeft="@dimen/material_padding" />
 
         </RelativeLayout>
-</android.support.v7.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:layout_below="@id/infoLayout"
+                android:id="@+id/showDueDate"
+                android:visibility="visible"
+                android:layout_margin="@dimen/material_padding" />
+
+        </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+
+
 
     <android.support.v7.widget.CardView
-
-        android:orientation="vertical"
+          android:orientation="vertical"
+          android:id="@+id/parentLayout3"
         android:layout_width="fill_parent"
         android:layout_below="@id/parentLayout2"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/material_padding"
-        android:padding="@dimen/material_padding"
-        android:background="@color/white">
+          android:layout_marginTop="@dimen/material_padding"
+          android:padding="@dimen/material_padding"
+          android:background="@color/white">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/linearLayout4"
-            android:orientation="horizontal"
-            android:id="@+id/remainderContainer">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+ Reminder"
-                android:id="@+id/addReminder"
-                android:background="#fff"
-                android:textColor="@color/blue_bright"
-                android:padding="@dimen/material_padding" />
-        </RelativeLayout>
-    </android.support.v7.widget.CardView >
+          <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
+              android:id="@+id/noteDescription"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="Description"
+              android:padding="@dimen/material_light_padding"
+              android:inputType="textMultiLine"
+              android:maxLines="10"
+              android:minLines="1"
+              android:scrollbars="vertical"
+              android:textColor="@color/light_black"
+              android:textColorHint="@color/gray_color" />
 
+
+</android.support.v7.widget.CardView>
+
+
+
+
+
+</RelativeLayout>
+
+</ScrollView>
+    <include layout="@layout/fab_add_extra"/>
 </RelativeLayout>

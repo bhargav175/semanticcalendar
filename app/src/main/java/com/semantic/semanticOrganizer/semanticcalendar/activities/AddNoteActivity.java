@@ -76,7 +76,7 @@ public class AddNoteActivity extends Activity implements View.OnClickListener {
         initUi();
     }
     private void initUi() {
-        noteText = (EditText) findViewById(R.id.noteTitle);
+        noteText = (EditText) findViewById(R.id.noteDescription);
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         tag = (Spinner) findViewById(R.id.selectSpinner);

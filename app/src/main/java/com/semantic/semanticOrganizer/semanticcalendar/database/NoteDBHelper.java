@@ -11,6 +11,8 @@ import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -60,21 +62,27 @@ public class NoteDBHelper {
         return note;
     }
 
-    public int updateNote(Note note, String noteText ,Boolean isArchived, Integer noteTag, Integer requestId) {
+    public int updateNote(Note note) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.NOTE_DESCRIPTION, noteText);
-        values.put(DBHelper.NOTE_TAG, noteTag);
-        values.put(DBHelper.NOTE_IS_ARCHIVED,isArchived);
-        values.put(DBHelper.NOTE_REQUEST_ID,requestId);
+        values.put(DBHelper.NOTE_TITLE, note.getNoteTitle());
+        values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteDescription());
+        values.put(DBHelper.NOTE_TAG, note.getTag());
+        values.put(DBHelper.NOTE_IS_ARCHIVED,note.getIsArchived());
+        if(note.getDueTime()!=null){
+            values.put(DBHelper.NOTE_REQUEST_ID,note.getRemainderId());
+            values.put(DBHelper.COLUMN_DUE_TIME,new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(note.getDueTime().getTime()));
+        }else{
 
-
+            values.putNull(DBHelper.NOTE_REQUEST_ID);
+            values.putNull(DBHelper.COLUMN_DUE_TIME );
+        }
 
         // updating row
         database.update(NOTES_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(note.getId()) });
-        Log.d( TAG,"Note updated" + noteText);
+        Log.d( TAG,"Note updated" + note.getNoteTitle());
 
 
         return 0;
@@ -107,19 +115,32 @@ public class NoteDBHelper {
         Note note = new Note();
         note.setId(cursor.getInt(0));
         note.setNoteTitle(cursor.getString(1));
-        note.setIsArchived(cursor.getInt(2)>0);
-        note.setCreatedTime(cursor.getString(3));
-                if (!cursor.isNull(4)){
-            note.setTag(cursor.getInt(4));
+        note.setNoteDescription(cursor.getString(2));
+        note.setIsArchived(cursor.getInt(3)>0);
+        note.setCreatedTime(cursor.getString(4));
+                if (!cursor.isNull(5)){
+            note.setTag(cursor.getInt(5));
         }else{
                     note.setTag(null);
                 }
-        if (!cursor.isNull(5)) {
-            note.setRemainderId(cursor.getInt(5));
+        if (!cursor.isNull(6)) {
+            note.setRemainderId(cursor.getInt(6));
         }
         else{
             note.setRemainderId(null);
         }
+        if(cursor.getString(7)!=null){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            try {
+                cal.setTime(sdf.parse(cursor.getString(7)));
+                note.setDueTime(cal);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         return note;
 
     }
@@ -162,7 +183,7 @@ public class NoteDBHelper {
         Integer id = Integer.parseInt(getPrevNoteId(NOTES_TABLE)) + 1;
         values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
         values.put(DBHelper.NOTE_TAG, currentTagInView.getTagId());
-        values.put(DBHelper.NOTE_DESCRIPTION, note.getNoteTitle());
+        values.put(DBHelper.NOTE_TITLE, note.getNoteTitle());
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion

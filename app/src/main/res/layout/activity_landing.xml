@@ -117,7 +117,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/noteTitle"
+                android:id="@+id/noteDescription"
 
                 android:inputType="text"
                 android:hint="Add Note"
@@ -131,7 +131,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/noteTitle"
+                android:layout_below="@+id/noteDescription"
                 android:background="#fff">
 
                 <TextView

@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Habit;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Created by Admin on 16-09-2014.
@@ -66,8 +69,8 @@ public class HabitDBHelper {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
-        values.put(DBHelper.HABIT_QUESTION, habit.getHabitQuestion());
+        values.put(DBHelper.HABIT_TITLE, habit.getHabitText());
+        values.put(DBHelper.HABIT_DESCRIPTION, habit.getHabitDescription());
         values.put(DBHelper.HABIT_REQUEST_ID,habit.getRequestId());
         values.put(DBHelper.HABIT_IS_ARCHIVED,habit.getIsArchived());
         values.put(DBHelper.HABIT_TAG, habit.getTag());
@@ -75,9 +78,10 @@ public class HabitDBHelper {
         values.put(DBHelper.HABIT_DAYS_CODE,habit.getDaysCode());
         values.put(DBHelper.HABIT_DURATION,habit.getDuration());
         values.put(DBHelper.HABIT_FREQUENCY,habit.getFrequency());
-
-
-        // updating row
+        if(habit.getDueTime()!=null){
+            values.put(DBHelper.COLUMN_DUE_TIME,new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(habit.getDueTime().getTime()));
+        }
+                // updating row
         database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(habit.getId()) });
         Log.d( TAG,"Habit updated" + habit.getHabitText());
@@ -91,7 +95,7 @@ public class HabitDBHelper {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitId(TABLE)) + 1)));
-        values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
+        values.put(DBHelper.HABIT_TITLE, habit.getHabitText());
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
@@ -112,7 +116,7 @@ public class HabitDBHelper {
 
     public Habit cursorToHabit(Cursor cursor) {
 //        + COLUMN_ID+ " integer primary key autoincrement, "
-//                + HABIT_TEXT + " text not null, "
+//                + HABIT_TITLE + " text not null, "
 //                + HABIT_QUESTION+ " text , "
 //                + HABIT_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
 //                + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "
@@ -128,7 +132,7 @@ public class HabitDBHelper {
         Habit habit = new Habit();
         habit.setId(cursor.getInt(0));
         habit.setHabitText(cursor.getString(1));
-        habit.setHabitQuestion(cursor.getString(2));
+        habit.setHabitDescription(cursor.getString(2));
         habit.setIsArchived(cursor.getInt(3)>0);
 
         habit.setCreatedTime(cursor.getString(4));
@@ -154,6 +158,18 @@ public class HabitDBHelper {
         if (!cursor.isNull(10)){
             habit.setRequestId(cursor.getInt(10));
         }
+        if(!cursor.isNull(11)){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            try {
+                cal.setTime(sdf.parse(cursor.getString(11)));
+                habit.setDueTime(cal);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
 
 
         return habit;
@@ -193,7 +209,7 @@ public class HabitDBHelper {
         ContentValues values = new ContentValues();
         Integer id = Integer.parseInt(getPrevHabitId(TABLE)) + 1;
         values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
-        values.put(DBHelper.HABIT_TEXT, habit.getHabitText());
+        values.put(DBHelper.HABIT_TITLE, habit.getHabitText());
         values.put(DBHelper.HABIT_TAG, tag.getTagId());
 
         //values.put("image_path", draft.getDraftImagePath());

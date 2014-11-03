@@ -39,7 +39,7 @@ public class ListChecklistsActivity extends Activity {
                 TextView text1 = (TextView) view.findViewById(R.id.text1);
                 TextView text2 = (TextView) view.findViewById(R.id.text2);
 
-                text1.setText(checkListList.get(position).getCheckListText());
+                text1.setText(checkListList.get(position).getCheckListTitle());
                 text2.setText(checkListList.get(position).getCreatedTime());
                 return view;
             }
@@ -52,7 +52,7 @@ public class ListChecklistsActivity extends Activity {
                                     long id) {
                 CheckList checkList= (CheckList) parent.getAdapter().getItem(position);
                 Intent intent = new Intent(getApplicationContext(), UpdateCheckListActivity.class);
-                intent.putExtra(DBHelper.CHECKLIST_TITLE, checkList.getCheckListText());
+                intent.putExtra(DBHelper.CHECKLIST_TITLE, checkList.getCheckListTitle());
                 intent.putExtra(DBHelper.COLUMN_ID,checkList.getId());
                 startActivity(intent);
             }

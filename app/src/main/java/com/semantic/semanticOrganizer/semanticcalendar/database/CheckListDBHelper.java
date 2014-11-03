@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.models.CheckList;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Created by Admin on 16-09-2014.
@@ -60,21 +63,23 @@ public class CheckListDBHelper {
         return checkList;
     }
 
-    public int updateCheckList(CheckList checkList, String checkListText ,Integer checkListTag, Boolean isArchived) {
+    public int updateCheckList(CheckList checkList) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.CHECKLIST_TITLE, checkListText);
-        values.put(DBHelper.CHECKLIST_TAG, checkListTag);
-        values.put(DBHelper.CHECKLIST_TAG, checkListTag);
-        values.put(DBHelper.CHECKLIST_IS_ARCHIVED, isArchived);
-
-
+        values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListTitle());
+        values.put(DBHelper.CHECKLIST_DESCRIPTION, checkList.getCheckListDescription());
+        values.put(DBHelper.CHECKLIST_IS_ARCHIVED, checkList.getIsArchived());
+        values.put(DBHelper.CHECKLIST_TAG, checkList.getTag());
+        values.put(DBHelper.CHECKLIST_REQUEST_ID, checkList.getReminderId());
+        if(checkList.getDueTime()!=null){
+            values.put(DBHelper.COLUMN_DUE_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(checkList.getDueTime().getTime()));
+        }
 
         // updating row
         database.update(CHECKLISTS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(checkList.getId()) });
-        Log.d( TAG,"CheckList updated" + checkList.getCheckListText());
+        Log.d( TAG,"CheckList updated" + checkList.getCheckListTitle());
 
 
         return 0;
@@ -85,13 +90,13 @@ public class CheckListDBHelper {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevCheckListId(CHECKLISTS_TABLE)) + 1)));
-        values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListText());
+        values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListTitle());
 
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(CHECKLISTS_TABLE, null, values);
-        Log.d( TAG,"CheckList saved" + checkList.getCheckListText());
+        Log.d( TAG,"CheckList saved" + checkList.getCheckListTitle());
         ;
 
     }
@@ -108,12 +113,27 @@ public class CheckListDBHelper {
     public CheckList cursorToCheckList(Cursor cursor) {
         CheckList checkList = new CheckList();
         checkList.setId(cursor.getInt(0));
-        checkList.setCheckListText(cursor.getString(1));
-        checkList.setIsArchived(cursor.getInt(2)>0);
-        checkList.setCreatedTime(cursor.getString(3));
-        if (!cursor.isNull(4)){
-            checkList.setTag(cursor.getInt(4));
+        checkList.setCheckListTitle(cursor.getString(1));
+        checkList.setCheckListDescription(cursor.getString(2));
+        checkList.setIsArchived(cursor.getInt(3)>0);
+        checkList.setCreatedTime(cursor.getString(4));
+        if (!cursor.isNull(5)){
+            checkList.setTag(cursor.getInt(5));
         }
+        if (!cursor.isNull(6)){
+            checkList.setReminderId(cursor.getInt(6));
+        }
+        if(!cursor.isNull(7)){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            try {
+                cal.setTime(sdf.parse(cursor.getString(7)));
+                checkList.setDueTime(cal);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         return checkList;
 
@@ -144,7 +164,7 @@ public class CheckListDBHelper {
         values.put(DBHelper.CHECKLIST_IS_ARCHIVED, true);
         database.update(CHECKLISTS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[]{String.valueOf(checkList.getId())});
-        Log.d( TAG,"CheckList archived" + checkList.getCheckListText());
+        Log.d( TAG,"CheckList archived" + checkList.getCheckListTitle());
     }
 
     public CheckList saveCheckListWithTag(CheckList checkList, Tag tag) {
@@ -152,13 +172,13 @@ public class CheckListDBHelper {
         ContentValues values = new ContentValues();
         Integer id = Integer.parseInt(getPrevCheckListId(CHECKLISTS_TABLE))+ 1;
         values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
-        values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListText());
+        values.put(DBHelper.CHECKLIST_TITLE, checkList.getCheckListTitle());
         values.put(DBHelper.CHECKLIST_TAG, tag.getTagId());
 
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(CHECKLISTS_TABLE, null, values);
-        Log.d( TAG,"CheckList saved" + checkList.getCheckListText());
+        Log.d( TAG,"CheckList saved" + checkList.getCheckListTitle());
         return getCheckList(id) ;
     }
 

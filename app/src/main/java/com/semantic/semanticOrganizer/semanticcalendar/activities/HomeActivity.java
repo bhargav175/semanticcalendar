@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -24,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,7 +44,6 @@ import com.semantic.semanticOrganizer.semanticcalendar.models.Tag;
 
 import org.apmem.tools.layouts.FlowLayout;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -119,7 +116,7 @@ public class HomeActivity extends Activity {
         }else if(doSave ==2){
             CheckList checkList = new CheckList();
             CheckListDBHelper checkListDBHelper = new CheckListDBHelper(getApplicationContext());
-            checkList.setCheckListText(str);
+            checkList.setCheckListTitle(str);
             checkListDBHelper.open();
             checkListDBHelper.saveCheckListWithTag(checkList, currentTagInView);
             checkListDBHelper.close();
@@ -158,7 +155,7 @@ public class HomeActivity extends Activity {
             public void onClick(View v) {
                 doSave = 1;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 alertDialog.setTitle("Add Note To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
@@ -178,7 +175,7 @@ public class HomeActivity extends Activity {
             public void onClick(View v) {
                 doSave = 2;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 alertDialog.setTitle("Add CheckList To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
@@ -199,7 +196,7 @@ public class HomeActivity extends Activity {
             public void onClick(View v) {
                 doSave =3;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.editText);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
                 alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
@@ -342,7 +339,7 @@ public class HomeActivity extends Activity {
 
                 }else if(organizerItem.getType().equals("HABIT")){
                     Intent intent = new Intent(getApplicationContext(), HabitStreakActivity.class);
-                    intent.putExtra(DBHelper.HABIT_TEXT,  organizerItem.getItemText());
+                    intent.putExtra(DBHelper.HABIT_TITLE,  organizerItem.getItemText());
                     intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                     startActivity(intent);
                 }else if(organizerItem.getType().equals("CHECKLIST")){

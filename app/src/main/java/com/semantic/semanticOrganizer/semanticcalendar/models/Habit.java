@@ -8,6 +8,7 @@ import com.semantic.semanticOrganizer.semanticcalendar.database.HabitItemDBHelpe
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,15 @@ import java.util.List;
 public class Habit {
 
 
-
+    private String habitText;
+    private String habitDescription;
+    private String createdTime;
+    private Boolean isArchived;
+    private Integer Tag;
+    private Integer requestId;
+    private Type habitType;
+    private Integer frequency;
+    private Calendar dueTime;
 
     public static String[] frequencyStrings = {"4 times a week","3 times a week", "2 times a week","Once a week","Once every 2 weeks","Once a month","Once every 2 months", "Once every 6 months", "Once a year" };
     public static String[] durationStrings = {"1 week", "2 weeks","3 weeks" ,"1 month", "2 months", "3 months", "6 months", "1 year" ,"Forever" };
@@ -39,14 +48,8 @@ public class Habit {
         Tag = tag;
     }
 
-    private String habitText;
-    private String habitQuestion;
-    private String createdTime;
-    private Boolean isArchived;
-    private Integer Tag;
-    private Integer requestId;
-    private Type habitType;
-    private Integer frequency;
+
+
 
     public Type getHabitType() {
         return habitType;
@@ -113,6 +116,22 @@ public class Habit {
         return habitList;
     }
 
+    public Calendar getDueTime() {
+        return dueTime;
+    }
+
+    public void setDueTime(Calendar dueTime) {
+        this.dueTime = dueTime;
+    }
+
+    public String getHabitDescription() {
+        return habitDescription;
+    }
+
+    public void setHabitDescription(String habitDescription) {
+        this.habitDescription = habitDescription;
+    }
+
 
     public enum  Type{
         FIXED(0), FLEXIBLE(1);
@@ -161,14 +180,6 @@ public class Habit {
 
 
 
-
-    public String getHabitQuestion() {
-        return habitQuestion;
-    }
-
-    public void setHabitQuestion(String habitQuestion) {
-        this.habitQuestion = habitQuestion;
-    }
 
 
     public Boolean getIsArchived() {

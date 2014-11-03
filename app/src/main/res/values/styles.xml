@@ -7,10 +7,11 @@
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
         <item name="android:windowBackground">@color/white_opaque</item>
         <item name="android:colorBackground">@color/pitch_black</item>
-        <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+        <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
         <item name="android:spinnerStyle">@style/Spinner</item>
+        <item name="android:spinnerItemStyle">@style/SpinnerItemSytle</item>
 
-        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
+        <!--<item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>-->
     </style>
 
 
@@ -52,21 +53,18 @@
         <item name="android:padding">@dimen/material_padding</item>
     </style>
 
-    <style name="Spinner">
-        <item name="android:textColor">@color/pitch_black</item>
-        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
+    <style name="Spinner" parent="android:Widget.Holo.Light.Spinner">
+        <item name="android:clickable">true</item>
+
+
+    </style>
+    <style name="SpinnerItemSytle" parent="android:Widget.Holo.Light.TextView.SpinnerItem">
+        <item name="android:padding">8dp</item>
 
     </style>
 
-    <style name="SpinnerItem">
-        <item name="android:textColor">@color/pitch_black</item>
-        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
 
-    </style>
-    <style name="SpinnerDropDownItem">
-        <item name="android:textColor">@color/pitch_black</item>
-        <item name="android:background">@drawable/my_spinner_dropdown_item</item>
-    </style>
+
     <style name="Widget.CirclePageIndicator" parent="Widget">
         <item name="centered">@bool/default_circle_indicator_centered</item>
         <item name="fillColor">@color/default_circle_indicator_fill_color</item>

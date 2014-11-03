@@ -52,15 +52,6 @@ public class ListHabitsActivity extends Activity {
                                     long id) {
                 Habit habit= (Habit) parent.getAdapter().getItem(position);
                 Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
-                intent.putExtra(DBHelper.HABIT_TEXT, habit.getHabitText());
-                intent.putExtra(DBHelper.HABIT_QUESTION, habit.getHabitQuestion());
-                intent.putExtra(DBHelper.HABIT_DURATION, habit.getDuration());
-                intent.putExtra(DBHelper.HABIT_DAYS_CODE, habit.getDaysCode());
-                intent.putExtra(DBHelper.HABIT_FREQUENCY, habit.getFrequency());
-                intent.putExtra(DBHelper.HABIT_IS_ARCHIVED, habit.getIsArchived());
-                intent.putExtra(DBHelper.HABIT_TYPE, habit.getHabitType());
-                intent.putExtra(DBHelper.COLUMN_CREATED_TIME, habit.getCreatedTime());
-                intent.putExtra(DBHelper.HABIT_REQUEST_ID, habit.getRequestId());
                 intent.putExtra(DBHelper.COLUMN_ID,habit.getId());
                 startActivity(intent);
             }

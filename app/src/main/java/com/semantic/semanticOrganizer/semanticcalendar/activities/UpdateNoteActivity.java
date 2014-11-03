@@ -2,14 +2,15 @@ package com.semantic.semanticOrganizer.semanticcalendar.activities;
 
 import android.app.ActionBar;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,17 +22,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.semantic.semanticOrganizer.semanticcalendar.R;
 import com.semantic.semanticOrganizer.semanticcalendar.database.NoteDBHelper;
 import com.semantic.semanticOrganizer.semanticcalendar.database.ReminderDBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.AddLabelDialog;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.DBHelper;
+import com.semantic.semanticOrganizer.semanticcalendar.helpers.DueDateDialog;
 import com.semantic.semanticOrganizer.semanticcalendar.helpers.MySpinner;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Note;
 import com.semantic.semanticOrganizer.semanticcalendar.models.Reminder;
@@ -52,28 +56,30 @@ import java.util.TimeZone;
 public class UpdateNoteActivity extends FragmentActivity implements View.OnClickListener {
     private NoteDBHelper noteDBHelper;
     private ReminderDBHelper reminderDBHelper;
-    private EditText noteText;
+    private EditText noteText, noteDescription;
     private Spinner tag;
-    private MySpinner dateSpinner, timeSpinner;
     private CheckBox isArchived;
     private View add_reminder;
     private final List<String> dates = new ArrayList<String>();
-    private DatePickerDialog datePickerDialog;
-    private TimePickerDialog timePickerDialog;
+    private Reminder currentReminder;
+;
     private final List<String> times = new ArrayList<String>();
     private Long hadMilliSeconds = null, hasMIlliSeconds = null;
     private AdapterView.OnItemSelectedListener dateItemSelectedListener;
     private AdapterView.OnItemSelectedListener timeItemSelectedListener;
-
-
+    private FloatingActionsMenu fam;
+    private FloatingActionButton addDueDate, addLabel;
     private Note noteCurrent;
-    private Button addReminderButton, close;
-    private RelativeLayout remainderContainer;
     private Boolean hadReminder, hasReminder;
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
     public static final String ACTIVITY_TAG = "UpdateNoteActivity";
-
+    private DueDateDialog mAlertBuilder;
+    private AddLabelDialog mAddLabelBuilder;
+    private AlertDialog mAlert,mAddLabel;
+    private List<Tag> tags;
+    private ArrayAdapter<Tag> adapter;
+    private TextView showDueDateTextView;
 
     int day, month, year, hour, minute, second;
 
@@ -99,7 +105,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                                 Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
 
                             } else {
-                                updateNote(noteId);
+                                updateNote();
                                 Intent intent = new Intent(UpdateNoteActivity.this,TagActivity.class);
                                 if(noteCurrent.getTag()!=null){
                                     intent.putExtra(DBHelper.COLUMN_ID,noteCurrent.getTag());
@@ -148,79 +154,24 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     }
 
 
-    private void updateUi(Note note) {
-
-        if (note != null) {
-
-            noteId = note.getId();
-            noteText.setText(note.getNoteTitle());
-
-            isArchived.setChecked(note.getIsArchived());
-
-            //Get Reminder
-
-
-            if (note.getRemainderId() != null) {
-                hadReminder = true;
-                requestId = note.getRemainderId();
-            } else {
-                hadReminder = false;
-            }
-            ;
-            hasReminder = hadReminder;
-
-            //Update Note TAg
-
-            List<Tag> tags = Tag.getAllTags(new ArrayList<Tag>(), getApplicationContext());
-            tags.add(new Tag("No Tag"));
-
-            ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                    android.R.layout.simple_spinner_item, tags);
-            tag.setAdapter(adapter);
-
-            Integer tagId;
-            if (note.getTag() != null) {
-                tagId = note.getTag();
-                for (Tag tagD : tags) {
-                    if (tagD.getTagId() == tagId) {
-                        Integer pos = tags.indexOf(tagD);
-                        tag.setSelection(pos);
-                        break;
-                    }
-                }
-            } else {
-                tag.setSelection(tags.size() - 1);
-            }
-
-
-        } else {
-            Toast.makeText(this, "Could not load note", Toast.LENGTH_SHORT).show();
-        }
-
-
-    }
-
 
     private void initUi() {
-        noteText = (EditText) findViewById(R.id.noteTitle );
-        addReminderButton = (Button) findViewById(R.id.addReminder);
-        remainderContainer = (RelativeLayout) findViewById(R.id.remainderContainer);
+        noteText = (EditText) findViewById(R.id.noteTitle);
+        noteDescription =(EditText) findViewById(R.id.noteDescription);
         noteDBHelper = new NoteDBHelper(this);
         reminderDBHelper = new ReminderDBHelper(this);
         noteDBHelper.open();
         reminderDBHelper.open();
         isArchived = (CheckBox) findViewById(R.id.isArchived);
         tag = (Spinner) findViewById(R.id.selectSpinner);
-
+        showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
         final Calendar calendar = new GregorianCalendar();
-
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         hour = 9;
         minute = 0;
         second = 0;
-
         dates.add("Today");
         dates.add("Tomorrow");
         dates.add("Pick Date");
@@ -229,239 +180,56 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         times.add("Afternoon 12:00 PM");
         times.add("Evening 6:00 PM");
         times.add("Pick Time");
-
-
-        add_reminder = getLayoutInflater().inflate(R.layout.add_reminder_non_repeating, remainderContainer, false);
-        remainderContainer.addView(add_reminder);
-        close = (Button) add_reminder.findViewById(R.id.close);
-        dateSpinner = (MySpinner) add_reminder.findViewById(R.id.date);
-        timeSpinner = (MySpinner) add_reminder.findViewById(R.id.time);
-
-        hideReminder();
-        configureDialogs();
-        configureSpinners();
+        new GetTags(this).execute("");
+        addFloatingActionButtons();
 
 
     }
 
 
-    private void setListeners() {
-
-
-        if (hadReminder) {
-            Log.d(ACTIVITY_TAG,requestId.toString());
-            Reminder reminder = Reminder.getReminderById(requestId, this);
-            year = reminder.getYear();
-            month = reminder.getMonthOfYear();
-            day = reminder.getDayOfMonth();
-            hour = reminder.getHourOfDay();
-            minute = reminder.getMinuteOfHour();
-            second = reminder.getSecond();
-            Calendar calendar = new GregorianCalendar();
-
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, day);
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            hadMilliSeconds = calendar.getTimeInMillis();
-
-            yesReminderUI();
-            showReminder();
-
-            dateSpinner.post(new Runnable() {
-                @Override
-                public void run() {
-                    TextView dv = (TextView) dateSpinner.findViewById(android.R.id.text1);
-                    dv.setText(day + "-" + month + "-" + year);
-                }
-            });
-            timeSpinner.post(new Runnable() {
-                @Override
-                public void run() {
-                    TextView tv = (TextView) timeSpinner.findViewById(android.R.id.text1);
-                    tv.setText(hour + "::" + minute);
-
-                }
-            });
-
-
+    private void updateUi() {
+        noteId = noteCurrent.getId();
+        noteText.setText(noteCurrent.getNoteTitle());
+        noteDescription.setText(noteCurrent.getNoteDescription());
+        isArchived.setChecked(noteCurrent.getIsArchived());
+        if (noteCurrent.getRemainderId() != null) {
+            hadReminder = true;
+            requestId = noteCurrent.getRemainderId();
         } else {
-            noReminderUI();
+            hadReminder = false;
         }
+        hasReminder = hadReminder;
+        new GetReminder(requestId).execute("");
+   }
 
+
+
+    private void addFloatingActionButtons(){
+        fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        addDueDate = (FloatingActionButton) findViewById(R.id.addDueDate);
+        addLabel = (FloatingActionButton) findViewById(R.id.addLabel);
 
     }
-
-
-    private void configureSpinners() {
-
-        final ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, dates) {
-        };
-        final ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, times) {
-        };
-        dateSpinner.setAdapter(dateAdapter);
-        timeSpinner.setAdapter(timeAdapter);
-
-
-        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    private void setFloatingActionListeners(){
+        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
+        mAlert = mAlertBuilder.create();
+        mAddLabelBuilder=new AddLabelDialog(UpdateNoteActivity.this);
+        mAddLabel = mAddLabelBuilder.create();
+        addDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (dates.get(i).equals("Pick Date")) {
-                    TextView dv = (TextView) dateSpinner.findViewById(android.R.id.text1);
-                    dv.setText(day + "-" + month + "-" + year);
-                    datePickerDialog.setYearRange(1985, 2028);
-                    datePickerDialog.setCloseOnSingleTapDay(false);
-                    datePickerDialog.show(UpdateNoteActivity.this.getSupportFragmentManager(), DATEPICKER_TAG);
-                    datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePickerDialog datePickerDialog, int y, int m, int d) {
-                            TextView dv = (TextView) dateSpinner.findViewById(android.R.id.text1);
-                            year = y;
-                            month = m;
-                            day = d;
-                            dv.setText(day + "-" + month + "-" + year);
-                        }
-                    });
-                }else if(dates.get(i).equals("Today")){
-                    Calendar calendar = new GregorianCalendar();
-                    year = calendar.get(Calendar.YEAR);
-                    month = calendar.get(Calendar.MONTH);
-                    day= calendar.get(Calendar.DAY_OF_MONTH);
-                }else if(dates.get(i).equals("Tomorrow")){
-                    Calendar calendar = new GregorianCalendar();
-                    year = calendar.get(Calendar.YEAR);
-                    month = calendar.get(Calendar.MONTH);
-                    day= calendar.get(Calendar.DAY_OF_MONTH) + 1;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onClick(View v) {
+                mAlert.show();
             }
         });
-
-        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+        addLabel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (times.get(i).equals("Pick Time")) {
-
-                    TextView tv = (TextView) timeSpinner.findViewById(android.R.id.text1);
-                    tv.setText(hour + "::" + minute);
-
-
-                    timePickerDialog.setCloseOnSingleTapMinute(false);
-                    timePickerDialog.show(getSupportFragmentManager(), TIMEPICKER_TAG);
-                    timePickerDialog.initialize(new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(RadialPickerLayout view, int h, int m) {
-                            TextView tv = (TextView) timeSpinner.findViewById(android.R.id.text1);
-                            hour = h;
-                            minute = m;
-                            tv.setText(hour + "::" + minute);
-                        }
-                    }, hour, minute, false, false);
-
-                }else if(times.get(i).equals("Early Morning 5:00 AM")){
-                    hour = 5;
-                    minute = 0;
-
-                }else if(times.get(i).equals("Morning 8:00 AM")){
-                    hour = 8;
-                    minute = 0;
-                }
-                else if(times.get(i).equals("Afternoon 12:00 PM")){
-                    hour = 12;
-                    minute = 0;
-                }
-                 else if(times.get(i).equals("Evening 6:00 PM")){
-                    hour = 18;
-                    minute = 0;
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-
-    }
-
-    private void configureDialogs() {
-
-        datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-
-            }
-        }, year, month, day, false);
-        timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-
-            }
-        }, hour, minute, false, false);
-    }
-
-    private void noReminderUI() {
-
-
-        addReminderButton.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View view) {
-                hasReminder = true;
-                showReminder();
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        hasReminder = false;
-                        hideReminder();
-                    }
-                });
+            public void onClick(View v) {
+                mAddLabel.show();
             }
         });
     }
 
 
-    private void yesReminderUI() {
-
-        addReminderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hasReminder = true;
-                showReminder();
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        hasReminder = false;
-                        hideReminder();
-                    }
-                });
-            }
-        });
-    }
-
-    private void showReminder() {
-        addReminderButton.setVisibility(View.GONE);
-        add_reminder.setVisibility(View.VISIBLE);
-
-    }
-
-    private void hideReminder() {
-        add_reminder.setVisibility(View.GONE);
-        addReminderButton.setVisibility(View.VISIBLE);
-
-    }
 
     private void updateReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
@@ -491,7 +259,6 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Reminder reminder = new Reminder(year, month, day, hour, minute, second, 0, 0, false);
             reminder.setId(requestId);
-
             reminderDBHelper.saveReminder(reminder);
             Calendar calendar = new GregorianCalendar();
             calendar.set(year, month, day, hour, minute, 0);
@@ -501,8 +268,6 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
         }
     }
-
-
     private void deleteReminder(int requestId) {
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_NO_CREATE);
@@ -525,17 +290,35 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     }
 
 
-    private void updateNote(Integer noteId) {
-        String noteTextString = noteText.getText().toString();
+    private void updateNote() {
+
+
+        DueDateDialog.Holder holder = mAlertBuilder.returnUpdatedValues(hasReminder);
+
+
+        hasReminder = holder.bool;
+        if(hasReminder){
+            Calendar calendar1 = (Calendar) holder.cal.clone();
+            noteCurrent.setDueTime((Calendar) calendar1.clone());
+            year= calendar1.get(Calendar.YEAR);
+            month = calendar1.get(Calendar.MONTH);
+            day = calendar1.get(Calendar.DAY_OF_MONTH);
+            hour = calendar1.get(Calendar.HOUR_OF_DAY);
+            minute = calendar1.get(Calendar.MINUTE);
+        }
+
+        String noteTitleString = noteText.getText().toString();
+        String noteDescriptionString = noteDescription.getText().toString();
         noteDBHelper = new NoteDBHelper(this);
         noteDBHelper.open();
         Tag noteTag = (Tag) tag.getSelectedItem();
         if(hasReminder){
             if (requestId != null) {
-                Toast.makeText(this, "Note already has reminder", Toast.LENGTH_SHORT).show();
+                Log.d(ACTIVITY_TAG, "Note already has reminder");
             } else {
+
                 requestId = Reminder.getNextReminderId(this);
-                Toast.makeText(this, "Note has no reminder", Toast.LENGTH_SHORT).show();
+               Log.d(ACTIVITY_TAG, "Note has no reminder");
             }
         }
 
@@ -574,7 +357,12 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         }
         if (noteCurrent != null) {
 
-            noteDBHelper.updateNote(noteCurrent, noteTextString, isArchived.isChecked(), noteTag.getTagId(), requestId);
+            noteCurrent.setNoteTitle(noteTitleString);
+            noteCurrent.setNoteDescription(noteDescriptionString);
+            noteCurrent.setIsArchived(isArchived.isChecked());
+            noteCurrent.setTag(noteTag.getTagId());
+            noteCurrent.setRemainderId(requestId);
+            noteDBHelper.updateNote(noteCurrent);
             noteDBHelper.close();
 
 
@@ -644,10 +432,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
                 public void run() {
                     if (noteCurrent != null) {
                         initUi();
-
-                        updateUi(noteCurrent);
-
-                        setListeners();
+                        updateUi();
                     } else {
                         Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
                     }
@@ -664,6 +449,119 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         protected void onProgressUpdate(Void... values) {
         }
     }
+
+    private class GetReminder extends AsyncTask<String, Void, Reminder> {
+
+        private Integer id;
+
+        public GetReminder(Integer id) {
+            this.id = id;
+        }
+
+        @Override
+        protected Reminder doInBackground(String... params) {
+            if (id != null) {
+                currentReminder = Reminder.getReminderById(id, getApplicationContext());
+            } else {
+                currentReminder = null;
+            }
+            return currentReminder;
+        }
+
+        @Override
+        protected void onPostExecute(final Reminder reminder) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (currentReminder != null) {
+                        year = reminder.getYear();
+                        month = reminder.getMonthOfYear();
+                        day = reminder.getDayOfMonth();
+                        hour = reminder.getHourOfDay();
+                        minute = reminder.getMinuteOfHour();
+                        second = reminder.getSecond();
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                        calendar.set(Calendar.HOUR_OF_DAY, hour);
+                        calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.SECOND, 0);
+                        hadMilliSeconds = calendar.getTimeInMillis();
+
+                    } else {
+
+                    }
+                    setFloatingActionListeners();
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
+
+    private class GetTags extends AsyncTask<String, Void,Void> {
+
+        private Context context;
+
+        public GetTags(Context context){
+            this.context=context;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            tags =Tag.getAllUnArchivedTags(context);
+            tags.add(new Tag("No Tag"));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    tags = Tag.getAllTags(new ArrayList<Tag>(), context);
+                    tags.add(new Tag("No Tag"));
+                    adapter = new ArrayAdapter<Tag>(context,
+                            android.R.layout.simple_spinner_item, tags);
+                    tag.setAdapter(adapter);
+                    Integer tagId;
+                    if (noteCurrent.getTag() != null) {
+                        tagId = noteCurrent.getTag();
+                        for (Tag tagD : tags) {
+                            if (tagD.getTagId() == tagId) {
+                                Integer pos = tags.indexOf(tagD);
+                                tag.setSelection(pos);
+                                break;
+                            }
+                        }
+                    } else {
+                        tag.setSelection(tags.size() - 1);
+                    }
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+
 
 
 }
