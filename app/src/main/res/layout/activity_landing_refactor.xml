@@ -11,7 +11,7 @@
     android:focusableInTouchMode="true"
     android:id="@+id/parentLayout"
 
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.LandingActivity"
+    tools:context="com.semantic.semanticOrganizer.docket.activities.LandingActivity"
     android:background="#ddd"
     android:padding="0dp">
 

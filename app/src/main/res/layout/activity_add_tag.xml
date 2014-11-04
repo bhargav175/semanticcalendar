@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-       tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddTagActivity"
+       tools:context="com.semantic.semanticOrganizer.docket.activities.AddTagActivity"
     android:padding="@dimen/material_left_padding">
 
     <RelativeLayout

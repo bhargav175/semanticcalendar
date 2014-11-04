@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:background="@color/light_gray_color"
     android:layout_height="match_parent"
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.ListHabitsActivity"
+    tools:context="com.semantic.semanticOrganizer.docket.activities.ListHabitsActivity"
     android:padding="@dimen/material_left_padding">
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.semantic.semanticOrganizer.semanticcalendar.helpers.MonthLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.semantic.semanticOrganizer.docket.helpers.MonthLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -98,4 +98,4 @@
         </TableRow>
     </TableLayout>
 
-</com.semantic.semanticOrganizer.semanticcalendar.helpers.MonthLayout>
+</com.semantic.semanticOrganizer.docket.helpers.MonthLayout>

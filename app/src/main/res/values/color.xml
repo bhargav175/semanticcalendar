@@ -37,5 +37,7 @@
 <color name="pink_pressed">#ec407a</color>
 <color name="yellow">#ffeb3b</color>
 <color name="yellow_light">#ffff00</color>
+<color name="app_green_color">#42bd41</color>
+<color name="app_yellow_color">#ffeb3b</color>
 
 </resources>

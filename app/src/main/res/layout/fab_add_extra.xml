@@ -10,8 +10,8 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:layout_alignParentBottom="true"
 android:layout_alignParentRight="true"
-fab:fab_addButtonColorNormal="@color/blue_color"
-fab:fab_addButtonColorPressed="@color/light_blue_500"
+fab:fab_addButtonColorNormal="@color/pink"
+fab:fab_addButtonColorPressed="@color/pink_pressed"
 fab:fab_addButtonPlusIconColor="@color/white"
 android:layout_marginBottom="16dp"
 android:layout_marginRight="16dp"
@@ -20,8 +20,8 @@ android:visibility="visible">
 <com.getbase.floatingactionbutton.FloatingActionButton
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    fab:fab_colorNormal="@color/blue_color"
-    fab:fab_colorPressed="@color/light_blue_500"
+    fab:fab_colorNormal="@color/pink"
+    fab:fab_colorPressed="@color/pink_pressed"
     fab:fab_icon="@drawable/ic_action_labels"
     android:id="@+id/addLabel"
     />
@@ -29,8 +29,8 @@ android:visibility="visible">
 <com.getbase.floatingactionbutton.FloatingActionButton
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    fab:fab_colorNormal="@color/blue_color"
-    fab:fab_colorPressed="@color/light_blue_500"
+    fab:fab_colorNormal="@color/pink"
+    fab:fab_colorPressed="@color/pink_pressed"
     fab:fab_icon="@drawable/ic_timelapse_white_24dp"
     android:id="@+id/addDueDate"
     />

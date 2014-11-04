@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddNoteActivity"
+    tools:context="com.semantic.semanticOrganizer.docket.activities.AddNoteActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:focusable="true" android:focusableInTouchMode="true"
@@ -23,7 +23,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/light_gray_color"
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.AddNoteActivity"
+    tools:context="com.semantic.semanticOrganizer.docket.activities.AddNoteActivity"
     android:padding="@dimen/material_light_padding"
     android:focusable="false" android:focusableInTouchMode="false"
     android:id="@+id/re">
@@ -36,7 +36,7 @@
         android:id="@+id/parentLayout"
         android:background="@color/white">
 
-            <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
+            <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
                 android:id="@+id/noteTitle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -78,7 +78,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Archived"
-                android:layout_below="@id/noteTitle"
                 android:id="@+id/isArchived"
                 android:checked="false" />
 
@@ -120,7 +119,7 @@
           android:background="@color/white">
 
 
-          <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
+          <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
               android:id="@+id/noteDescription"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

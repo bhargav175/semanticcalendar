@@ -15,15 +15,17 @@
                 android:padding="@dimen/material_padding">
 
 
-                <EditText
+                <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Name"
                     android:id="@+id/noteTitle"
                     android:padding="@dimen/material_padding"
                     android:textSize="@dimen/material_medium_text_size"
-                    android:textColor="@color/pitch_black"
-                    android:background="@color/white" />
+                    android:scrollbars="vertical"
+                    android:textColor="@color/light_black"
+                    android:textColorHint="@color/gray_color"
+                    android:background="@drawable/inline_editable" />
 
                 <Spinner
                     android:layout_width="wrap_content"

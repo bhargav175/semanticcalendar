@@ -1,6 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.semantic.semanticOrganizer.semanticcalendar.activities.HabitStreakActivity"
+    tools:context="com.semantic.semanticOrganizer.docket.activities.HabitStreakActivity"
 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/teal_color"
+                android:background="@color/pink"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/material_padding">
 
@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:text="This habit is due today"
                     android:textSize="@dimen/material_heading_text_size"
-                    android:textColor="@color/teal_color"
+                    android:textColor="@color/indigo_color"
                     android:padding="@dimen/material_padding"
                     android:textStyle="bold" />
 
@@ -293,7 +293,7 @@
             android:background="@color/white">
 
 
-            <com.semantic.semanticOrganizer.semanticcalendar.adapters.WrapContentHeightViewPager
+            <com.semantic.semanticOrganizer.docket.adapters.WrapContentHeightViewPager
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/habitStreakPager"
                 android:layout_width="match_parent"

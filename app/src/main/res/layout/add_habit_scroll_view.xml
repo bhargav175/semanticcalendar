@@ -54,7 +54,7 @@
 
 
 
-                <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
+                <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/habitText"
@@ -77,7 +77,7 @@
                 android:padding="@dimen/material_padding"
                 android:visibility="gone">
 
-                <com.semantic.semanticOrganizer.semanticcalendar.helpers.InlineEditable
+                <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/habitQuestion"

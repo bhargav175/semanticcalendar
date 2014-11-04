@@ -14,6 +14,7 @@
         android:drawableLeft="@drawable/abc_ic_cab_done_holo_dark"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
-        android:text="@string/menu_save" />
+        android:text="@string/menu_save"
+        android:textColor="@color/white" />
 
 </FrameLayout>

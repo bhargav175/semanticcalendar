@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#3E80B4"
+    android:background="@color/indigo_color"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -17,7 +17,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="#3E80B4"
             android:orientation="horizontal"
             android:id="@+id/noDueDateText"
             android:gravity="center_horizontal">
@@ -38,12 +37,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="#3E80B4"
             android:orientation="horizontal"
             android:id="@+id/noDueDate"
             android:layout_below="@+id/noDueDateText"
             android:layout_marginTop="@dimen/material_padding"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:baselineAligned="false">
 
             <Button
                 android:id="@+id/addDueDateButton"
