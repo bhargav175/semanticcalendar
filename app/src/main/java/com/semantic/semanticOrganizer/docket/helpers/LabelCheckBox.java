@@ -11,7 +11,7 @@ public class LabelCheckBox extends CheckBox{
 
 
     private Integer labelId;
-    
+
 
     public LabelCheckBox(Context context) {
         super(context);

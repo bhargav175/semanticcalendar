@@ -80,8 +80,8 @@ public class ReminderDBHelper {
 
         // updating row
         database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
-                new String[] { String.valueOf(reminder.getId()) });
-        Toast.makeText(context,"Reminder "+ reminder.getId()+" updated", Toast.LENGTH_SHORT).show();
+                new String[]{String.valueOf(reminder.getId())});
+        Log.d(TAG, "Reminder " + reminder.getId() + " updated");
 
 
         return 0;
@@ -103,7 +103,7 @@ public class ReminderDBHelper {
         values.put(DBHelper.REMINDER_DURATION, reminder.getDuration());
         Log.d(TAG, values.toString());
         database.insert(TABLE, null, values);
-        Toast.makeText(context,"Reminder "+ reminder.getId()+" saved", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Reminder " + reminder.getId() + " saved");
 
     }
     private String getPrevReminderId(String tableName) {
@@ -168,4 +168,9 @@ public class ReminderDBHelper {
     }
 
 
+    public void deleteReminder(Integer reminderId) {
+        database = dbHelper.getWritableDatabase();
+        database.delete(TABLE,DBHelper.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(reminderId)});
+    }
 }

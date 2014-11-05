@@ -2,31 +2,41 @@
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:layout_height="wrap_content"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:padding="@dimen/material_light_padding">
 
 
 <CheckBox
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="@dimen/checklist_element_height"
         android:id="@+id/isArchived"
         android:layout_centerVertical="true"
         android:checked="false"
         android:textColorHint="#ddd"
-        android:textColor="#fff" />
+        android:textColor="#fff"
+    android:layout_weight="0.1" />
 
 
 
-    <EditText
-        android:layout_width="wrap_content"
-         android:layout_centerHorizontal="true"
-        android:layout_height="@dimen/checklist_element_height"
+
+    <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+        android:layout_width="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:hint="Description"
+        android:padding="4dp"
+        android:inputType="text"
+        android:scrollbars="horizontal"
+        android:textColor="@color/light_black"
+        android:textColorHint="@color/gray_color"
         android:layout_toRightOf="@+id/isArchived"
         android:id="@+id/noteTitle"
-        android:hint="Add Item"
-        android:layout_weight="0.6" />
+        android:layout_weight="0.8" />
+
+
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="@dimen/checklist_element_height"
         android:text="New Text"
         android:layout_toRightOf="@+id/noteTitle"
@@ -39,7 +49,7 @@
     <Button
         style="?android:attr/buttonStyleSmall"
 
-        android:layout_width="40dp"
+        android:layout_width="0dp"
         android:layout_height="@dimen/checklist_element_height"
         android:text="x"
         android:id="@+id/removeCheckListItemButton"

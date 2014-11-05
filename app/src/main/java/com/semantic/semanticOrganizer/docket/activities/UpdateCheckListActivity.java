@@ -2,11 +2,15 @@ package com.semantic.semanticOrganizer.docket.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,29 +25,52 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.database.CheckListDBHelper;
 import com.semantic.semanticOrganizer.docket.database.CheckListItemDBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.AddLabelDialog;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.DueDateDialog;
+import com.semantic.semanticOrganizer.docket.helpers.InlineEditable;
+import com.semantic.semanticOrganizer.docket.helpers.ReminderHelper;
 import com.semantic.semanticOrganizer.docket.models.CheckList;
 import com.semantic.semanticOrganizer.docket.models.CheckListItem;
+import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
-public class UpdateCheckListActivity extends Activity {
+public class UpdateCheckListActivity extends FragmentActivity {
     private CheckListDBHelper checkListDBHelper;
     private CheckListItemDBHelper checkListItemDBHelper;
-    private EditText checkListText;
+    private InlineEditable checkListText,checkListDescription;
     private Spinner tag;
     private Button addCheckListItemButton;
     private LinearLayout checkListItemContainer;
     private List<CheckListItem> checkListItems;
     private List<Integer> checkListItemIds;
     private CheckBox isArchived;
+    private FloatingActionsMenu fam;
+    private FloatingActionButton addDueDate, addLabel;
     Integer checkListId;
     private CheckList currentCheckList;
+    private TextView showDueDateTextView;
+    public ReminderHelper reminderHelper;
+    private AddLabelDialog mAddLabelBuilder;
+    private AlertDialog mAlert,mAddLabel;
+    Integer remainderId;
+    private List<Tag> tags;
+    private ArrayAdapter<Tag> adapter;
+    private Reminder currentReminder;
+    private Boolean hadReminder,hasReminder;
+
+    int day, month, year, hour, minute, second;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +88,7 @@ public class UpdateCheckListActivity extends Activity {
                                 Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
 
                             } else {
-                                updateCheckList(checkListId);
+                                updateCheckList();
                                 Intent intent = new Intent(UpdateCheckListActivity.this,TagActivity.class);
                                 if(currentCheckList.getTag()!=null){
                                     intent.putExtra(DBHelper.COLUMN_ID,currentCheckList.getTag());
@@ -120,15 +147,23 @@ public class UpdateCheckListActivity extends Activity {
     }
 
     private void initUi() {
-
-
-        checkListText = (EditText) findViewById(R.id.checkListTitle);
-
+         checkListText = (InlineEditable) findViewById(R.id.checkListTitle);
+        checkListDescription = (InlineEditable) findViewById(R.id.checkListDescription);
         tag = (Spinner) findViewById(R.id.selectSpinner);
-        checkListItemContainer = (LinearLayout) findViewById(R.id.checkListItemsContainer);
+        checkListItemContainer = (LinearLayout) findViewById(R.id.checkListItemContainer);
         addCheckListItemButton = (Button) findViewById(R.id.addCheckListItemButton);
         isArchived = (CheckBox) findViewById(R.id.isArchived);
+        checkListDBHelper = new CheckListDBHelper(this);
+        checkListItemDBHelper = new CheckListItemDBHelper(this);
+        showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
+        new GetTags(this).execute("");
+        addFloatingActionButtons();
+    }
 
+    private void addFloatingActionButtons(){
+        fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        addDueDate = (FloatingActionButton) findViewById(R.id.addDueDate);
+        addLabel = (FloatingActionButton) findViewById(R.id.addLabel);
 
     }
     private void setListeners() {
@@ -152,20 +187,43 @@ public class UpdateCheckListActivity extends Activity {
             }
         });
 
+
     }
 
-    private void updateUi(CheckList checkList){
+    private void setFloatingActionListeners(){
+//        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
+//        mAlert = mAlertBuilder.create();
 
-        checkListDBHelper = new CheckListDBHelper(this);
-        checkListItemDBHelper = new CheckListItemDBHelper(this);
-        checkListDBHelper.open();
+        reminderHelper = new ReminderHelper(this,UpdateCheckListActivity.this,remainderId,currentCheckList.getDueTime(),showDueDateTextView);
+        mAddLabelBuilder=new AddLabelDialog(UpdateCheckListActivity.this);
+        mAddLabel = mAddLabelBuilder.create();
+        addDueDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reminderHelper.show();
+            }
+        });
+        addLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddLabel.show();
+            }
+        });
+    }
 
-        checkListItemDBHelper.open();
 
-        checkListText.setText(checkList.getCheckListTitle());
-        isArchived.setChecked(checkList.getIsArchived());
-
-
+    private void updateUi(){
+        checkListText.setText(currentCheckList.getCheckListTitle());
+        checkListDescription.setText(currentCheckList.getCheckListDescription());
+        isArchived.setChecked(currentCheckList.getIsArchived());
+        if (currentCheckList.getReminderId() != null) {
+            hadReminder = true;
+            remainderId = currentCheckList.getReminderId();
+        } else {
+            hadReminder = false;
+        }
+        hasReminder = hadReminder;
+        new GetReminder(remainderId).execute("");
         for(CheckListItem checkListItem : checkListItems){
             final View add_checklist_item = getLayoutInflater().inflate(R.layout.add_checklist_item_view, checkListItemContainer, false);
             checkListItemContainer.addView(add_checklist_item);
@@ -183,142 +241,30 @@ public class UpdateCheckListActivity extends Activity {
             checkListItemText.setText(checkListItem.getCheckListItemText());
             if(checkListItem.getCheckListItemState() == CheckListItem.State.NOT_DONE){
                 checkListItemCheckBox.setChecked(false);
-
             }else{
                 checkListItemCheckBox.setChecked(true);
-
             }
-
         }
-
-
-        List<Tag> tags = Tag.getAllTags(new ArrayList<Tag>(),getApplicationContext());
-        tags.add(new Tag("No Tag"));
-        ArrayAdapter<Tag> adapter = new ArrayAdapter<Tag>(this,
-                android.R.layout.simple_spinner_item,tags );
-        tag.setAdapter(adapter);
-
-
-        Integer tagId = checkList.getTag() ;
-        if(tagId!=null){
-
-            for(Tag tagD : tags){
-                if(tagD.getTagId() == tagId){
-                    Integer pos = tags.indexOf(tagD);
-                    tag.setSelection(pos);
-                    break;
-                }
-            }
-        }else{
-            tag.setSelection(tags.size()-1);
-        }
-
-
-
-        checkListItemDBHelper.close();
-
-        checkListDBHelper.close();
-
 
     }
 
-    private void updateCheckList(Integer checkListId) {
+    private void updateCheckList() {
         String checkListTextString=checkListText.getText().toString();
-        checkListDBHelper.open();
-        CheckList checkList = checkListDBHelper.getCheckList(checkListId);
+        String checkListDescriptionString=checkListDescription.getText().toString();
         Tag checkListTag = (Tag) tag.getSelectedItem();
-
-        if(checkList!=null){
+        if(currentCheckList!=null){
             if(checkListTextString.length()==0){
                 Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_SHORT).show();
             }
             else{
-                checkListItemDBHelper.open();
-
-                checkList.setCheckListTitle(checkListTextString);
-                checkList.setCheckListDescription(null);
-                checkList.setTag(checkListTag.getTagId());
-                checkList.setIsArchived(isArchived.isChecked());
-
-                checkListDBHelper.updateCheckList(checkList);
-                List<Integer> newCheckListItems =new ArrayList<Integer>();
-                for(int i=0; i< checkListItemContainer.getChildCount();i++){
-
-                    View view = checkListItemContainer.getChildAt(i);
-                    TextView idStore =(TextView) view.findViewById(R.id.idStore);
-                    String idString = idStore.getText().toString().trim();
-                    Integer checkListItemId = null;
-                    if(idString.equals("")){
-
-                    }else{
-                        checkListItemId= Integer.valueOf(idString);
-                        newCheckListItems.add(checkListItemId);
-                    }
-
-                    EditText checkListItemText =(EditText) view.findViewById(R.id.noteTitle);
-                    CheckBox checkListItemCheckBox =(CheckBox) view.findViewById(R.id.isArchived);
-                    if(checkListItemId==null){
-                        //create checklistitem in database
-                        CheckListItem checkListItem = new CheckListItem();
-                        checkListItem.setCheckListItemText(checkListItemText.getText().toString());
-                        checkListItem.setCheckList(checkList.getId());
-                        if(checkListItemCheckBox.isChecked()){
-                            checkListItem.setCheckListItemState(CheckListItem.State.DONE);
-                        }else{
-                            checkListItem.setCheckListItemState(CheckListItem.State.NOT_DONE);
-                        }
-
-                        checkListItemDBHelper.saveCheckListItem(checkListItem);
-
-
-
-                    }else{
-                        //update checklistitem in database if it has been modified
-                       CheckListItem checkListItem = checkListItemDBHelper.getCheckListItem(checkListItemId);
-                        Integer currStateValue = null;
-                        if(checkListItemCheckBox.isChecked()){
-                            currStateValue=2;
-                        }else{
-                            currStateValue = 0;
-                        }
-
-                        if(checkListItem.getCheckListItemText().equals(checkListItemText.getText().toString()) && checkListItem.getCheckListItemState().getStateValue() == currStateValue )
-                        {
-                                //It was not modified
-                        }else{
-                            checkListItem.setCheckListItemText(checkListItemText.getText().toString());
-                            checkListItem.setCheckList(checkList.getId());
-                            checkListItem.setCheckListItemState(CheckListItem.State.values()[currStateValue]);
-                            checkListItemDBHelper.updateCheckListItem(checkListItem);
-
-
-                        }
-
-
-
-
-                    }
-
-
-
-                }
-
-                for(Integer i: checkListItemIds){
-                    if(newCheckListItems.indexOf(i)<0){
-                        //delete the checklistitem
-                        checkListItemDBHelper.deleteCheckListItem(i);
-
-                    }
-                }
-
-
-                checkListDBHelper.close();
-
+                currentCheckList.setCheckListTitle(checkListTextString);
+                currentCheckList.setCheckListDescription(checkListDescriptionString);
+                currentCheckList.setTag(checkListTag.getTagId());
+                currentCheckList.setIsArchived(isArchived.isChecked());
+                new UpdateCheckList(this).execute("");
             }
-
         }
         else{
-            checkListDBHelper.close();
             Toast.makeText(this,"Update Failed",Toast.LENGTH_SHORT).show();
         }
 
@@ -353,7 +299,7 @@ public class UpdateCheckListActivity extends Activity {
     }
 
 
-    private class GetCheckList extends AsyncTask<String, Void,CheckList> {
+    private class GetCheckList extends AsyncTask<String, Void,Void> {
 
         private int id;
         public GetCheckList(int id){
@@ -361,30 +307,86 @@ public class UpdateCheckListActivity extends Activity {
         }
 
         @Override
-        protected CheckList doInBackground(String... params) {
-            CheckList checkList  = CheckList.getCheckListById(id,getApplicationContext());
-            currentCheckList = checkList;
-            return checkList;
+        protected Void doInBackground(String... params) {
+            currentCheckList  = CheckList.getCheckListById(id,getApplicationContext());
+            if(currentCheckList!=null){
+                checkListItems = CheckListItem.getAllCheckListItemsInCheckList(currentCheckList, getApplicationContext());
+                checkListItemIds = new ArrayList<Integer>();
+                for(CheckListItem checkListItem : checkListItems){
+                    checkListItemIds.add(checkListItem.getId());
+                }
+            }
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(final CheckList checkListTemp) {
+        protected void onPostExecute(Void v) {
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if(checkListTemp!=null){
-                        checkListItems = CheckListItem.getAllCheckListItemsInCheckList(checkListTemp, getApplicationContext());
-                        checkListItemIds = new ArrayList<Integer>();
-                        for(CheckListItem checkListItem : checkListItems){
-                            checkListItemIds.add(checkListItem.getId());
+
+                        if(currentCheckList!=null){
+                            initUi();
+                            setListeners();
+                            updateUi();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"There was an error",Toast.LENGTH_SHORT).show();
                         }
-                        initUi();
-                        setListeners();
-                        updateUi(checkListTemp);
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(),"failed",Toast.LENGTH_SHORT).show();
+
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+
+    private class GetTags extends AsyncTask<String, Void,Void> {
+
+        private Context context;
+
+        public GetTags(Context context){
+            this.context=context;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            tags =Tag.getAllUnArchivedTags(context);
+            tags.add(new Tag("No Tag"));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    tags = Tag.getAllTags(new ArrayList<Tag>(), context);
+                    tags.add(new Tag("No Tag"));
+                    adapter = new ArrayAdapter<Tag>(context,
+                            android.R.layout.simple_spinner_item, tags);
+                    tag.setAdapter(adapter);
+                    Integer tagId;
+                    if (currentCheckList.getTag() != null) {
+                        tagId = currentCheckList.getTag();
+                        for (Tag tagD : tags) {
+                            if (tagD.getTagId() == tagId) {
+                                Integer pos = tags.indexOf(tagD);
+                                tag.setSelection(pos);
+                                break;
+                            }
+                        }
+                    } else {
+                        tag.setSelection(tags.size() - 1);
                     }
                 }
             });
@@ -397,5 +399,165 @@ public class UpdateCheckListActivity extends Activity {
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
+
+
+
+    private class UpdateCheckList extends AsyncTask<String, Void,Void> {
+
+        private Context context;
+
+        public UpdateCheckList(Context context){
+            this.context=context;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            DueDateDialog.Holder holder = reminderHelper.doSomethingAboutTheReminder();
+            remainderId = holder.remainderId;
+            currentCheckList.setDueTime(holder.cal);
+            currentCheckList.setReminderId(remainderId);
+            checkListDBHelper.open();
+            checkListDBHelper.updateCheckList(currentCheckList);
+            checkListDBHelper.close();
+            checkListItemDBHelper.open();
+
+            List<Integer> newCheckListItems =new ArrayList<Integer>();
+            for(int i=0; i< checkListItemContainer.getChildCount();i++){
+                View view = checkListItemContainer.getChildAt(i);
+                TextView idStore =(TextView) view.findViewById(R.id.idStore);
+                String idString = idStore.getText().toString().trim();
+                Integer checkListItemId = null;
+                if(idString.equals("")){
+
+                }else{
+                    checkListItemId= Integer.valueOf(idString);
+                    newCheckListItems.add(checkListItemId);
+                }
+
+                EditText checkListItemText =(EditText) view.findViewById(R.id.noteTitle);
+                CheckBox checkListItemCheckBox =(CheckBox) view.findViewById(R.id.isArchived);
+                if(checkListItemId==null){
+                    //create checklistitem in database
+                    CheckListItem checkListItem = new CheckListItem();
+                    checkListItem.setCheckListItemText(checkListItemText.getText().toString());
+                    checkListItem.setCheckList(currentCheckList.getId());
+                    if(checkListItemCheckBox.isChecked()){
+                        checkListItem.setCheckListItemState(CheckListItem.State.DONE);
+                    }else{
+                        checkListItem.setCheckListItemState(CheckListItem.State.NOT_DONE);
+                    }
+
+                    checkListItemDBHelper.saveCheckListItem(checkListItem);
+
+                }else{
+                    //update checklistitem in database if it has been modified
+                    CheckListItem checkListItem = checkListItemDBHelper.getCheckListItem(checkListItemId);
+                    Integer currStateValue = null;
+                    if(checkListItemCheckBox.isChecked()){
+                        currStateValue=2;
+                    }else{
+                        currStateValue = 0;
+                    }
+
+                    if(checkListItem.getCheckListItemText().equals(checkListItemText.getText().toString()) && checkListItem.getCheckListItemState().getStateValue() == currStateValue )
+                    {
+                        //It was not modified
+                    }else{
+                        checkListItem.setCheckListItemText(checkListItemText.getText().toString());
+                        checkListItem.setCheckList(currentCheckList.getId());
+                        checkListItem.setCheckListItemState(CheckListItem.State.values()[currStateValue]);
+                        checkListItemDBHelper.updateCheckListItem(checkListItem);
+                    }
+                }
+            }
+
+            for(Integer i: checkListItemIds){
+                if(newCheckListItems.indexOf(i)<0){
+                    //delete the checklistitem
+                    checkListItemDBHelper.deleteCheckListItem(i);
+                }
+            }
+            checkListItemDBHelper.open();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+    private class GetReminder extends AsyncTask<String, Void, Reminder> {
+
+        private Integer id;
+
+        public GetReminder(Integer id) {
+            this.id = id;
+        }
+
+        @Override
+        protected Reminder doInBackground(String... params) {
+            if (id != null) {
+                currentReminder = Reminder.getReminderById(id, getApplicationContext());
+            } else {
+                currentReminder = null;
+            }
+            return currentReminder;
+        }
+
+        @Override
+        protected void onPostExecute(final Reminder reminder) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (currentReminder != null) {
+                        year = reminder.getYear();
+                        month = reminder.getMonthOfYear();
+                        day = reminder.getDayOfMonth();
+                        hour = reminder.getHourOfDay();
+                        minute = reminder.getMinuteOfHour();
+                        second = reminder.getSecond();
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                        calendar.set(Calendar.HOUR_OF_DAY, hour);
+                        calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.SECOND, 0);
+
+                    } else {
+
+                    }
+                    setFloatingActionListeners();
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
 
 }

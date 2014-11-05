@@ -96,7 +96,11 @@ public class HabitDBHelper {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitId(TABLE)) + 1)));
         values.put(DBHelper.HABIT_TITLE, habit.getHabitText());
-
+        Integer d = Habit.durationStrings.length - 1;
+        values.put(DBHelper.HABIT_DURATION,d);
+        values.put(DBHelper.HABIT_TYPE,Habit.Type.FIXED.getTypeValue());
+        values.put(DBHelper.HABIT_DAYS_CODE,1111111);
+        values.putNull(DBHelper.HABIT_FREQUENCY);
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         Log.d(TAG, values.toString());
@@ -211,7 +215,11 @@ public class HabitDBHelper {
         values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
         values.put(DBHelper.HABIT_TITLE, habit.getHabitText());
         values.put(DBHelper.HABIT_TAG, tag.getTagId());
-
+        Integer d = Habit.durationStrings.length - 1;
+        values.put(DBHelper.HABIT_DURATION,d);
+        values.put(DBHelper.HABIT_TYPE,Habit.Type.FIXED.getTypeValue());
+        values.put(DBHelper.HABIT_DAYS_CODE,1111111);
+        values.putNull(DBHelper.HABIT_FREQUENCY);
         //values.put("image_path", draft.getDraftImagePath());
         //TODO Location Insertion
         Log.d(TAG, values.toString());

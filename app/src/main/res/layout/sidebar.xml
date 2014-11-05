@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="My Lists"
+        android:text="My Goals"
         android:id="@+id/drawer_layout_header_text"
         android:textColor="@color/pitch_black"
         android:padding="@dimen/material_light_padding"

@@ -61,13 +61,10 @@ public class CheckListItemDBHelper {
         ContentValues values = new ContentValues();
         values.put(DBHelper.CHECKLIST_ITEM_TEXT, checkListItem.getCheckListItemText());
         values.put(DBHelper.CHECKLIST_ITEM_STATE, checkListItem.getCheckListItemState().getStateValue());
-
-
-
         // updating row
         database.update(CHECKLIST_ITEMS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(checkListItem.getId()) });
-        Toast.makeText(context,"CheckListItem "+ checkListItem.getCheckListItemText()+" updated", Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"CheckListItem "+ checkListItem.getCheckListItemText()+" updated");
 
 
         return 0;
@@ -85,7 +82,7 @@ public class CheckListItemDBHelper {
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(CHECKLIST_ITEMS_TABLE, null, values);
-        Toast.makeText(context,"CheckListItem "+ checkListItem.getCheckListItemText()+" saved", Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"CheckListItem "+ checkListItem.getCheckListItemText()+" saved");
 
     }
     private String getPrevCheckListItemId(String tableName) {

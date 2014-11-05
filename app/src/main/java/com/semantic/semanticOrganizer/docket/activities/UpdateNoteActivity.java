@@ -33,6 +33,7 @@ import com.semantic.semanticOrganizer.docket.database.ReminderDBHelper;
 import com.semantic.semanticOrganizer.docket.helpers.AddLabelDialog;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
 import com.semantic.semanticOrganizer.docket.helpers.DueDateDialog;
+import com.semantic.semanticOrganizer.docket.helpers.ReminderHelper;
 import com.semantic.semanticOrganizer.docket.models.Note;
 import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
@@ -74,6 +75,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     private List<Tag> tags;
     private ArrayAdapter<Tag> adapter;
     private TextView showDueDateTextView;
+    public ReminderHelper reminderHelper;
 
     int day, month, year, hour, minute, second;
 
@@ -153,9 +155,6 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         noteText = (EditText) findViewById(R.id.noteTitle);
         noteDescription =(EditText) findViewById(R.id.noteDescription);
         noteDBHelper = new NoteDBHelper(this);
-        reminderDBHelper = new ReminderDBHelper(this);
-        noteDBHelper.open();
-        reminderDBHelper.open();
         isArchived = (CheckBox) findViewById(R.id.isArchived);
         tag = (Spinner) findViewById(R.id.selectSpinner);
         showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
@@ -205,14 +204,17 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
     }
     private void setFloatingActionListeners(){
-        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
-        mAlert = mAlertBuilder.create();
+//        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
+//        mAlert = mAlertBuilder.create();
+
+        reminderHelper = new ReminderHelper(this,UpdateNoteActivity.this,requestId,noteCurrent.getDueTime(),showDueDateTextView);
+
         mAddLabelBuilder=new AddLabelDialog(UpdateNoteActivity.this);
         mAddLabel = mAddLabelBuilder.create();
         addDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAlert.show();
+                reminderHelper.show();
             }
         });
         addLabel.setOnClickListener(new View.OnClickListener() {
@@ -225,148 +227,16 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
 
-    private void updateReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
-        Intent intent = new Intent(this, MyBroadcastReceiver.class);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager != null) {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Reminder reminder = new Reminder(year, month, day, hour, minute, second, 0, 0, false);
-            reminder.setId(requestId);
-            reminderDBHelper.updateReminder(reminder);
-            Calendar calendar = new GregorianCalendar();
-            calendar.set(year, month, day, hour, minute, 0);
-            Date currentLocalTime = calendar.getTime();
-            DateFormat date = new SimpleDateFormat("dd-MM-yyy HH:mm:ss z");
-            date.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String localTime = date.format(currentLocalTime);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            Toast.makeText(this, "Alarm created " + localTime + " seconds",
-                    Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    private void saveReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
-        Intent intent = new Intent(this, MyBroadcastReceiver.class);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager != null) {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Reminder reminder = new Reminder(year, month, day, hour, minute, second, 0, 0, false);
-            reminder.setId(requestId);
-            reminderDBHelper.saveReminder(reminder);
-            Calendar calendar = new GregorianCalendar();
-            calendar.set(year, month, day, hour, minute, 0);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            Toast.makeText(this, "Alarm created " + calendar.getTime().toString() + " seconds",
-                    Toast.LENGTH_SHORT).show();
-
-        }
-    }
-    private void deleteReminder(int requestId) {
-        Intent intent = new Intent(this, MyBroadcastReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestId, intent, PendingIntent.FLAG_NO_CREATE);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        if (alarmManager != null) {
-            if (pendingIntent != null) {
-                alarmManager.cancel(pendingIntent);
-                Toast.makeText(this, "Alarm cancelled ",
-                        Toast.LENGTH_SHORT).show();
-
-            } else {
-                Toast.makeText(this, "Alarm does not exist ",
-                        Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        }
-    }
-
 
     private void updateNote() {
-
-
-        DueDateDialog.Holder holder = mAlertBuilder.returnUpdatedValues(hasReminder);
-
-
-        hasReminder = holder.bool;
-        if(hasReminder){
-            Calendar calendar1 = (Calendar) holder.cal.clone();
-            noteCurrent.setDueTime((Calendar) calendar1.clone());
-            year= calendar1.get(Calendar.YEAR);
-            month = calendar1.get(Calendar.MONTH);
-            day = calendar1.get(Calendar.DAY_OF_MONTH);
-            hour = calendar1.get(Calendar.HOUR_OF_DAY);
-            minute = calendar1.get(Calendar.MINUTE);
-        }
-
         String noteTitleString = noteText.getText().toString();
         String noteDescriptionString = noteDescription.getText().toString();
-        noteDBHelper = new NoteDBHelper(this);
-        noteDBHelper.open();
         Tag noteTag = (Tag) tag.getSelectedItem();
-        if(hasReminder){
-            if (requestId != null) {
-                Log.d(ACTIVITY_TAG, "Note already has reminder");
-            } else {
-
-                requestId = Reminder.getNextReminderId(this);
-               Log.d(ACTIVITY_TAG, "Note has no reminder");
-            }
-        }
-
-        if(requestId!=null){
-            Toast.makeText(this, requestId.toString() + hasReminder.toString() + "-" + year + "-" + month + "-" + day + "-" + hour + "-" + minute, Toast.LENGTH_SHORT).show();
-        }
-
-        if (hadReminder) {
-            if (hasReminder) {
-                Calendar calendar = new GregorianCalendar();
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, minute);
-                calendar.set(Calendar.SECOND, 0);
-                hasMIlliSeconds = calendar.getTimeInMillis();
-                if (hasMIlliSeconds == hadMilliSeconds) {
-                    //do nothing
-                } else {
-                    //update
-                    updateReminder(requestId, year, month, day, hour, minute);
-                }
-            } else {
-                //delete current reminder
-                deleteReminder(requestId);
-            }
-
-        } else {
-            if (hasReminder) {
-                //add reminder
-                saveReminder(requestId, year, month, day, hour, second);
-            } else {
-                //do nothing
-            }
-        }
-        if (noteCurrent != null) {
-
-            noteCurrent.setNoteTitle(noteTitleString);
-            noteCurrent.setNoteDescription(noteDescriptionString);
-            noteCurrent.setIsArchived(isArchived.isChecked());
-            noteCurrent.setTag(noteTag.getTagId());
-            noteCurrent.setRemainderId(requestId);
-            noteDBHelper.updateNote(noteCurrent);
-            noteDBHelper.close();
-
-
-        } else {
-
-            Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show();
-        }
-        noteDBHelper.close();
-
-
+        noteCurrent.setNoteTitle(noteTitleString);
+        noteCurrent.setNoteDescription(noteDescriptionString);
+        noteCurrent.setIsArchived(isArchived.isChecked());
+        noteCurrent.setTag(noteTag.getTagId());
+         new SaveNote(getApplicationContext()).execute("");
     }
 
     @Override
@@ -391,8 +261,6 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     @Override
     protected void onPause() {
         super.onPause();
-        noteDBHelper.close();
-        reminderDBHelper.close();
         //closing transition animations
         overridePendingTransition(R.anim.activity_open_scale, R.anim.activity_close_translate);
     }
@@ -554,6 +422,50 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
+
+
+    private class SaveNote extends AsyncTask<String, Void,Void> {
+
+        private Context context;
+
+        public SaveNote(Context context){
+            this.context=context;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            DueDateDialog.Holder holder = reminderHelper.doSomethingAboutTheReminder();
+            requestId = holder.remainderId;
+            noteCurrent.setDueTime(holder.cal);
+            noteDBHelper = new NoteDBHelper(context);
+            noteDBHelper.open();
+            noteCurrent.setRemainderId(requestId);
+            noteDBHelper.updateNote(noteCurrent);
+            noteDBHelper.close();
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
 
 
 

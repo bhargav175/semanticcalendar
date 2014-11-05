@@ -71,10 +71,15 @@ public class CheckListDBHelper {
         values.put(DBHelper.CHECKLIST_DESCRIPTION, checkList.getCheckListDescription());
         values.put(DBHelper.CHECKLIST_IS_ARCHIVED, checkList.getIsArchived());
         values.put(DBHelper.CHECKLIST_TAG, checkList.getTag());
-        values.put(DBHelper.CHECKLIST_REQUEST_ID, checkList.getReminderId());
         if(checkList.getDueTime()!=null){
-            values.put(DBHelper.COLUMN_DUE_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(checkList.getDueTime().getTime()));
+            values.put(DBHelper.CHECKLIST_REQUEST_ID,checkList.getReminderId());
+            values.put(DBHelper.COLUMN_DUE_TIME,new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(checkList.getDueTime().getTime()));
+        }else{
+
+            values.putNull(DBHelper.NOTE_REQUEST_ID);
+            values.putNull(DBHelper.COLUMN_DUE_TIME);
         }
+
 
         // updating row
         database.update(CHECKLISTS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
@@ -119,9 +124,14 @@ public class CheckListDBHelper {
         checkList.setCreatedTime(cursor.getString(4));
         if (!cursor.isNull(5)){
             checkList.setTag(cursor.getInt(5));
+        }else{
+            checkList.setTag(null);
         }
         if (!cursor.isNull(6)){
             checkList.setReminderId(cursor.getInt(6));
+        }
+        else{
+            checkList.setReminderId(null);
         }
         if(!cursor.isNull(7)){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

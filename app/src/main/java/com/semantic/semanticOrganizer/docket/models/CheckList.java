@@ -15,18 +15,18 @@ import java.util.List;
 public class CheckList {
     private Integer Tag;
     private Integer id;
-    private int reminderId;
+    private Integer reminderId;
     private String createdTime;
     private String checkListTitle;
     private String checkListDescription;
     private Boolean isArchived;
     private Calendar dueTime;
 
-    public int getReminderId() {
+    public Integer getReminderId() {
         return reminderId;
     }
 
-    public void setReminderId(int reminderId) {
+    public void setReminderId(Integer reminderId) {
         this.reminderId = reminderId;
     }
 
