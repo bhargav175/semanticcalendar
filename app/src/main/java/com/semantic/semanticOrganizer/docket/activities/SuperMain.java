@@ -34,7 +34,9 @@ import com.semantic.semanticOrganizer.docket.database.CheckListDBHelper;
 import com.semantic.semanticOrganizer.docket.database.HabitDBHelper;
 import com.semantic.semanticOrganizer.docket.database.NoteDBHelper;
 import com.semantic.semanticOrganizer.docket.database.TagDBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.ComingUpDialog;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.DueDateDialog;
 import com.semantic.semanticOrganizer.docket.models.CheckList;
 import com.semantic.semanticOrganizer.docket.models.Habit;
 import com.semantic.semanticOrganizer.docket.models.Note;
@@ -55,6 +57,8 @@ public class SuperMain extends FragmentActivity {
     private Typeface font;
     private Integer doSave;
     private FloatingActionsMenu fam;
+    private ComingUpDialog wAlertBuilder;
+    private AlertDialog wAlert;
 
 
     @Override
@@ -87,6 +91,8 @@ public class SuperMain extends FragmentActivity {
                 startActivity(intent);
             }
         });
+        wAlertBuilder = new ComingUpDialog(this);
+        wAlert = wAlertBuilder.create();
 
     }
 
@@ -255,28 +261,36 @@ public class SuperMain extends FragmentActivity {
         addHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doSave = 3;
-                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
-                spinner.setAdapter(tagArrayAdapter);
-                spinner.setSelection(tags.size()-1);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-                editInput.setCursorVisible(true);
 
-                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int which) {
-                                // Write your code here to execute after dialog
-                                String str = editInput.getText().toString();
-                                if(str.length()>0){
-                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
-                                    dialog.cancel();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-                                }
+                //Replace code here
+//                doSave = 3;
+//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+//                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
+//                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
+//                spinner.setAdapter(tagArrayAdapter);
+//                spinner.setSelection(tags.size()-1);
+//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+//                editInput.setCursorVisible(true);
+//
+//                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog,int which) {
+//                                // Write your code here to execute after dialog
+//                                String str = editInput.getText().toString();
+//                                if(str.length()>0){
+//                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
+//                                    dialog.cancel();
+//                                }else{
+//                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+//                                }
+//
+//                            }}).create().show();
 
-                            }}).create().show();
+                //Replace code ends here
+
+
+                wAlert = wAlertBuilder.create();
+                wAlert.show();
             }
         });
     }

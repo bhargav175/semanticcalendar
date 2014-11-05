@@ -21,6 +21,7 @@ import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.database.TagDBHelper;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
 import com.semantic.semanticOrganizer.docket.models.Tag;
+import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
 
 public class UpdateTagActivity extends Activity {
     private TagDBHelper tagDBHelper;
@@ -115,6 +116,7 @@ public class UpdateTagActivity extends Activity {
     }
 
     private void init(){
+        getActionBar().setTitle(utilFunctions.toCamelCase(currentTagInView.getTagText()));
         tagText.setText(currentTagInView.getTagText());
         tagDescription.setText(currentTagInView.getTagDescription());
         tagIsArchived.setChecked(currentTagInView.getIsArchived());

@@ -38,6 +38,7 @@ import com.semantic.semanticOrganizer.docket.models.Note;
 import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 import com.semantic.semanticOrganizer.docket.utils.MyBroadcastReceiver;
+import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -181,6 +182,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
     private void updateUi() {
+        getActionBar().setTitle(utilFunctions.toCamelCase(noteCurrent.getNoteTitle()));
         noteId = noteCurrent.getId();
         noteText.setText(noteCurrent.getNoteTitle());
         noteDescription.setText(noteCurrent.getNoteDescription());

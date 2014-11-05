@@ -3,9 +3,12 @@ package com.semantic.semanticOrganizer.docket.adapters;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.helpers.MonthLayout;
 import com.semantic.semanticOrganizer.docket.models.Habit;
 
@@ -21,6 +24,7 @@ public class InfinitePagerAdapter extends PagerAdapter {
     private Context context;
     private Habit habitCurrent;
     private Calendar currMonth;
+    private MonthLayout firstLayout;
 
     public InfinitePagerAdapter(Habit habitCurrent, Context context, List<MonthLayout> monthLayouts) {
         super();
@@ -33,129 +37,67 @@ public class InfinitePagerAdapter extends PagerAdapter {
         this.currMonth =(Calendar) nextMonth.clone();
         nextMonth.set(Calendar.MONTH,0);
 
-//        for(int i = 0 ; i <12;i++){
-//            nextMonth = (Calendar)nextMonth.clone();
-//            nextMonth.add(Calendar.MONTH,1);
-//
-//            MonthFragment next = MonthFragment.newInstance(nextMonth.get(Calendar.YEAR), nextMonth.get(Calendar.MONTH), habitCurrent.getId());
-//            this.monthLayouts.add(next);
-//        }
     }
 
-    @Override
-    public Object instantiateItem (ViewGroup container, int position){
-//        LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View mPage = inflater.inflate(R.layout.month_table_layout,null);
-//        LayoutInflater inflater = (LayoutInflater)container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        MonthLayout monthLayout1 =(MonthLayout) inflater.inflate(R.layout.month_table_layout,null);
-//        monthLayout1.initializeWith(context,currMonth,habitCurrent);
-//        this.monthLayouts.add(monthLayout1);
-        View v =this.monthLayouts.get(position);
-        container.addView(v);
-        return v;
 
+
+    @Override
+    public int getCount() {
+        return (Integer.MAX_VALUE);
     }
 
-    @Override
-    public int getItemPosition (Object object)
+    public int getRealCount(){
+        return monthLayouts.size();
+    }
+
+    public int addView (MonthLayout v)
     {
-//        //change
-////
-//        int
-//            return POSITION_NONE;
-//        else index = monthLayouts.indexOf (object);
-//        if (index == -1)
-            return POSITION_NONE;
+        return addView (v, monthLayouts.size());
     }
 
-    //-----------------------------------------------------------------------------
-    // Used by ViewPager.  Called when ViewPager needs a page to display; it is our job
-    // to add the page to the container, which is normally the ViewPager itself.  Since
-    // all our pages are persistent, we simply retrieve it from our "views" ArrayList.
-
-
-    //-----------------------------------------------------------------------------
-    // Used by ViewPager.  Called when ViewPager no longer needs a page to display; it
-    // is our job to remove the page from the container, which is normally the
-    // ViewPager itself.  Since all our pages are persistent, we do nothing to the
-    // contents of our "views" ArrayList.
-    @Override
-    public void destroyItem (ViewGroup container, int position, Object object)
+    public int addView (MonthLayout v, int position)
     {
-        container.removeView ((View) object);
+        if(monthLayouts.size() ==0){
+            firstLayout = v;
+        }
+        monthLayouts.add (position, v);
+        return position;
     }
 
-    //-----------------------------------------------------------------------------
-    // Used by ViewPager; can be used by app as well.
-    // Returns the total number of pages that the ViewPage can display.  This must
-    // never be 0.
     @Override
-    public int getCount ()
-    {
-        return 3;
+    public Object instantiateItem(ViewGroup container, int position) {
+        int virtualPosition = position % getRealCount();
+        return instantiateVirtualItem(container, virtualPosition);
     }
 
-    //-----------------------------------------------------------------------------
-    // Used by ViewPager.
+    public Object instantiateVirtualItem(ViewGroup container, final int position) {
+        LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View mPage = inflater.inflate(R.layout.tag_list_item,null);
+        TextView tv= (TextView) mPage.findViewById(R.id.text1);
+        tv.setText(String.valueOf(position));
+        container.addView(mPage);
+        return mPage;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        int virtualPosition = position % getRealCount();
+        destroyVirtualItem(container, virtualPosition, object);
+    }
+
+
+    public void destroyVirtualItem(ViewGroup container, int position, Object object){
+        container.removeView((View) object);
+    }
+
+
+
     @Override
     public boolean isViewFromObject (View view, Object object)
     {
         return view == object;
     }
 
-    //-----------------------------------------------------------------------------
-    // Add "view" to right end of "views".
-    // Returns the position of the new view.
-    // The app should call this to add pages; not used by ViewPager.
-    public int addView (MonthLayout v)
-    {
-        return addView (v, monthLayouts.size());
-    }
 
-    //-----------------------------------------------------------------------------
-    // Add "view" at "position" to "views".
-    // Returns position of new view.
-    // The app should call this to add pages; not used by ViewPager.
-    public int addView (MonthLayout v, int position)
-    {
-        monthLayouts.add (position, v);
-        return position;
-    }
 
-    //-----------------------------------------------------------------------------
-    // Removes "view" from "views".
-    // Retuns position of removed view.
-    // The app should call this to remove pages; not used by ViewPager.
-    public int removeView (ViewPager pager, View v)
-    {
-        return removeView (pager, monthLayouts.indexOf (v));
-    }
-
-    //-----------------------------------------------------------------------------
-    // Removes the "view" at "position" from "views".
-    // Retuns position of removed view.
-    // The app should call this to remove pages; not used by ViewPager.
-    public int removeView (ViewPager pager, int position)
-    {
-        // ViewPager doesn't have a delete method; the closest is to set the adapter
-        // again.  When doing so, it deletes all its views.  Then we can delete the view
-        // from from the adapter and finally set the adapter to the pager again.  Note
-        // that we set the adapter to null before removing the view from "views" - that's
-        // because while ViewPager deletes all its views, it will call destroyItem which
-        // will in turn cause a null pointer ref.
-        pager.setAdapter (null);
-        monthLayouts.remove (position);
-        pager.setAdapter (this);
-
-        return position;
-    }
-
-    //-----------------------------------------------------------------------------
-    // Returns the "view" at "position".
-    // The app should call this to retrieve a view; not used by ViewPager.
-
-    // Other relevant methods:
-
-    // finishUpdate - called by the ViewPager - we don't care about what pages the
-    // pager is displaying so we don't use this method.
 }

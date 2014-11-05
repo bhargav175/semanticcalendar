@@ -39,6 +39,7 @@ import com.semantic.semanticOrganizer.docket.models.CheckList;
 import com.semantic.semanticOrganizer.docket.models.CheckListItem;
 import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
+import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -213,6 +214,8 @@ public class UpdateCheckListActivity extends FragmentActivity {
 
 
     private void updateUi(){
+        getActionBar().setTitle(utilFunctions.toCamelCase(currentCheckList.getCheckListTitle()));
+
         checkListText.setText(currentCheckList.getCheckListTitle());
         checkListDescription.setText(currentCheckList.getCheckListDescription());
         isArchived.setChecked(currentCheckList.getIsArchived());

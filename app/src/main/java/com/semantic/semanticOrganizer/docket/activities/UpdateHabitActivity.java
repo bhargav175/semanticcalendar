@@ -26,6 +26,7 @@ import com.semantic.semanticOrganizer.docket.database.HabitDBHelper;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
 import com.semantic.semanticOrganizer.docket.models.Habit;
 import com.semantic.semanticOrganizer.docket.models.Tag;
+import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -228,6 +229,8 @@ public class UpdateHabitActivity extends Activity {
         frequencyBase.setSelection(0);
     }
     private void updateUi(){
+        getActionBar().setTitle(utilFunctions.toCamelCase(habitCurrent.getHabitText()));
+
         habitText.setText(habitCurrent.getHabitText());
 
         if(habitCurrent.getDuration()!=null){

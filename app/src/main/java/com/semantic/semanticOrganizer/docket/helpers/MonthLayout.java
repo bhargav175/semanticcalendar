@@ -63,7 +63,11 @@ public class MonthLayout extends LinearLayout {
     }
     public void setMonth(Calendar calendar){
         clearTableDateRows();
-        this.mMonth=calendar;
+        this.mMonth=(Calendar) calendar.clone();
+        this.mMonth.set(Calendar.DAY_OF_MONTH,0);
+        this.mMonth.set(Calendar.HOUR_OF_DAY,0);
+        this.mMonth.set(Calendar.MINUTE,0);
+        this.mMonth.set(Calendar.SECOND,1);
         initializeCalendarView();
 
     }

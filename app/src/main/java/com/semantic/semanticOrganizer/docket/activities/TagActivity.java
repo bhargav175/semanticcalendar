@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,12 +28,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourmob.datetimepicker.Utils;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.database.CheckListDBHelper;
 import com.semantic.semanticOrganizer.docket.database.HabitDBHelper;
 import com.semantic.semanticOrganizer.docket.database.NoteDBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.ComingUpDialog;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
 import com.semantic.semanticOrganizer.docket.models.CheckList;
 import com.semantic.semanticOrganizer.docket.models.Habit;
@@ -42,7 +45,7 @@ import com.semantic.semanticOrganizer.docket.models.Tag;
 
 import java.util.List;
 
-public class TagActivity extends Activity {
+public class TagActivity extends FragmentActivity {
 
 
     private RelativeLayout tagOrganizerMapView, loadingLayout;
@@ -64,6 +67,8 @@ public class TagActivity extends Activity {
     private List<Tag> tags;
     private LinearLayout mCustomHeaders;
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
+    private ComingUpDialog wAlertBuilder;
+    private AlertDialog wAlert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +92,8 @@ public class TagActivity extends Activity {
         cardsListView = (ListView) findViewById(R.id.cardsListView);
         TextView tv = (TextView) findViewById(R.id.drawer_layout_header_text);
         tv.setTypeface(font);
-
+        wAlertBuilder = new ComingUpDialog(this);
+        wAlert = wAlertBuilder.create();
 
     }
     private void getExtras(){
@@ -129,6 +135,7 @@ public class TagActivity extends Activity {
     private void init(){
 
         //Get Tags and add them to navigation drawer
+        getActionBar().setTitle(toCamelCase(currentTagInView.getTagText()));
         new GetTags(this).execute("");
 
         if(currentTagInView.getTagId()!=null){
@@ -282,22 +289,30 @@ public class TagActivity extends Activity {
         addHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doSave =3;
-                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-                alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int which) {
-                                // Write your code here to execute after dialog
-                                String str = editInput.getText().toString();
-                                if(str.length()>0){
-                                    saveStuff(editInput.getText().toString());
-                                    dialog.cancel();
-                                }else{
-                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-                                }
 
-                            }}).create().show();
+                //Replace this code
+//                doSave =3;
+//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+//                alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog,int which) {
+//                                // Write your code here to execute after dialog
+//                                String str = editInput.getText().toString();
+//                                if(str.length()>0){
+//                                    saveStuff(editInput.getText().toString());
+//                                    dialog.cancel();
+//                                }else{
+//                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+//                                }
+//
+//                            }}).create().show();
+
+
+                //end here
+
+                wAlert = wAlertBuilder.create();
+                wAlert.show();
             }
         });
     }

@@ -194,6 +194,9 @@ public class HomeActivity extends Activity {
         addHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 doSave =3;
                 View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
                 final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
@@ -210,6 +213,11 @@ public class HomeActivity extends Activity {
                                 }
 
                             }}).create().show();
+
+
+
+
+
             }
         });
     }
