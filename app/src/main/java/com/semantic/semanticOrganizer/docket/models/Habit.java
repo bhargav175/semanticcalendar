@@ -291,6 +291,23 @@ public static List<Habit> getAllUnArchivedHabitsSandbox(Context context) {
         habitDBHelper.close();
         return habitList;
     }
+    public static List<Habit> getAllUnArchivedHabitsByDueDate( Context context, Calendar calendar) {
+        List<Habit> habitList = new ArrayList<Habit>();
+        HabitDBHelper habitDBHelper = new HabitDBHelper(context);
+        habitDBHelper.open();
+        Cursor cursor= habitDBHelper.fetchAllUnArchivedHabitsByDueDate(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Habit habit = habitDBHelper.cursorToHabit(cursor);
+            habitList.add(habit);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        habitDBHelper.close();
+        return habitList;
+    }
+
 
 
     public static void archiveAllHabitsInTag(Tag tag, Context context) {

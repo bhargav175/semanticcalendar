@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,8 @@ import com.semantic.semanticOrganizer.docket.models.CheckListItem;
 import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
+
+import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,6 +72,7 @@ public class UpdateCheckListActivity extends FragmentActivity {
     private ArrayAdapter<Tag> adapter;
     private Reminder currentReminder;
     private Boolean hadReminder,hasReminder;
+    private FlowLayout labelLayout;
 
     int day, month, year, hour, minute, second;
 
@@ -149,6 +153,7 @@ public class UpdateCheckListActivity extends FragmentActivity {
 
     private void initUi() {
          checkListText = (InlineEditable) findViewById(R.id.checkListTitle);
+        labelLayout = (FlowLayout) findViewById(R.id.labelsLayout);
         checkListDescription = (InlineEditable) findViewById(R.id.checkListDescription);
         tag = (Spinner) findViewById(R.id.selectSpinner);
         checkListItemContainer = (LinearLayout) findViewById(R.id.checkListItemContainer);
@@ -196,7 +201,7 @@ public class UpdateCheckListActivity extends FragmentActivity {
 //        mAlert = mAlertBuilder.create();
 
         reminderHelper = new ReminderHelper(this,UpdateCheckListActivity.this,remainderId,currentCheckList.getDueTime(),showDueDateTextView);
-        mAddLabelBuilder=new AddLabelDialog(UpdateCheckListActivity.this);
+        mAddLabelBuilder=new AddLabelDialog(UpdateCheckListActivity.this,2,currentCheckList.getId(),currentCheckList.getTag(),labelLayout);
         mAddLabel = mAddLabelBuilder.create();
         addDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -416,6 +421,7 @@ public class UpdateCheckListActivity extends FragmentActivity {
         @Override
         protected Void doInBackground(String... params) {
             DueDateDialog.Holder holder = reminderHelper.doSomethingAboutTheReminder();
+            mAddLabelBuilder.saveSelectedLabelsWithCheckList();
             remainderId = holder.remainderId;
             currentCheckList.setDueTime(holder.cal);
             currentCheckList.setReminderId(remainderId);

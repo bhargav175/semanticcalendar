@@ -103,7 +103,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 31;
 
 
 
@@ -224,7 +224,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + LABEL_TABLE + "("
             + COLUMN_ID+ " integer primary key autoincrement, "
             + LABEL_NAME + " text not null, "
-            + LABEL_COLOR+ " text DEFAULT null , "
+            + LABEL_COLOR+ " integer DEFAULT null , "
+            + LABEL_TAG + " integer not null, "
             + COLUMN_CREATED_TIME +" DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime'))"
             +");";
 

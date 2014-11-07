@@ -46,21 +46,19 @@ public class UpdateTagActivity extends Activity {
                         if(currentTagInView!=null){
                             if (tagText.getText().toString().length() == 0) {
                                 Toast.makeText(getApplicationContext(), "Title cannot be empty", Toast.LENGTH_SHORT).show();
+                                finish();
 
                             } else {
-                                updateTag(tagId);
-                                Intent intent = new Intent(UpdateTagActivity.this,TagActivity.class);
-                                if(currentTagInView.getTagId()!=null) {
-                                    intent.putExtra(DBHelper.COLUMN_ID,currentTagInView.getTagId());
-                                }
-                                startActivity(intent);
+                                updateTag();
+
                             }
 
                         }
                         else{
                             Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_SHORT).show();
+                            finish();
+
                         }
-                        finish();
                     }
                 });
         customActionBarView.findViewById(R.id.actionbar_discard).setOnClickListener(
@@ -123,29 +121,22 @@ public class UpdateTagActivity extends Activity {
 
     }
 
-    private void updateTag(Integer tagId) {
+    private void updateTag() {
         String tagTextString=tagText.getText().toString();
         String tagDescriptionString=tagDescription.getText().toString();
         Boolean tagArchived=tagIsArchived.isChecked();
-        tagDBHelper = new TagDBHelper(this);
-        tagDBHelper.open();
-        Tag tag = tagDBHelper.getTag(tagId);
 
-        if(tag!=null){
+        currentTagInView.setTagText(tagTextString);
+        currentTagInView.setTagDescription(tagDescriptionString);
+        currentTagInView.setIsArchived(tagArchived);
+
             if(tagTextString.length()==0){
-                tagDBHelper.close();
                 Toast.makeText(this,"Title cannot be empty",Toast.LENGTH_SHORT).show();
             }
             else{
-                tagDBHelper.updateTag(tag, tagTextString,tagDescriptionString,tagArchived);
-                tagDBHelper.close();
+                new UpdateTag(getApplicationContext(),currentTagInView).execute("");
             }
 
-        }
-        else{
-            tagDBHelper.close();
-            Toast.makeText(this,"Update Failed",Toast.LENGTH_SHORT).show();
-        }
 
 
     }
@@ -200,6 +191,66 @@ public class UpdateTagActivity extends Activity {
                 @Override
                 public void run() {
                     init();
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+    private class UpdateTag extends AsyncTask<String, Void,Tag> {
+
+        private Context context;
+        private Tag tag;
+        public UpdateTag(Context context, Tag tag){
+            this.context=context;this.tag=tag;
+        }
+
+        @Override
+        protected Tag doInBackground(String... params) {
+            TagDBHelper  tagDBHelper = new TagDBHelper(context);
+            try{
+                tagDBHelper.open();
+                tagDBHelper.updateTag(tag);
+                tagDBHelper.close();
+                return tag;
+            }catch (Exception e){
+                return null;
+            }
+
+
+        }
+
+        @Override
+        protected void onPostExecute(final Tag t) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if(t!=null){
+                        Toast.makeText(context, t.getTagText() +"is Updated",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(context, "There was an error",Toast.LENGTH_SHORT).show();
+
+                    }
+                    if(t.getIsArchived()){
+                        Intent intent = new Intent(UpdateTagActivity.this,SuperMain.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        Intent intent = new Intent(UpdateTagActivity.this,TagActivity.class);
+                        if(currentTagInView.getTagId()!=null) {
+                            intent.putExtra(DBHelper.COLUMN_ID,currentTagInView.getTagId());
+                        }
+                        startActivity(intent);
+                    }
+
+
                 }
             });
 

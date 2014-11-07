@@ -10,7 +10,9 @@ import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,8 @@ public class ArchivesActivity extends FragmentActivity {
     private List<Tag> tags;
     private Typeface font;
     private TextView archivesLink,homeLink;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)     {
@@ -76,6 +80,14 @@ public class ArchivesActivity extends FragmentActivity {
             }
         });
 
+
+        //ActionMode
+
+
+    }
+    public void addTagToDrawer(Tag t){
+        tags.add(t);
+        tagDrawerLayoutArrayAdapter.notifyDataSetChanged();
     }
 
     private void afterGetTags(){
@@ -160,7 +172,8 @@ public class ArchivesActivity extends FragmentActivity {
         @Override
         protected Void doInBackground(String... params) {
             tags =Tag.getAllUnArchivedTags(context);
-            tags.add(new Tag("Untagged"));
+            //No Sandbox
+//            tags.add(new Tag("Untagged"));
             return null;
         }
 

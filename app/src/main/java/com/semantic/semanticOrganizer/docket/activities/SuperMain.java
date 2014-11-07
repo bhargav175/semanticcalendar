@@ -150,12 +150,9 @@ public class SuperMain extends FragmentActivity {
             habitDBHelper.saveHabitWithTag(habit,t);
             habitDBHelper.close();
         }else if(doSave==4){
-            Tag tag = new Tag();
-            TagDBHelper tagDBHelper = new TagDBHelper(getApplicationContext());
-            tag.setTagText(str);
-            tagDBHelper.open();
-            tagDBHelper.saveTag(tag);
-            tagDBHelper.close();
+
+            new SaveTag(getApplicationContext(),str).execute("");
+
         }
     }
 
@@ -163,14 +160,10 @@ public class SuperMain extends FragmentActivity {
 
     private void addFloatingActionButtons(){
 
-        FloatingActionButton addNote = (FloatingActionButton) findViewById(R.id.addNoteFab);
-        FloatingActionButton addCheckList = (FloatingActionButton) findViewById(R.id.addCheckListab);
-        FloatingActionButton addHabit = (FloatingActionButton) findViewById(R.id.addHabitFab);
-        FloatingActionButton addList = (FloatingActionButton) findViewById(R.id.addListFab);
+
         final LayoutInflater layoutInflater = (LayoutInflater)
                 getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SuperMain.this);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SuperMain.this);
         // Setting Dialog Title
         alertDialog.setNegativeButton("NO",
                 new DialogInterface.OnClickListener() {
@@ -179,91 +172,43 @@ public class SuperMain extends FragmentActivity {
                         dialog.cancel();
                     }
                 });
-        addList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSave = 4;
-                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-                spinner.setVisibility(View.GONE);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-                editInput.setCursorVisible(true);
-                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int which) {
-                                // Write your code here to execute after dialog
-                                String str = editInput.getText().toString();
-                                if(str.length()>0){
-                                    saveStuff(editInput.getText().toString(),null);
-                                    dialog.cancel();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-                                }
 
-                            }}).create().show();
-            }
-        });
-
-
-        addNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSave = 1;
-                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
-                spinner.setAdapter(tagArrayAdapter);
-                spinner.setSelection(tags.size()-1);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-                editInput.setCursorVisible(true);
-
-                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int which) {
-                                // Write your code here to execute after dialog
-                                String str = editInput.getText().toString();
-                                if(str.length()>0){
-                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
-                                    dialog.cancel();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }}).create().show();
-              }
-        });
-        addCheckList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSave = 2;
-                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
-                spinner.setAdapter(tagArrayAdapter);
-                spinner.setSelection(tags.size()-1);
-                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-                editInput.setCursorVisible(true);
-                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int which) {
-                                // Write your code here to execute after dialog
-                                String str = editInput.getText().toString();
-                                if(str.length()>0){
-                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
-                                    dialog.cancel();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }}).create().show();
-            }
-        });
-        addHabit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //Replace code here
-//                doSave = 3;
+//        FloatingActionButton addNote = (FloatingActionButton) findViewById(R.id.addNoteFab);
+//        FloatingActionButton addCheckList = (FloatingActionButton) findViewById(R.id.addCheckListab);
+//        FloatingActionButton addHabit = (FloatingActionButton) findViewById(R.id.addHabitFab);
+//        FloatingActionButton addList = (FloatingActionButton) findViewById(R.id.addListFab);
+//
+//
+//        addList.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                doSave = 4;
+//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+//                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
+//                spinner.setVisibility(View.GONE);
+//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+//                editInput.setCursorVisible(true);
+//                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog,int which) {
+//                                // Write your code here to execute after dialog
+//                                String str = editInput.getText().toString();
+//                                if(str.length()>0){
+//                                    saveStuff(editInput.getText().toString(),null);
+//                                    dialog.cancel();
+//                                }else{
+//                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+//                                }
+//
+//                            }}).create().show();
+//            }
+//        });
+//
+//
+//        addNote.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                doSave = 1;
 //                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
 //                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
 //                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
@@ -285,14 +230,98 @@ public class SuperMain extends FragmentActivity {
 //                                }
 //
 //                            }}).create().show();
+//              }
+//        });
+//        addCheckList.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                doSave = 2;
+//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+//                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
+//                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
+//                spinner.setAdapter(tagArrayAdapter);
+//                spinner.setSelection(tags.size()-1);
+//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+//                editInput.setCursorVisible(true);
+//                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog,int which) {
+//                                // Write your code here to execute after dialog
+//                                String str = editInput.getText().toString();
+//                                if(str.length()>0){
+//                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
+//                                    dialog.cancel();
+//                                }else{
+//                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+//                                }
+//
+//                            }}).create().show();
+//            }
+//        });
+//        addHabit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                //Replace code here
+////                doSave = 3;
+////                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+////                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
+////                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
+////                spinner.setAdapter(tagArrayAdapter);
+////                spinner.setSelection(tags.size()-1);
+////                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+////                editInput.setCursorVisible(true);
+////
+////                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
+////                        new DialogInterface.OnClickListener() {
+////                            public void onClick(DialogInterface dialog,int which) {
+////                                // Write your code here to execute after dialog
+////                                String str = editInput.getText().toString();
+////                                if(str.length()>0){
+////                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
+////                                    dialog.cancel();
+////                                }else{
+////                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+////                                }
+////
+////                            }}).create().show();
+//
+//                //Replace code ends here
+//
+//
+//                wAlert = wAlertBuilder.create();
+//                wAlert.show();
+//            }
+//        });
 
-                //Replace code ends here
 
+        FloatingActionButton addList = (FloatingActionButton) findViewById(R.id.addListFabButton);
+        addList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSave = 4;
+                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
+                spinner.setVisibility(View.GONE);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+                editInput.setCursorVisible(true);
+                alertDialog.setTitle("Add New Goal").setView(editInputLayout).setPositiveButton("YES",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                // Write your code here to execute after dialog
+                                String str = editInput.getText().toString();
+                                if(str.length()>0){
+                                    saveStuff(editInput.getText().toString(),null);
+                                    dialog.cancel();
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+                                }
 
-                wAlert = wAlertBuilder.create();
-                wAlert.show();
+                            }}).create().show();
             }
         });
+
+
     }
 
 
@@ -345,7 +374,8 @@ public class SuperMain extends FragmentActivity {
         @Override
         protected Void doInBackground(String... params) {
             tags =Tag.getAllUnArchivedTags(context);
-            tags.add(new Tag("Untagged"));
+            //No Sandbox from now
+//            tags.add(new Tag("Untagged"));
             return null;
         }
 
@@ -367,4 +397,52 @@ public class SuperMain extends FragmentActivity {
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
+    private class SaveTag extends AsyncTask<String, Void,Tag> {
+
+        private Context context;
+        private String str;
+
+        public SaveTag(Context context, String str){
+            this.context=context;
+            this.str = str;
+        }
+
+        @Override
+        protected Tag doInBackground(String... params) {
+
+            Tag tag = new Tag();
+            TagDBHelper tagDBHelper = new TagDBHelper(getApplicationContext());
+            tag.setTagText(str);
+            tagDBHelper.open();
+            Tag tempTag = tagDBHelper.saveTag(tag);
+            tagDBHelper.close();
+            tags.add(tempTag);
+            return tempTag;
+        }
+
+        @Override
+        protected void onPostExecute(final Tag t) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    tagDrawerLayoutArrayAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(),""+t.getTagText()+" goal created",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(),UpdateTagActivity.class);
+                    intent.putExtra(DBHelper.COLUMN_ID,t.getTagId());
+                    startActivity(intent);
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+
 }

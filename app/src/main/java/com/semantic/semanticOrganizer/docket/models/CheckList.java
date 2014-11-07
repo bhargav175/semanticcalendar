@@ -205,6 +205,25 @@ public class CheckList {
         return checkListList;
     }
 
+
+    public static List<CheckList> getAllUnArchivedCheckListsByDueDate(Context context, Calendar calendar) {
+        List<CheckList> checkListList = new ArrayList<CheckList>();
+        CheckListDBHelper checkListDBHelper = new CheckListDBHelper(context);
+        checkListDBHelper.open();
+        Cursor cursor= checkListDBHelper.fetchAllUnArchivedCheckListsByDueDate(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            CheckList checkList = checkListDBHelper.cursorToCheckList(cursor);
+            checkListList.add(checkList);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        checkListDBHelper.close();
+        return checkListList;
+    }
+
+
     public Calendar getDueTime() {
         return dueTime;
     }

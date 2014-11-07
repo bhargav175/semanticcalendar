@@ -69,7 +69,7 @@
 
         </LinearLayout>
 
-        <include layout="@layout/fab_main"/>
+        <include layout="@layout/fab_main_tag"/>
 
 
 

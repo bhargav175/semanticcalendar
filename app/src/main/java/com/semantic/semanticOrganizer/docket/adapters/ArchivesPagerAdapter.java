@@ -14,7 +14,7 @@ import com.semantic.semanticOrganizer.docket.fragments.ArchivedLists;
 
 public class ArchivesPagerAdapter extends FragmentPagerAdapter {
 
-    private String[] titles= {"Lists", "Notes", "CheckLists","Habits"};
+    private String[] titles= {"Goals", "Notes", "CheckLists","Habits"};
 
     public ArchivesPagerAdapter(FragmentManager fm) {
         super(fm);

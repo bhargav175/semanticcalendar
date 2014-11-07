@@ -69,6 +69,8 @@ public class TagActivity extends FragmentActivity {
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
     private ComingUpDialog wAlertBuilder;
     private AlertDialog wAlert;
+    private TextView archivesLink,homeLink;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,23 @@ public class TagActivity extends FragmentActivity {
         tv.setTypeface(font);
         wAlertBuilder = new ComingUpDialog(this);
         wAlert = wAlertBuilder.create();
+        archivesLink = (TextView) findViewById(R.id.archiveLink);
+        archivesLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TagActivity.this,ArchivesActivity.class);
+                startActivity(intent);
+            }
+        });
+        homeLink = (TextView) findViewById(R.id.home);
+        homeLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TagActivity.this,SuperMain.class);
+                startActivity(intent);
+            }
+        });
+
 
     }
     private void getExtras(){
@@ -311,7 +330,6 @@ public class TagActivity extends FragmentActivity {
 
                 //end here
 
-                wAlert = wAlertBuilder.create();
                 wAlert.show();
             }
         });
@@ -664,7 +682,8 @@ public class TagActivity extends FragmentActivity {
         @Override
         protected Void doInBackground(String... params) {
             tags =Tag.getAllUnArchivedTags(context);
-            tags.add(new Tag("SandBox"));
+            //No Sandbox
+            //tags.add(new Tag("SandBox"));
             return null;
         }
 

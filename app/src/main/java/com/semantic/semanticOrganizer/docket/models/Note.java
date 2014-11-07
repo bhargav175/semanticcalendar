@@ -193,24 +193,6 @@ public class Note {
     }
 
 
-    public static List<Note> getAllUnArchivedNotesByDueDate(Calendar calendar, Context context) {
-        List<Note> noteList = new ArrayList<Note>();
-        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
-        noteDBHelper.open();
-        Cursor cursor= noteDBHelper.fetchAllUnarchivedNotesWithDueDate(calendar);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Note note = noteDBHelper.cursorToNote(cursor);
-            noteList.add(note);
-            cursor.moveToNext();
-        }
-        // make sure to close the cursor
-        cursor.close();
-        noteDBHelper.close();
-        return noteList;
-    }
-
-
     public static List<Note> getAllUnArchivedNotesInTag(Tag tag, Context context) {
         List<Note> noteList = new ArrayList<Note>();
         NoteDBHelper noteDBHelper = new NoteDBHelper(context);
@@ -244,6 +226,23 @@ public class Note {
         NoteDBHelper noteDBHelper = new NoteDBHelper(context);
         noteDBHelper.open();
         Cursor cursor= noteDBHelper.fetchAllArchivedNotes();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Note note = noteDBHelper.cursorToNote(cursor);
+            noteList.add(note);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        noteDBHelper.close();
+        return noteList;
+    }
+
+    public static List<Note> getAllUnArchivedNotesByDueDate(Context context,Calendar calendar){
+        List<Note> noteList = new ArrayList<Note>();
+        NoteDBHelper noteDBHelper = new NoteDBHelper(context);
+        noteDBHelper.open();
+        Cursor cursor= noteDBHelper.fetchAllUnArchivedNotesByDueDate(calendar);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Note note = noteDBHelper.cursorToNote(cursor);

@@ -232,4 +232,16 @@ public class HabitDBHelper {
     public Cursor fetchAllArchivedHabits() {
         return database.query(TABLE, null, DBHelper.HABIT_IS_ARCHIVED +" = 1 " , null, null, null, null);
     }
+    public Cursor fetchAllUnArchivedHabitsByDueDate(Calendar calendar) {
+        Calendar startDate = (Calendar) calendar.clone();
+        startDate.set(Calendar.HOUR_OF_DAY,0);
+        startDate.set(Calendar.MINUTE,0);
+        startDate.set(Calendar.SECOND,0);
+        Calendar endDate = (Calendar) calendar.clone();
+        endDate.set(Calendar.HOUR_OF_DAY,23);
+        endDate.set(Calendar.MINUTE,59);
+        endDate.set(Calendar.SECOND,59);
+        return database.query(TABLE, null, DBHelper.HABIT_IS_ARCHIVED +" = 0 AND " + DBHelper.COLUMN_DUE_TIME  + " between ? AND ?" , new String[]{new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startDate.getTime()),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDate.getTime())}, null, null, null);
+
+    }
 }

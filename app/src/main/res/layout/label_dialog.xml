@@ -17,79 +17,185 @@
             android:gravity="center_horizontal"
             android:id="@+id/labels"
             android:padding="@dimen/material_padding"
-            android:background="@color/light_gray_color">
+            android:background="@color/light_gray_color"
+            android:focusableInTouchMode="true"
+            android:focusable="true">
 
-            <CheckBox
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/violet_color"
-                android:text="New CheckBox"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:id="@+id/violet"
-                />
+                android:id="@+id/violetLt"
+                >
 
-            <CheckBox
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/violet_color"
+                    android:text=""
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:id="@+id/violet"
+                    />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/violet"
+                    android:id="@+id/violetEditText" />
+
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="New CheckBox"
-                android:textColor="@color/indigo_color"
-                android:layout_below="@id/violet"
-                android:id="@+id/indigo" />
+                android:layout_below="@id/violetLt"
+                android:id="@+id/indigoLt">
 
-            <CheckBox
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/indigo_color"
+                    android:layout_below="@id/violet"
+                    android:id="@+id/indigo" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/indigo"
+                    android:id="@+id/indigoEditText" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="New CheckBox"
-                android:textColor="@color/blue_color"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:layout_below="@id/indigo"
-                android:id="@+id/blue" />
+                android:id="@+id/blueLt"
+                android:layout_below="@id/indigoLt"
+                >
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/blue_color"
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:layout_below="@id/indigo"
+                    android:id="@+id/blue" />
 
-            <CheckBox
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/blue"
+                    android:id="@+id/blueEditText" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="New CheckBox"
-                android:textColor="@color/green_color"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:layout_below="@id/blue"
-                android:id="@+id/green" />
+                android:id="@+id/greenLt"
+                android:layout_below="@id/blueLt"
+                >
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/green_color"
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:layout_below="@id/blue"
+                    android:id="@+id/green" />
 
-            <CheckBox
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/green"
+                    android:id="@+id/greenEditText" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/yellow_color"
-                android:layout_below="@id/green"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:text="New CheckBox"
-                android:id="@+id/yellow" />
+                android:layout_below="@id/greenLt"
+                android:id="@+id/yellowLt">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/yellow_color"
+                    android:layout_below="@id/green"
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:text=""
+                    android:id="@+id/yellow" />
 
-            <CheckBox
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/yellow"
+                    android:id="@+id/yellowEditText" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/orange_color"
-                android:layout_below="@id/yellow"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:text="New CheckBox"
-                android:id="@+id/orange" />
+                android:id="@+id/orangeLt"
+                android:layout_below="@id/yellowLt"
+                >
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/orange_color"
+                    android:layout_below="@id/yellow"
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:text=""
+                    android:id="@+id/orange" />
 
-            <CheckBox
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/orange"
+                    android:id="@+id/orangeEditText" />
+
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/red_color"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:layout_below="@id/orange"
-                android:text="New CheckBox"
-                android:id="@+id/red" />
+                android:id="@+id/redLt"
+                android:layout_below="@id/orangeLt"
+               >
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red_color"
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:layout_below="@id/orange"
+                    android:text=""
+                    android:id="@+id/red" />
 
-
-            <CheckBox
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/red"
+                    android:id="@+id/redEditText" />
+           </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/pitch_black"
-                android:layout_marginTop="@dimen/material_light_padding"
-                android:layout_below="@id/red"
-                android:text="New CheckBox"
-                android:id="@+id/black" />
+                android:id="@+id/blackLt"
+                android:layout_below="@id/redLt"
+                >
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pitch_black"
+                    android:layout_marginTop="@dimen/material_light_padding"
+                    android:text=""
+                    android:id="@+id/black" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/black"
+                    android:id="@+id/blackEditText" />
+            </RelativeLayout>
+
+
+
+
+
+
+
+
 
 
         </RelativeLayout>

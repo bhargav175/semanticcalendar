@@ -38,7 +38,11 @@ tools:context="com.semantic.semanticOrganizer.docket.activities.SuperMain">
 
         </LinearLayout>
 
-        <include layout="@layout/fab_main"/>
+        <!--<include layout="@layout/fab_main"/>-->
+        <include layout="@layout/fab_main_single"/>
+
+
+
 
 
 

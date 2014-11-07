@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
+import com.semantic.semanticOrganizer.docket.models.Label;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 
 import java.text.ParseException;
@@ -61,13 +62,13 @@ public class TagDBHelper {
         return tag;
     }
 
-    public int updateTag(Tag tag, String tagTitle,String tagDescription, Boolean isArchived) {
+    public int updateTag(Tag tag) {
 
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.TAG_TITLE, tagTitle);
-        values.put(DBHelper.TAG_DESCRIPTION, tagDescription);
-        values.put(DBHelper.TAG_IS_ARCHIVED, isArchived);
+        values.put(DBHelper.TAG_TITLE, tag.getTagText());
+        values.put(DBHelper.TAG_DESCRIPTION, tag.getTagDescription());
+        values.put(DBHelper.TAG_IS_ARCHIVED, tag.getIsArchived());
 
         // updating row
         return database.update(TAGS_TABLE, values, DBHelper.COLUMN_ID + " = ?",
@@ -116,8 +117,37 @@ public class TagDBHelper {
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(TAGS_TABLE, null, values);
-
-        Toast.makeText(context,tag.getTagText(), Toast.LENGTH_LONG).show();
+        LabelDBHelper labelDBHelper = new LabelDBHelper(context);
+        labelDBHelper.open();
+        for(int i=0 ;i<8; i++){
+            Label label = new Label();
+            String str = "";
+            switch(i){
+                case 0:
+                    str = "High Priority";
+                    break;
+                case 1:
+                    str = "Moderate Priority";
+                    break;
+                case 2:
+                    str = "Low Priority";
+                    break;
+                case 3:
+                    str = "Later";
+                    break;
+                case 4:
+                    str = "Important";
+                    break;
+                default:
+                    str = "";
+          }
+            label.setName(str);
+            label.setColor(Label.Color.values()[i]);
+            label.setTag(id);
+            labelDBHelper.saveLabel(label);
+        }
+        labelDBHelper.close();
+        Log.d(TAG,tag.getTagText());
         return getTag(id);
     }
 

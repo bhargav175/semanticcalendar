@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,8 @@ import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 import com.semantic.semanticOrganizer.docket.utils.MyBroadcastReceiver;
 import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
+
+import org.apmem.tools.layouts.FlowLayout;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,7 +80,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
     private ArrayAdapter<Tag> adapter;
     private TextView showDueDateTextView;
     public ReminderHelper reminderHelper;
-
+    private FlowLayout labelLayout;
     int day, month, year, hour, minute, second;
 
     Integer noteId;
@@ -157,6 +160,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
         noteDescription =(EditText) findViewById(R.id.noteDescription);
         noteDBHelper = new NoteDBHelper(this);
         isArchived = (CheckBox) findViewById(R.id.isArchived);
+        labelLayout = (FlowLayout) findViewById(R.id.labelsLayout);
         tag = (Spinner) findViewById(R.id.selectSpinner);
         showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
         final Calendar calendar = new GregorianCalendar();
@@ -211,7 +215,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
         reminderHelper = new ReminderHelper(this,UpdateNoteActivity.this,requestId,noteCurrent.getDueTime(),showDueDateTextView);
 
-        mAddLabelBuilder=new AddLabelDialog(UpdateNoteActivity.this);
+        mAddLabelBuilder=new AddLabelDialog(UpdateNoteActivity.this,1,noteCurrent.getId(),noteCurrent.getTag(),labelLayout);
         mAddLabel = mAddLabelBuilder.create();
         addDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -436,6 +440,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
         @Override
         protected Void doInBackground(String... params) {
+            mAddLabelBuilder.saveSelectedLabelsWithNote();
 
             DueDateDialog.Holder holder = reminderHelper.doSomethingAboutTheReminder();
             requestId = holder.remainderId;
