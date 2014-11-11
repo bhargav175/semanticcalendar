@@ -499,5 +499,17 @@ private class GetTags extends AsyncTask<String, Void, List<Tag>> {
         }
 
     }
+    @Override
+    public void onBackPressed() {
+        if(habitCurrent!=null){
+            Intent intent = new Intent(this,TagActivity.class);
+            intent.putExtra(DBHelper.COLUMN_ID,habitCurrent.getTag());
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this,SuperMain.class);
+            startActivity(intent);
+        }
 
+        return;
+    }
 }

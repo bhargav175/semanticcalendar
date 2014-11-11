@@ -195,4 +195,10 @@ public class ArchivesActivity extends FragmentActivity {
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,SuperMain.class);
+        startActivity(intent);
+        return;
+    }
 }

@@ -262,4 +262,15 @@ public class UpdateTagActivity extends Activity {
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
+    @Override
+    public void onBackPressed() {
+        if(currentTagInView!=null){
+            Intent intent = new Intent(this,TagActivity.class);
+            intent.putExtra(DBHelper.COLUMN_ID,currentTagInView.getTagId());
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this,SuperMain.class);
+            startActivity(intent);
+        }
+    }
 }

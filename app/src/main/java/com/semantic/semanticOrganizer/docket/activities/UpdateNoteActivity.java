@@ -475,6 +475,17 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 
 
 
-
+    @Override
+    public void onBackPressed() {
+        if(noteCurrent!=null){
+            Intent intent = new Intent(this,TagActivity.class);
+            intent.putExtra(DBHelper.COLUMN_ID,noteCurrent.getTag());
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this,SuperMain.class);
+            startActivity(intent);
+        }
+        return;
+    }
 
 }

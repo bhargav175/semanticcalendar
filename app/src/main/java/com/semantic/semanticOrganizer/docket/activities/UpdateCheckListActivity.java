@@ -567,6 +567,17 @@ public class UpdateCheckListActivity extends FragmentActivity {
         protected void onProgressUpdate(Void... values) {
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        if(currentCheckList!=null){
+            Intent intent = new Intent(this,TagActivity.class);
+            intent.putExtra(DBHelper.COLUMN_ID,currentCheckList.getTag());
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this,SuperMain.class);
+            startActivity(intent);
+        }
+        return;
+    }
 
 }

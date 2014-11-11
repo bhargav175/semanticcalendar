@@ -310,27 +310,27 @@ public class TagActivity extends FragmentActivity {
             public void onClick(View v) {
 
                 //Replace this code
-//                doSave =3;
-//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-//                alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,int which) {
-//                                // Write your code here to execute after dialog
-//                                String str = editInput.getText().toString();
-//                                if(str.length()>0){
-//                                    saveStuff(editInput.getText().toString());
-//                                    dialog.cancel();
-//                                }else{
-//                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                            }}).create().show();
+                doSave =3;
+                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
+                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
+                alertDialog.setTitle("Add Habit To "+toCamelCase(currentTagInView.getTagText())).setView(editInputLayout).setPositiveButton("YES",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                // Write your code here to execute after dialog
+                                String str = editInput.getText().toString();
+                                if(str.length()>0){
+                                    saveStuff(editInput.getText().toString());
+                                    dialog.cancel();
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }}).create().show();
 
 
                 //end here
 
-                wAlert.show();
+                // wAlert.show();
             }
         });
     }
@@ -704,6 +704,13 @@ public class TagActivity extends FragmentActivity {
 
         @Override
         protected void onProgressUpdate(Void... values) {}
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,SuperMain.class);
+        startActivity(intent);
+        return;
     }
 
 
