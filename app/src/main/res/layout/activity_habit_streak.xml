@@ -285,30 +285,13 @@
 
         </android.support.v7.widget.CardView>
 
+
+
         <android.support.v7.widget.CardView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/weekCard"
-            android:id="@+id/calTest"
-            android:layout_marginTop="@dimen/material_padding"
-            android:background="@color/white">
-
-
-            <com.semantic.semanticOrganizer.docket.adapters.WrapContentHeightViewPager
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/habitStreakPager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/calTest"
+            android:id="@+id/singleMonthCalendar"
             android:layout_marginTop="@dimen/material_padding"
             android:background="@color/white">
 

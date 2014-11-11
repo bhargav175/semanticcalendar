@@ -4,9 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -24,7 +28,7 @@ import java.util.Locale;
  */
 public class MonthLayout extends LinearLayout {
 
-    private Calendar mMonth;
+    private Calendar mMonth, currMonthSelected;
     private TextView mMonthTitle;
     private List<HabitButton> mHabitButtons;
     private TableLayout mTableLayout;
@@ -35,6 +39,11 @@ public class MonthLayout extends LinearLayout {
     private Calendar firstDayOfMonth;
     private ViewGroup view;
     private int index;
+
+    private Spinner monthSpinner, yearSpinner;
+    private Integer currYear;
+    private String[] mMonths = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private List<Integer> mYears;
 
 
     public MonthLayout(Context context) {
@@ -56,78 +65,154 @@ public class MonthLayout extends LinearLayout {
 
     }
 
-    private void clearTableDateRows(){
-        for(int i=0;i<this.mTableRows.size();i++){
+    private void clearTableDateRows() {
+        for (int i = 0; i < this.mTableRows.size(); i++) {
             this.mTableLayout.removeView(this.mTableRows.get(i));
         }
     }
-    public void setMonth(Calendar calendar){
+
+    public void setMonth(Calendar calendar) {
         clearTableDateRows();
-        this.mMonth=(Calendar) calendar.clone();
-        this.mMonth.set(Calendar.DAY_OF_MONTH,0);
-        this.mMonth.set(Calendar.HOUR_OF_DAY,0);
-        this.mMonth.set(Calendar.MINUTE,0);
-        this.mMonth.set(Calendar.SECOND,1);
+        this.mMonth = (Calendar) calendar.clone();
+        this.mMonth.set(Calendar.DAY_OF_MONTH, 0);
+        this.mMonth.set(Calendar.HOUR_OF_DAY, 0);
+        this.mMonth.set(Calendar.MINUTE, 0);
+        this.mMonth.set(Calendar.SECOND, 1);
         initializeCalendarView();
 
     }
-    public Calendar getMonth(){
+
+    public void setSelectedMonth() {
+        clearTableDateRows();
+        this.mMonth = (Calendar) currMonthSelected.clone();
+        this.mMonth.set(Calendar.DAY_OF_MONTH, 0);
+        this.mMonth.set(Calendar.HOUR_OF_DAY, 0);
+        this.mMonth.set(Calendar.MINUTE, 0);
+        this.mMonth.set(Calendar.SECOND, 1);
+        initializeCalendarView();
+
+    }
+
+
+    public Calendar getMonth() {
         return this.mMonth;
     }
 
 
-    private void init(){
+    private void init() {
 
-            inflate(context,R.layout.month_table_layout, this);
-            this.mMonthTitle = (TextView) view.findViewById(R.id.heading);
-            this.mTableLayout = (TableLayout) view.findViewById(R.id.monthTableLayout);
+        inflate(context, R.layout.month_table_layout, this);
+        this.monthSpinner = (Spinner) view.findViewById(R.id.monthSpinner);
+        ArrayAdapter<String> monthSpinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, mMonths);
+        monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.MONTH, position);
+                setMonth(calendar);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        monthSpinner.setAdapter(monthSpinnerAdapter);
+        this.yearSpinner = (Spinner) view.findViewById(R.id.yearSpinner);
+        this.mTableLayout = (TableLayout) view.findViewById(R.id.monthTableLayout);
         setExactMonth();
 
 
     }
-    private void initWithDate(Context context, Calendar calendar, Habit habit){
 
-            this.mMonthTitle = (TextView) findViewById(R.id.heading);
-            this.mTableLayout = (TableLayout) findViewById(R.id.monthTableLayout);
-            this.mTableLayout.setStretchAllColumns(true);
-            this.mTableRows = new ArrayList<TableRow>();
-            this.habit = habit;
-            this.context = context;
-            this.mMonth = calendar;
-            initializeCalendarView();
+    private void initWithDate(Context context, Calendar calendar, Habit habit) {
+        this.mYears = new ArrayList<Integer>();
+        this.currYear = calendar.get(Calendar.YEAR);
+        int i;
+        for (i = 0; i < 10; i++)
+        {
+            mYears.add(0, currYear - i);
+        }
+        for (i = 1; i < 10; i++) {
+            mYears.add(currYear + i);
+        }
+        this.mTableLayout = (TableLayout) findViewById(R.id.monthTableLayout);
+        this.mTableLayout.setStretchAllColumns(true);
+        this.monthSpinner = (Spinner) findViewById(R.id.monthSpinner);
+        this.currMonthSelected =(Calendar) calendar.clone();
+        ArrayAdapter<String> monthSpinnerAdapter = new ArrayAdapter<String>(context,  R.layout.spinner_list_item, mMonths);
+        monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currMonthSelected.set(Calendar.MONTH, position);
+                setSelectedMonth();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        monthSpinner.setAdapter(monthSpinnerAdapter);
+        this.yearSpinner = (Spinner) findViewById(R.id.yearSpinner);
+        ArrayAdapter<Integer> yearSpinnerAdapter = new ArrayAdapter<Integer>(context, R.layout.spinner_list_item, mYears);
+        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currMonthSelected.set(Calendar.YEAR, mYears.get(position));
+                setSelectedMonth();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        yearSpinner.setAdapter(yearSpinnerAdapter);
+        this.mTableRows = new ArrayList<TableRow>();
+        this.habit = habit;
+        this.context = context;
+        this.mMonth = calendar;
+        initializeCalendarView();
 
     }
-    public void setIndex(int i){
+
+    public void setIndex(int i) {
         this.index = i;
     }
 
-    public int getIndex(){
+    public int getIndex() {
         return this.index;
     }
 
-    private void initializeCalendarView(){
+    private void initializeCalendarView() {
         this.setId(Calendar.getInstance().getActualMaximum(Calendar.YEAR) * 1000 + Calendar.getInstance().getActualMaximum(Calendar.MONTH));
         setExactMonth();
         this.firstDayOfMonth = (Calendar) this.mMonth.clone();
         addDatesToTableRow();
     }
-    private void setExactMonth(){
-        this.mMonth.set(Calendar.DAY_OF_MONTH,1);
-        this.mMonth.set(Calendar.HOUR_OF_DAY,0);
-        this.mMonth.set(Calendar.MINUTE,0);
-        this.mMonth.set(Calendar.SECOND,0);
-        this.mMonthTitle.setText(this.mMonth.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.getDefault()));
+
+    private void setExactMonth() {
+        this.mMonth.set(Calendar.DAY_OF_MONTH, 1);
+        this.mMonth.set(Calendar.HOUR_OF_DAY, 0);
+        this.mMonth.set(Calendar.MINUTE, 0);
+        this.mMonth.set(Calendar.SECOND, 0);
+        this.monthSpinner.setSelection(this.mMonth.get(Calendar.MONTH));
+        this.yearSpinner.setSelection(getYearIndex(this.mMonth.get(Calendar.YEAR)));
         ;
     }
-    private void addDatesToTableRow(){
+
+    private void addDatesToTableRow() {
         Calendar c = this.firstDayOfMonth;
         int numberOfDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
         int firstDay = c.get(Calendar.DAY_OF_WEEK);
         int buffer = getBufferDays(firstDay);
         createADateRow();
-        for(int i =0 ; i<buffer ;i++){
-            Button b =new Button(this.context);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT,1f);
+        for (int i = 0; i < buffer; i++) {
+            Button b = new Button(this.context);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
             lp.gravity = Gravity.CENTER;
             lp.setMargins(2, 2, 2, 2);
             b.setLayoutParams(lp);
@@ -141,12 +226,12 @@ public class MonthLayout extends LinearLayout {
         }
         for (int i = 0; i < numberOfDays; i++) {
             Calendar temp = (Calendar) c.clone();
-            HabitButton habitButton =  new HabitButton(this.context,temp,this.habit);
-            if(this.datesRow.getChildCount()<7){
-            }else{
+            HabitButton habitButton = new HabitButton(this.context, temp, this.habit);
+            if (this.datesRow.getChildCount() < 7) {
+            } else {
                 createADateRow();
             }
-            this.datesRow.addView(habitButton,this.datesRow.getChildCount());
+            this.datesRow.addView(habitButton, this.datesRow.getChildCount());
             c.add(Calendar.DATE, 1);
         }
 
@@ -161,9 +246,14 @@ public class MonthLayout extends LinearLayout {
 
 
     }
+    private int getYearIndex(int y){
+        Calendar calendar = Calendar.getInstance();
+        int thisYear = calendar.get(Calendar.YEAR);
+        return 9+ y - thisYear;
+    }
 
-    private int getBufferDays(int day){
-        switch(day){
+    private int getBufferDays(int day) {
+        switch (day) {
             case Calendar.MONDAY:
                 return 1;
             case Calendar.TUESDAY:
@@ -185,7 +275,7 @@ public class MonthLayout extends LinearLayout {
 
 
     public void initializeWith(Context context, Calendar currMonth, Habit habitCurrent) {
-        initWithDate(context,currMonth,habitCurrent);
+        initWithDate(context, currMonth, habitCurrent);
 
 
     }

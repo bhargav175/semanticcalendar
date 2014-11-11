@@ -200,7 +200,7 @@ public class UpdateCheckListActivity extends FragmentActivity {
 //        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
 //        mAlert = mAlertBuilder.create();
 
-        reminderHelper = new ReminderHelper(this,UpdateCheckListActivity.this,remainderId,currentCheckList.getDueTime(),showDueDateTextView);
+        reminderHelper = new ReminderHelper(this,UpdateCheckListActivity.this,remainderId,currentCheckList.getDueTime(),showDueDateTextView,currentCheckList.getId(),2);
         mAddLabelBuilder=new AddLabelDialog(UpdateCheckListActivity.this,2,currentCheckList.getId(),currentCheckList.getTag(),labelLayout);
         mAddLabel = mAddLabelBuilder.create();
         addDueDate.setOnClickListener(new View.OnClickListener() {

@@ -72,9 +72,12 @@ public class ReminderHelper {
         private AlertDialog mAlert;
        private FragmentActivity f;
        private ReminderDBHelper reminderDBHelper;
+        private Integer itemId,itemType;
 
-    public ReminderHelper(Context context, FragmentActivity f, Integer reminderId, Calendar dueDate,TextView textView) {
+    public ReminderHelper(Context context, FragmentActivity f, Integer reminderId, Calendar dueDate,TextView textView,Integer itemId,Integer itemType) {
         this.context = context;
+        this.itemId = itemId;
+        this.itemType = itemType;
         this.dueDate = dueDate;
         this.textView = textView;
         this.reminderId = reminderId;
@@ -143,6 +146,8 @@ public class ReminderHelper {
 
     private void updateReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
         Intent intent = new Intent(context, MyBroadcastReceiver.class);
+        intent.putExtra(DBHelper.COLUMN_ID,itemId);
+        intent.putExtra("Type",itemType);
         AlarmManager alarmManager = (AlarmManager) context.getApplicationContext().getSystemService(context.ALARM_SERVICE);
         if (alarmManager != null) {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -163,6 +168,8 @@ public class ReminderHelper {
 
     private void saveReminder(Integer requestId, int year, int month, int day, int hour, int minute) {
         Intent intent = new Intent(context, MyBroadcastReceiver.class);
+        intent.putExtra(DBHelper.COLUMN_ID,itemId);
+        intent.putExtra("Type",itemType);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
         if (alarmManager != null) {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestId, intent, PendingIntent.FLAG_UPDATE_CURRENT);

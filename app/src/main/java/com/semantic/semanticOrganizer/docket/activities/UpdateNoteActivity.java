@@ -213,7 +213,7 @@ public class UpdateNoteActivity extends FragmentActivity implements View.OnClick
 //        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
 //        mAlert = mAlertBuilder.create();
 
-        reminderHelper = new ReminderHelper(this,UpdateNoteActivity.this,requestId,noteCurrent.getDueTime(),showDueDateTextView);
+        reminderHelper = new ReminderHelper(this,UpdateNoteActivity.this,requestId,noteCurrent.getDueTime(),showDueDateTextView,noteCurrent.getId(),1);
 
         mAddLabelBuilder=new AddLabelDialog(UpdateNoteActivity.this,1,noteCurrent.getId(),noteCurrent.getTag(),labelLayout);
         mAddLabel = mAddLabelBuilder.create();

@@ -7,16 +7,29 @@
     android:id="@+id/pika"
     android:gravity="center_horizontal">
 
-
-    <TextView
-        android:id="@+id/heading"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="October, 2014"
-        android:textSize="@dimen/material_heading_text_size"
-        android:textColor="@color/gray_color"
-        android:padding="@dimen/material_padding"
-        android:gravity="center_horizontal" />
+        android:padding="@dimen/material_light_padding">
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/monthSpinner"
+            android:layout_weight="0.5"
+            android:layout_margin="@dimen/material_light_padding" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/yearSpinner"
+            android:layout_weight="0.5"
+            android:layout_margin="@dimen/material_light_padding" />
+
+        </LinearLayout>
+
+
+
 
 
     <TableLayout
@@ -96,6 +109,10 @@
                 android:gravity="center"
                 android:layout_height="wrap_content" />
         </TableRow>
+
+
+
+
     </TableLayout>
 
 </com.semantic.semanticOrganizer.docket.helpers.MonthLayout>

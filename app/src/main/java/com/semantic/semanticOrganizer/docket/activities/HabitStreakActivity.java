@@ -54,7 +54,7 @@ public class HabitStreakActivity extends Activity {
     private Habit habitCurrent;
     private Boolean isHabitDueToday;
     private ImageView updateHabitButton;
-    private CardView dueTodayCard;
+    private CardView dueTodayCard, singleMonthCalendar;
     private TableRow weekHabitItemsTableRow;
     private TableLayout weekTableLayout;
     private List<HabitItem> habitItemList;
@@ -69,6 +69,7 @@ public class HabitStreakActivity extends Activity {
     private int mSelectedPageIndex = 1;
     private List<MonthLayout> monthLayouts = new ArrayList<MonthLayout>();
     private Calendar currMonth;
+    private MonthLayout v0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,12 +249,13 @@ public class HabitStreakActivity extends Activity {
     }
 
     private void initUi(){
+        singleMonthCalendar = (CardView) findViewById(R.id.singleMonthCalendar);
         if(habitCurrent.getDuration()==null){
             Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
             intent.putExtra(DBHelper.HABIT_TITLE,  habitCurrent.getHabitText());
             intent.putExtra(DBHelper.COLUMN_ID, habitCurrent.getId());
             startActivity(intent);
-        }else{
+        }else {
             final LayoutInflater layoutInflater = (LayoutInflater)
                     getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
             TextView textView = (TextView) findViewById(R.id.info_habit_heading);
@@ -270,14 +272,14 @@ public class HabitStreakActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), UpdateHabitActivity.class);
-                    intent.putExtra(DBHelper.HABIT_TITLE,  habitCurrent.getHabitText());
+                    intent.putExtra(DBHelper.HABIT_TITLE, habitCurrent.getHabitText());
                     intent.putExtra(DBHelper.COLUMN_ID, habitCurrent.getId());
                     startActivity(intent);
                 }
             });
-            if(getIsHabitDueToday()){
+            if (getIsHabitDueToday()) {
                 dueTodayCard.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 dueTodayCard.setVisibility(View.GONE);
             }
 
@@ -287,75 +289,23 @@ public class HabitStreakActivity extends Activity {
             // Set the calendar to sunday of the current week
             c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
             // Print dates of the current week starting on Sunday
-            c.set(Calendar.HOUR_OF_DAY,0);
-            c.set(Calendar.MINUTE,0);
-            c.set(Calendar.SECOND,0);
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
             c.add(Calendar.DAY_OF_WEEK,
                     c.getFirstDayOfWeek() - c.get(Calendar.DAY_OF_WEEK));
             for (int i = 0; i < 7; i++) {
                 c = (Calendar) c.clone();
-                HabitButton habitButton =  new HabitButton(this,c,habitCurrent);
-                weekHabitItemsTableRow.addView(habitButton,weekHabitItemsTableRow.getChildCount());
+                HabitButton habitButton = new HabitButton(this, c, habitCurrent);
+                weekHabitItemsTableRow.addView(habitButton, weekHabitItemsTableRow.getChildCount());
                 c.add(Calendar.DATE, 1);
             }
             weekTableLayout.addView(weekHabitItemsTableRow);
             weekTableLayout.requestLayout();
             weekTableLayout.setVisibility(View.GONE);
-
-            habitStreakPager = (WrapContentHeightViewPager) findViewById(R.id.habitStreakPager);
-            habitStreakAdapter = new InfinitePagerAdapter(habitCurrent,this,monthLayouts);
-           habitStreakPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-
-                @Override
-                public void onPageScrolled(int i, float v, int i2) {
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    mSelectedPageIndex = position;
-                    if (mSelectedPageIndex == 0) {
-                        Calendar calendar = (Calendar) monthLayouts.get(mSelectedPageIndex).getMonth().clone();
-                        calendar.add(Calendar.MONTH, -1);
-                        Integer p = mSelectedPageIndex;
-                        new AddMonth(calendar, p, true).execute("");
-
-                        // user swiped to left direction --> right page
-                    } else if (mSelectedPageIndex == (monthLayouts.size() - 1)) {
-                        Calendar calendar = (Calendar) monthLayouts.get(mSelectedPageIndex).getMonth().clone();
-                        calendar.add(Calendar.MONTH, 1);
-                        Integer p = mSelectedPageIndex;
-                        new AddMonth(calendar, p, true).execute("");
-                    }
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                    if (state == ViewPager.SCROLL_STATE_IDLE) {
-
-                        // user swiped to right direction --> left page
-                        if (mSelectedPageIndex == 0) {
-                            Calendar calendar = (Calendar) monthLayouts.get(mSelectedPageIndex).getMonth().clone();
-                            calendar.add(Calendar.MONTH, -1);
-                            Integer position = mSelectedPageIndex;
-                            new AddMonth(calendar, position, true).execute("");
-
-                            // user swiped to left direction --> right page
-                        } else if (mSelectedPageIndex == (monthLayouts.size() - 1)) {
-                            Calendar calendar = (Calendar) monthLayouts.get(mSelectedPageIndex).getMonth().clone();
-                            calendar.add(Calendar.MONTH, 1);
-                            Integer position = mSelectedPageIndex;
-                            new AddMonth(calendar, position, true).execute("");
-                        }
-                    }
-                }
-            });
-            initMonths();
-            habitStreakPager.setCurrentItem(new Integer(Integer.MAX_VALUE / 2), false);
-            habitStreakAdapter.notifyDataSetChanged();
-            habitStreakPager.setOffscreenPageLimit(10); //your choice
-            habitStreakPager.setAdapter(habitStreakAdapter);
+            v0 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout,singleMonthCalendar ,false);
+            v0.initializeWith(getApplicationContext(),this.currMonth,habitCurrent);
+            singleMonthCalendar.addView(v0);
 
         }
 
@@ -373,33 +323,6 @@ public class HabitStreakActivity extends Activity {
 
 
 
-    private void initMonths() {
-        Calendar currMonth = Calendar.getInstance() ;
-        Calendar nextMonth = (Calendar) currMonth.clone();
-        Calendar prevMonth = (Calendar) currMonth.clone();
-        nextMonth.add(Calendar.MONTH,1);
-        prevMonth.add(Calendar.MONTH,-1);
-        MonthLayout v0 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout,habitStreakPager ,false);
-        MonthLayout v1 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout,habitStreakPager ,false);
-        MonthLayout v2 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout,habitStreakPager ,false);
-        v0.initializeWith(getApplicationContext(),this.currMonth,habitCurrent);
-        v1.initializeWith(getApplicationContext(),prevMonth,habitCurrent);
-        v2.initializeWith(getApplicationContext(),nextMonth,habitCurrent);
-        monthLayouts.add(v2);
-        monthLayouts.add(v0);
-        monthLayouts.add(v1);
-        ViewGroup viewGroup = (ViewGroup) v0.getParent();
-        if(viewGroup!=null)
-        {
-            viewGroup.removeView(v0);
-        }
-        habitStreakAdapter.addView(v2,0);
-        habitStreakAdapter.addView(v0,0);
-        habitStreakAdapter.addView(v1, 0);
-
-
-
-    }
 
     private class GetHabit extends AsyncTask<String, Void, Habit> {
 
@@ -481,58 +404,6 @@ public class HabitStreakActivity extends Activity {
 
 
 
-
-    private class AddMonth extends AsyncTask<String, Void, MonthLayout> {
-
-        Calendar calendar;
-        Integer position;
-        Boolean bool;
-
-        public AddMonth(Calendar calendar,Integer position, Boolean bool) {
-            this.calendar = (Calendar) calendar.clone();
-            this.bool = bool;
-            this.position = position;
-        }
-
-        @Override
-        protected MonthLayout doInBackground(String... params) {
-
-
-            MonthLayout v0 = (MonthLayout) getLayoutInflater().inflate(R.layout.month_table_layout,habitStreakPager ,false);
-            v0.initializeWith(getApplicationContext(),this.calendar,habitCurrent);
-            monthLayouts.add(v0);
-
-            return v0;
-        }
-
-        @Override
-        protected void onPostExecute(final MonthLayout v0){
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    ViewGroup viewGroup = (ViewGroup) v0.getParent();
-                    if (viewGroup != null) {
-                        viewGroup.removeView(v0);
-                    }
-                    habitStreakPager.addView(v0, position);
-                    if (bool) {
-                        habitStreakAdapter.notifyDataSetChanged();
-                    }
-
-                }
-
-            });
-
-             }
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
 
 
 
