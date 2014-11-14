@@ -234,6 +234,22 @@ public class MonthLayout extends LinearLayout {
             this.datesRow.addView(habitButton, this.datesRow.getChildCount());
             c.add(Calendar.DATE, 1);
         }
+        c.add(Calendar.DATE,-1);
+        int remainingDays = getRemDays(c.get(Calendar.DAY_OF_WEEK));
+        for (int i = 0; i < remainingDays; i++) {
+            Button b = new Button(this.context);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+            lp.gravity = Gravity.CENTER;
+            lp.setMargins(2, 2, 2, 2);
+            b.setLayoutParams(lp);
+            b.setGravity(Gravity.CENTER);
+            b.setBackgroundColor(getResources().getColor(R.color.white));
+            b.setTextColor(getResources().getColor(R.color.white));
+            b.setText("-");
+            b.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.material_micro_text_size));
+            this.datesRow.addView(b);
+        }
 
     }
 
@@ -250,6 +266,27 @@ public class MonthLayout extends LinearLayout {
         Calendar calendar = Calendar.getInstance();
         int thisYear = calendar.get(Calendar.YEAR);
         return 9+ y - thisYear;
+    }
+
+    private int getRemDays(int lastDay){
+        switch (lastDay) {
+            case Calendar.MONDAY:
+                return 5;
+            case Calendar.TUESDAY:
+                return 4;
+            case Calendar.WEDNESDAY:
+                return 3;
+            case Calendar.THURSDAY:
+                return 2;
+            case Calendar.FRIDAY:
+                return 1;
+            case Calendar.SATURDAY:
+                return 0;
+            case Calendar.SUNDAY:
+                return 6;
+            default:
+                return 1;
+        }
     }
 
     private int getBufferDays(int day) {

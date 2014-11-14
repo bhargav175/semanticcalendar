@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -68,8 +70,8 @@ public class HabitButton extends Button  implements View.OnClickListener {
         lp.setMargins(2, 2, 2, 2);
         this.setLayoutParams(lp);
         this.setGravity(Gravity.CENTER);
-        this.setBackgroundColor(getResources().getColor(R.color.light_gray_color));
-        this.setTextColor(getResources().getColor(R.color.red_color));
+        this.setBackgroundColor(getResources().getColor(R.color.white));
+        this.setTextColor(getResources().getColor(R.color.pitch_black));
         this.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimension(R.dimen.material_micro_text_size));
         String buttonT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
@@ -229,24 +231,35 @@ public class HabitButton extends Button  implements View.OnClickListener {
         if(habitItem!=null){
 
             if(habitItem.getHabitItemState() == HabitItem.State.UNSET){
-                habitButton.setBackgroundColor(getResources().getColor(R.color.gray_color));
+                habitButton.setBackgroundColor(getResources().getColor(R.color.white));
                 habitButton.setTextColor(getResources().getColor(R.color.pitch_black));
+
             }
             if(habitItem.getHabitItemState() == HabitItem.State.SKIPPED){
-                habitButton.setBackgroundColor(getResources().getColor(R.color.light_blue_500));
-                habitButton.setTextColor(getResources().getColor(R.color.white));
+                habitButton.setBackgroundColor(getResources().getColor(R.color.white));
+                habitButton.setTextColor(getResources().getColor(R.color.light_blue_500));
+                SpannableString content = new SpannableString(habitButton.getText());
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                habitButton.setText(content);
             }
             if(habitItem.getHabitItemState() == HabitItem.State.COMPLETED_UNSUCCESSFULLY){
-                habitButton.setBackgroundColor(getResources().getColor(R.color.red_color));
-                habitButton.setTextColor(getResources().getColor(R.color.white));
+                habitButton.setBackgroundColor(getResources().getColor(R.color.white));
+                habitButton.setTextColor(getResources().getColor(R.color.red_color));
+                SpannableString content = new SpannableString(habitButton.getText());
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                habitButton.setText(content);
             }
             if(habitItem.getHabitItemState() == HabitItem.State.COMPLETED_SUCCESSFULLY){
-                habitButton.setBackgroundColor(getResources().getColor(R.color.green_color));
-                habitButton.setTextColor(getResources().getColor(R.color.white));
+                habitButton.setBackgroundColor(getResources().getColor(R.color.white));
+                habitButton.setTextColor(getResources().getColor(R.color.green_color));
+                SpannableString content = new SpannableString(habitButton.getText());
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                habitButton.setText(content);
             }
         }else{
-            habitButton.setBackgroundColor(getResources().getColor(R.color.gray_color));
+            habitButton.setBackgroundColor(getResources().getColor(R.color.white));
             habitButton.setTextColor(getResources().getColor(R.color.pitch_black));
+
         }
 
     }

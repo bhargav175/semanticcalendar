@@ -20,13 +20,14 @@ import android.widget.Toast;
 import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.database.TagDBHelper;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.InlineEditable;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
 
 public class UpdateTagActivity extends Activity {
     private TagDBHelper tagDBHelper;
-    private EditText tagText;
-    private EditText tagDescription;
+    private InlineEditable tagText;
+    private InlineEditable tagDescription;
     private CheckBox tagIsArchived;
     Integer tagId;
     private Tag currentTagInView;
@@ -102,8 +103,8 @@ public class UpdateTagActivity extends Activity {
 
     }
     private void initUi() {
-        tagText = (EditText) findViewById(R.id.tagTitle);
-        tagDescription = (EditText) findViewById(R.id.descriptionText);
+        tagText = (InlineEditable) findViewById(R.id.tagTitle);
+        tagDescription = (InlineEditable) findViewById(R.id.descriptionText);
         tagIsArchived = (CheckBox) findViewById(R.id.isArchived);
         tagDBHelper = new TagDBHelper(this);
 

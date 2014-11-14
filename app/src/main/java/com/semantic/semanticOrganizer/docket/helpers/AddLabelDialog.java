@@ -233,6 +233,7 @@ public class AddLabelDialog extends AlertDialog.Builder {
                 tv.setPadding(8,8,8,8);
                 tv.setBackgroundColor(Label.colorToDrawable(label.getColor()));
                 tv.setTextColor(this.fragmentActivity.getResources().getColor(R.color.white));
+                tv.setTextSize(this.fragmentActivity.getResources().getDimension(R.dimen.material_micro_text_size));
                 this.labelLayout.addView(tv);
             }
 

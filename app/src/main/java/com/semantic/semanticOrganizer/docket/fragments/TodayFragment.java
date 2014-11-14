@@ -15,7 +15,9 @@ import android.widget.TextView;
 
 import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.models.Note;
+import com.semantic.semanticOrganizer.docket.models.OrganizerItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -24,8 +26,9 @@ import java.util.List;
 public class TodayFragment extends Fragment {
     public static final String Tag = "CalendarPrint";
     private List<Note> notes;
+    private List<OrganizerItem> organizerItems;
     private ListView lv;
-    private ArrayAdapter<Note> noteAdapter;
+    private ArrayAdapter<OrganizerItem> noteAdapter;
 
 
     @Override
@@ -44,17 +47,22 @@ public class TodayFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         notes = new ArrayList<Note>();
+        organizerItems = new ArrayList<OrganizerItem>();
         new GetDueNotes(getActivity(),Calendar.getInstance()).execute("");
 
     }
 
     private void afterGet(){
-        noteAdapter = new ArrayAdapter<Note>(getActivity(),android.R.layout.simple_list_item_1,android.R.id.text1,notes){
+        noteAdapter = new ArrayAdapter<OrganizerItem>(getActivity(),R.layout.timeline_item,R.id.text1,organizerItems){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                textView.setText(notes.get(position).getNoteTitle());
+                TextView mainText = (TextView) view.findViewById(R.id.text1);
+                TextView description = (TextView) view.findViewById(R.id.text2);
+                TextView dueDate = (TextView) view.findViewById(R.id.time);
+                mainText.setText(organizerItems.get(position).getItemText());
+                description.setText(organizerItems.get(position).getSecondaryText());
+                dueDate.setText(new SimpleDateFormat("HH:mm").format(organizerItems.get(position).getDueTime().getTime()));
                 return view;
             }
         };
@@ -73,6 +81,7 @@ public class TodayFragment extends Fragment {
         @Override
         protected Void doInBackground(String... params) {
             notes =Note.getAllUnArchivedNotesByDueDate(context, calendar);
+            organizerItems = OrganizerItem.getAllUnArchivedItemsByDueDate(context,calendar);
             //No Sandbox
             //tags.add(new Tag("SandBox"));
             return null;

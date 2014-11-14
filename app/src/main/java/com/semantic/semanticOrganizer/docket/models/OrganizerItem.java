@@ -3,6 +3,9 @@ package com.semantic.semanticOrganizer.docket.models;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -41,6 +44,7 @@ public class OrganizerItem {
     }
     private String type;
     private String itemText;
+    private Calendar dueTime;
 
     public String getSecondaryText() {
         return secondaryText;
@@ -137,6 +141,9 @@ public class OrganizerItem {
             organizerItem.setItemText(note.getNoteTitle());
             organizerItem.setCreatedTime(note.getCreatedTime());
             organizerItem.setSecondaryText(note.getNoteDescription());
+            if(note.getDueTime()!=null){
+                organizerItem.setDueTime((Calendar)note.getDueTime().clone());
+            }
             organizerItem.setId(note.getId());
             organizerItem.setType("NOTE");
 
@@ -189,9 +196,11 @@ public class OrganizerItem {
             organizerItem.setItemText(checkList.getCheckListTitle());
             organizerItem.setCreatedTime(checkList.getCreatedTime());
             organizerItem.setSecondaryText(checkList.getCheckListDescription());
-            organizerItem.setId(checkList.getId());
+            if(checkList.getDueTime()!=null){
+                organizerItem.setDueTime((Calendar)checkList.getDueTime().clone());
+            }
+        organizerItem.setId(checkList.getId());
             organizerItem.setType("CHECKLIST");
-
         return organizerItem;
     }
 
@@ -210,4 +219,28 @@ public class OrganizerItem {
     }
 
 
+    public static List<OrganizerItem> getAllUnArchivedItemsByDueDate(Context context, Calendar calendar) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<Note> noteList = Note.getAllUnArchivedNotesByDueDate(context, calendar);
+        List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsByDueDate(context, calendar);
+        organizerItems.addAll(castNotesToOrganizerItemList(noteList));
+        organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+
+        return organizerItems;
+    }
+
+    public Calendar getDueTime() {
+        return dueTime;
+    }
+
+    public void setDueTime(Calendar dueTime) {
+        this.dueTime = dueTime;
+    }
 }

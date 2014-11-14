@@ -10,41 +10,76 @@
     android:background="@color/white"
    >
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Home"
-        android:id="@+id/home"
-        android:textColor="@color/pitch_black"
-        android:padding="@dimen/material_light_padding"
-        android:textSize="@dimen/material_medium_text_size"
-        android:gravity="center_horizontal" />
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Archives"
-        android:id="@+id/archiveLink"
-        android:textColor="@color/pitch_black"
-        android:padding="@dimen/material_light_padding"
-        android:textSize="@dimen/material_medium_text_size"
-        android:gravity="center_horizontal" />
+        android:layout_height="wrap_content">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timelineImage"
+            android:layout_weight="0.3" />
 
-    <TextView
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="TimeLine"
+            android:id="@+id/timeline"
+            android:textColor="@color/pitch_black"
+            android:padding="@dimen/material_light_padding"
+            android:textSize="@dimen/material_medium_text_size"
+            android:layout_weight="0.7" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="My Goals"
-        android:id="@+id/drawer_layout_header_text"
-        android:textColor="@color/pitch_black"
-        android:padding="@dimen/material_light_padding"
-        android:textSize="@dimen/material_medium_text_size"
-        android:gravity="center_horizontal"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/archiveImage"
+            android:layout_weight="0.3" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Archives"
+            android:layout_weight="0.7"
+            android:id="@+id/archiveLink"
+            android:textColor="@color/pitch_black"
+            android:padding="@dimen/material_light_padding"
+            android:textSize="@dimen/material_medium_text_size"
+             />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/goalsImage"
+            android:layout_weight="0.3" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Goals"
+            android:layout_weight="0.7"
+            android:id="@+id/home"
+            android:textColor="@color/pitch_black"
+            android:padding="@dimen/material_light_padding"
+            android:textSize="@dimen/material_medium_text_size"
+            />
+    </LinearLayout>
+
 
     <ListView android:id="@+id/left_drawer"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"

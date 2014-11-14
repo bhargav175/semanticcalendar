@@ -43,6 +43,7 @@ import com.semantic.semanticOrganizer.docket.models.Note;
 import com.semantic.semanticOrganizer.docket.models.OrganizerItem;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class TagActivity extends FragmentActivity {
@@ -69,7 +70,7 @@ public class TagActivity extends FragmentActivity {
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
     private ComingUpDialog wAlertBuilder;
     private AlertDialog wAlert;
-    private TextView archivesLink,homeLink;
+    private TextView archivesLink,homeLink,timelineLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +93,7 @@ public class TagActivity extends FragmentActivity {
         tagOrganizerMapView = (RelativeLayout) findViewById(R.id.tagOrganizerMap);
         loadingLayout = (RelativeLayout) findViewById(R.id.loadingLayout);
         cardsListView = (ListView) findViewById(R.id.cardsListView);
-        TextView tv = (TextView) findViewById(R.id.drawer_layout_header_text);
-        tv.setTypeface(font);
+
         wAlertBuilder = new ComingUpDialog(this);
         wAlert = wAlertBuilder.create();
         archivesLink = (TextView) findViewById(R.id.archiveLink);
@@ -106,6 +106,14 @@ public class TagActivity extends FragmentActivity {
         });
         homeLink = (TextView) findViewById(R.id.home);
         homeLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TagActivity.this,GoalsActivity.class);
+                startActivity(intent);
+            }
+        });
+        timelineLink = (TextView) findViewById(R.id.timeline);
+        timelineLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TagActivity.this,SuperMain.class);
@@ -365,8 +373,7 @@ public class TagActivity extends FragmentActivity {
             tagSecondaryText.setText("All Items which are not in any particular list");
 
         }
-        tagDescription.setTypeface(font);
-        tagSecondaryText.setTypeface(font);
+
         listAdapter = new ArrayAdapter<OrganizerItem>(getApplicationContext(),
                 R.layout.card_organizer_item,R.id.info_text, organizerItems){
             @Override
@@ -374,13 +381,23 @@ public class TagActivity extends FragmentActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.info_text);
                 TextView cardText2 = (TextView) view.findViewById(R.id.secondary_text);
+                ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                if(organizerItems.get(position).getType().equals("NOTE")){
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_note_add_black_24dp));
+                }else if(organizerItems.get(position).getType().equals("CHECKLIST")){
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_box_black_24dp));
+                }else{
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_black_24dp));
+                }
                 cardText1.setText(toCamelCase(organizerItems.get(position).getItemText()));
-                cardText2.setText(toCamelCase(organizerItems.get(position).getCreatedTime()));
-                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                cardText2.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                cardText1.setTypeface(font);
-                cardText2.setTypeface(font);
-                cardText2.setVisibility(View.GONE);
+                if(organizerItems.get(position).getDueTime()!=null){
+                    cardText2.setText("Due - "+ new SimpleDateFormat("EEE, d MMM yyyy hh:mm aaa").format(organizerItems.get(position).getDueTime().getTime()));
+                    cardText2.setVisibility(View.VISIBLE);
+                }else{
+                    cardText2.setVisibility(View.GONE);
+                }
+//                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
+//                cardText1.setTypeface(font);
                 return view;
             }
         };

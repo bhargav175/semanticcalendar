@@ -219,6 +219,7 @@ public class UpdateCheckListActivity extends FragmentActivity {
 
 
     private void updateUi(){
+
         getActionBar().setTitle(utilFunctions.toCamelCase(currentCheckList.getCheckListTitle()));
 
         checkListText.setText(currentCheckList.getCheckListTitle());

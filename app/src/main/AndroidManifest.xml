@@ -1,117 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.semantic.semanticOrganizer.docket"
-    >
+    package="com.semantic.semanticOrganizer.docket" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-       <application
+
+    <application
         android:allowBackup="true"
-        android:logo="@drawable/ic_menu_white_18dp"
         android:icon="@drawable/docket_logo"
         android:label="@string/app_name"
+        android:logo="@drawable/ic_menu_white_18dp"
         android:theme="@style/Theme.MyTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.NoteListActivity"
+            android:name=".activities.NoteListActivity"
             android:label="@string/title_list_notes" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.TutorialActivity"
+            android:name=".activities.TutorialActivity"
             android:label="Tutorial" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.LandingActivity"
+            android:name=".activities.LandingActivity"
             android:label="@string/LandingActivity" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.AddTagActivity"
+            android:name=".activities.AddTagActivity"
             android:label="@string/title_activity_add_tag" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.AddNoteActivity"
+            android:name=".activities.AddNoteActivity"
             android:label="@string/title_activity_add_note" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.UpdateNoteActivity"
+            android:name=".activities.UpdateNoteActivity"
             android:label="@string/title_update_note" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.AddChecklistActivity"
+            android:name=".activities.AddChecklistActivity"
             android:label="@string/title_activity_add_checklist" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.AddHabitActivity"
+            android:name=".activities.AddHabitActivity"
             android:label="@string/title_activity_add_habit" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.ListTagsActivity"
+            android:name=".activities.ListTagsActivity"
             android:label="@string/title_activity_list_tags" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.ListNotesActivity"
+            android:name=".activities.ListNotesActivity"
             android:label="@string/title_activity_list_notes" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.ListChecklistsActivity"
+            android:name=".activities.ListChecklistsActivity"
             android:label="@string/title_activity_list_checklists" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.ListHabitsActivity"
+            android:name=".activities.ListHabitsActivity"
             android:label="@string/title_activity_list_habits" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.UpdateHabitActivity"
+            android:name=".activities.UpdateHabitActivity"
             android:label="@string/title_activity_update_habit" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.UpdateCheckListActivity"
+            android:name=".activities.UpdateCheckListActivity"
             android:label="@string/title_activity_update_check_list" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.UpdateTagActivity"
+            android:name=".activities.UpdateTagActivity"
             android:label="@string/title_activity_update_tag" >
         </activity>
 
         <receiver
-            android:name="com.semantic.semanticOrganizer.docket.utils.MyBroadcastReceiver"
+            android:name=".utils.MyBroadcastReceiver"
             android:process=":remote" >
         </receiver>
 
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.HomeActivity"
+            android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.HabitStreakActivity"
+            android:name=".activities.HabitStreakActivity"
             android:label="@string/title_activity_habit_streak" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.TagListView"
+            android:name=".activities.TagListView"
             android:label="@string/title_activity_tag_list_view" >
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.TagActivity"
+            android:name=".activities.TagActivity"
             android:label="@string/title_activity_tag" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.semantic.semanticOrganizer.semanticcalendar.activities.TagListView" />
         </activity>
         <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.SuperMain"
+            android:name=".activities.SuperMain"
             android:label="@string/app_name" >
+
+        </activity>
+        <activity
+            android:name=".activities.ArchivesActivity"
+            android:label="@string/title_activity_archives" >
+        </activity>
+        <activity
+            android:name=".activities.GoalsActivity"
+            android:label="@string/title_activity_goals" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.semantic.semanticOrganizer.docket.activities.ArchivesActivity"
-            android:label="@string/title_activity_archives" >
         </activity>
     </application>
 

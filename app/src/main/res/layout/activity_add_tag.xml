@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-       tools:context="com.semantic.semanticOrganizer.docket.activities.AddTagActivity"
-    android:padding="@dimen/material_left_padding">
+       tools:context="com.semantic.semanticOrganizer.docket.activities.AddTagActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -12,18 +11,17 @@
         android:padding="@dimen/material_padding">
 
         <TextView
-            android:text="Tag Title"
+            android:text="Goal Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/light_black"
             android:textSize="20sp"
-            android:id="@+id/titleLabel"
-            android:padding="@dimen/material_padding" />
+            android:id="@+id/titleLabel" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
             android:id="@+id/tagTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/titleLabel"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -33,35 +31,48 @@
             android:textColor="@color/light_black"
             android:padding="@dimen/material_padding"
             android:textColorHint="@color/gray_color"
-            android:hint="Title" />
+            android:hint="Title"
+            android:inputType="textMultiLine"
+            android:maxLines="10"
+            android:minLines="1"
+            android:scrollbars="vertical"
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="@drawable/inline_editable"
+            />
+
+        <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
             android:id="@+id/descriptionText"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="23dp"
+            android:layout_marginTop="@dimen/material_padding"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textColor="@color/light_black"
             android:padding="@dimen/material_padding"
             android:layout_below="@id/tagTitle"
             android:hint="Desciption"
-            android:textColorHint="@color/gray_color" />
+            android:textColorHint="@color/gray_color"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:maxLines="10"
+            android:minLines="1"
+            android:scrollbars="vertical"
+
+            android:background="@drawable/inline_editable"
+            android:layout_marginBottom="@dimen/material_padding" />
+
+
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Archived"
             android:id="@+id/isArchived"
-            android:layout_centerVertical="true"
+            android:layout_below="@id/descriptionText"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:checked="false"
-            android:layout_alignRight="@+id/descriptionText"
-            android:layout_alignEnd="@+id/descriptionText"
-            android:padding="@dimen/material_padding" />
+            android:textSize="@dimen/material_micro_text_size" />
 
     </RelativeLayout>
 

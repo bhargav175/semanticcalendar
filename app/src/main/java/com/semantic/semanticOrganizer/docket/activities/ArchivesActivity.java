@@ -39,7 +39,7 @@ public class ArchivesActivity extends FragmentActivity {
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
     private List<Tag> tags;
     private Typeface font;
-    private TextView archivesLink,homeLink;
+    private TextView timelineLink,homeLink;
 
 
 
@@ -64,18 +64,19 @@ public class ArchivesActivity extends FragmentActivity {
         mPager  = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(sAdapter);
         slidingTabLayout.setViewPager(mPager);
-        archivesLink = (TextView) findViewById(R.id.archiveLink);
-        archivesLink.setOnClickListener(new View.OnClickListener() {
+        timelineLink = (TextView) findViewById(R.id.timeline);
+        timelineLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(ArchivesActivity.this,SuperMain.class);
+                startActivity(intent);
             }
         });
         homeLink = (TextView) findViewById(R.id.home);
         homeLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ArchivesActivity.this,SuperMain.class);
+                Intent intent = new Intent(ArchivesActivity.this,GoalsActivity.class);
                 startActivity(intent);
             }
         });

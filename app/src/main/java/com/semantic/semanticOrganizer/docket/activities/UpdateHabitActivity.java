@@ -2,11 +2,13 @@ package com.semantic.semanticOrganizer.docket.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,20 +21,32 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.semantic.semanticOrganizer.docket.R;
 import com.semantic.semanticOrganizer.docket.database.HabitDBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.AddLabelDialog;
 import com.semantic.semanticOrganizer.docket.helpers.DBHelper;
+import com.semantic.semanticOrganizer.docket.helpers.DueHabitDialog;
+import com.semantic.semanticOrganizer.docket.helpers.HabitReminderHelper;
+import com.semantic.semanticOrganizer.docket.helpers.ReminderHelper;
 import com.semantic.semanticOrganizer.docket.models.Habit;
+import com.semantic.semanticOrganizer.docket.models.Reminder;
 import com.semantic.semanticOrganizer.docket.models.Tag;
 import com.semantic.semanticOrganizer.docket.utils.utilFunctions;
 
+import org.apmem.tools.layouts.FlowLayout;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
-public class UpdateHabitActivity extends Activity {
+public class UpdateHabitActivity extends FragmentActivity {
     private HabitDBHelper habitDBHelper;
     private EditText habitText, habitQuestion, habitDuration, habitFrequency;
     private Spinner tag, frequencyBase, habitType,habitDurationSpinner;
@@ -42,7 +56,19 @@ public class UpdateHabitActivity extends Activity {
     private Habit habitCurrent;
     private Button sundayButton, mondayButton, tuesdayButton, wednesdayButton,thursdayButton, fridayButton, saturdayButton;
     Integer habitId,currentHabitDuration,currentHabitFrequency;
-
+    private TextView showDueDateTextView;
+    public HabitReminderHelper reminderHelper;
+    private FlowLayout labelLayout;
+    int day, month, year, hour, minute, second;
+    private FloatingActionsMenu fam;
+    private FloatingActionButton addDueDate, addLabel;
+    private DueHabitDialog mAlertBuilder;
+    private AddLabelDialog mAddLabelBuilder;
+    private AlertDialog mAlert,mAddLabel;
+    private Reminder currentReminder;
+    Integer requestId;
+    private Boolean hadReminder,hasReminder;
+    private Long hadMilliSeconds;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,11 +185,13 @@ public class UpdateHabitActivity extends Activity {
         setButtonState(saturdayButton,sat);
 
 
+        labelLayout = (FlowLayout) findViewById(R.id.labelsLayout);
 
         habitDBHelper = new HabitDBHelper(this);
         habitDBHelper.open();
         flexibleHabitLayout = (LinearLayout) findViewById(R.id.linearLayoutFlexible);
         fixedHabitLayout = (LinearLayout) findViewById(R.id.linearLayoutFixed);
+        showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
 
         //Duration
         List<String> durationStrings = new ArrayList<String>();
@@ -227,7 +255,40 @@ public class UpdateHabitActivity extends Activity {
             }
         });
         frequencyBase.setSelection(0);
+        new GetTags().execute("");
+        addFloatingActionButtons();
+
     }
+
+    private void addFloatingActionButtons(){
+        fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        addDueDate = (FloatingActionButton) findViewById(R.id.addDueDate);
+        addLabel = (FloatingActionButton) findViewById(R.id.addLabel);
+
+    }
+
+    private void setFloatingActionListeners(){
+//        mAlertBuilder=new DueDateDialog(UpdateNoteActivity.this,noteCurrent.getDueTime(),showDueDateTextView,year,month,day,hour,minute,hasReminder);
+//        mAlert = mAlertBuilder.create();
+
+        reminderHelper = new HabitReminderHelper(this,UpdateHabitActivity.this,requestId,habitCurrent.getDueTime(),showDueDateTextView,habitCurrent.getId(),1);
+
+        mAddLabelBuilder=new AddLabelDialog(UpdateHabitActivity.this,3,habitCurrent.getId(),habitCurrent.getTag(),labelLayout);
+        mAddLabel = mAddLabelBuilder.create();
+        addDueDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reminderHelper.show();
+            }
+        });
+        addLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddLabel.show();
+            }
+        });
+    }
+
     private void updateUi(){
         getActionBar().setTitle(utilFunctions.toCamelCase(habitCurrent.getHabitText()));
 
@@ -271,7 +332,15 @@ public class UpdateHabitActivity extends Activity {
 
             }
         }
-        new GetTags().execute("");
+
+        if (habitCurrent.getRequestId() != null) {
+            hadReminder = true;
+            requestId =habitCurrent.getRequestId() ;
+        } else {
+            hadReminder = false;
+        }
+        hasReminder = hadReminder;
+        new GetReminder(requestId).execute("");
 
     }
     private void setListeners() {
@@ -435,6 +504,64 @@ public class UpdateHabitActivity extends Activity {
     }
 
 
+    private class GetReminder extends AsyncTask<String, Void, Reminder> {
+
+        private Integer id;
+
+        public GetReminder(Integer id) {
+            this.id = id;
+        }
+
+        @Override
+        protected Reminder doInBackground(String... params) {
+            if (id != null) {
+                currentReminder = Reminder.getReminderById(id, getApplicationContext());
+            } else {
+                currentReminder = null;
+            }
+            return currentReminder;
+        }
+
+        @Override
+        protected void onPostExecute(final Reminder reminder) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (currentReminder != null) {
+                        year = reminder.getYear();
+                        month = reminder.getMonthOfYear();
+                        day = reminder.getDayOfMonth();
+                        hour = reminder.getHourOfDay();
+                        minute = reminder.getMinuteOfHour();
+                        second = reminder.getSecond();
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                        calendar.set(Calendar.HOUR_OF_DAY, hour);
+                        calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.SECOND, 0);
+                        hadMilliSeconds = calendar.getTimeInMillis();
+
+                    } else {
+
+                    }
+                    setFloatingActionListeners();
+
+                }
+            });
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
 
 
 private class GetTags extends AsyncTask<String, Void, List<Tag>> {
