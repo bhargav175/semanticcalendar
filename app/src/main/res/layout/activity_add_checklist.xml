@@ -3,7 +3,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.semantic.semanticOrganizer.docket.activities.AddChecklistActivity"
+    tools:context="com.bhargav.smart.smartTasks.activities.AddChecklistActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:focusable="true" android:focusableInTouchMode="true"
@@ -47,7 +47,7 @@
                 android:textColor="@color/gray_color"
                 android:textStyle="italic" />
 
-            <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+            <com.bhargav.smart.smartTasks.helpers.InlineEditable
                 android:id="@+id/checkListTitle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -221,7 +221,7 @@
                 android:textStyle="italic" />
 
 
-            <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+            <com.bhargav.smart.smartTasks.helpers.InlineEditable
                 android:id="@+id/checkListDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

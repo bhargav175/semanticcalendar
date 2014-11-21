@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.semantic.semanticOrganizer.docket.activities.HomeActivity" >
+    tools:context="com.bhargav.smart.smartTasks.activities.HomeActivity" >
 
     <item android:id="@+id/viewTags"
         android:icon="@drawable/ic_action_labels"

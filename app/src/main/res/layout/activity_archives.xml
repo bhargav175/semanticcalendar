@@ -9,7 +9,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.semantic.semanticOrganizer.docket.activities.ArchivesActivity">
+    tools:context="com.bhargav.smart.smartTasks.activities.ArchivesActivity">
     <!-- The main content view -->
 
 
@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.semantic.semanticOrganizer.docket.adapters.SlidingTabLayout
+            <com.bhargav.smart.smartTasks.adapters.SlidingTabLayout
                 android:id="@+id/sliding_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

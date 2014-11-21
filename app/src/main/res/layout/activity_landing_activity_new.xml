@@ -6,7 +6,7 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
-    tools:context="com.semantic.semanticOrganizer.docket.activities.LandingActivity">
+    tools:context="com.bhargav.smart.smartTasks.activities.LandingActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"

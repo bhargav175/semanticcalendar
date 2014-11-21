@@ -19,7 +19,7 @@
         android:focusableInTouchMode="true"
         android:id="@+id/parentLayout"
 
-        tools:context="com.semantic.semanticOrganizer.docket.activities.TagActivity"
+        tools:context="com.bhargav.smart.smartTasks.activities.TagActivity"
         android:background="#ddd"
         android:padding="0dp">
         <LinearLayout

@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.semantic.semanticOrganizer.docket.activities.AddChecklistActivity"
+    tools:context="com.bhargav.smart.smartTasks.activities.AddChecklistActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:focusable="true" android:focusableInTouchMode="true"
@@ -12,6 +12,5 @@
     <include layout="@layout/add_habit_scroll_view"/>
 
 
-    <include layout="@layout/fab_add_extra"/>
 
 </RelativeLayout>

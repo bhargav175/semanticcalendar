@@ -19,7 +19,7 @@
 
 
 
-    <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+    <com.bhargav.smart.smartTasks.helpers.InlineEditable
         android:layout_width="0dp"
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"

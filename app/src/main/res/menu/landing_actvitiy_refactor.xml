@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.semantic.semanticOrganizer.docket.activities.LandingActivity" >
+    tools:context="com.bhargav.smart.smartTasks.activities.LandingActivity" >
     <item android:id="@+id/action_view_notes"
         android:title="Notes"
         android:orderInCategory="100"

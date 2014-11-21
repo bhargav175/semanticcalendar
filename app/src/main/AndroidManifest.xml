@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.semantic.semanticOrganizer.docket" >
+    package="com.bhargav.smart.smartTasks" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -16,101 +17,102 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activities.NoteListActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.NoteListActivity"
             android:label="@string/title_list_notes" >
         </activity>
         <activity
-            android:name=".activities.TutorialActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.TutorialActivity"
             android:label="Tutorial" >
         </activity>
         <activity
-            android:name=".activities.LandingActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.LandingActivity"
             android:label="@string/LandingActivity" >
         </activity>
         <activity
-            android:name=".activities.AddTagActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.AddTagActivity"
             android:label="@string/title_activity_add_tag" >
         </activity>
         <activity
-            android:name=".activities.AddNoteActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.AddNoteActivity"
             android:label="@string/title_activity_add_note" >
         </activity>
         <activity
-            android:name=".activities.UpdateNoteActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.UpdateNoteActivity"
             android:label="@string/title_update_note" >
         </activity>
         <activity
-            android:name=".activities.AddChecklistActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.AddChecklistActivity"
             android:label="@string/title_activity_add_checklist" >
         </activity>
         <activity
-            android:name=".activities.AddHabitActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.AddHabitActivity"
             android:label="@string/title_activity_add_habit" >
         </activity>
         <activity
-            android:name=".activities.ListTagsActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.ListTagsActivity"
             android:label="@string/title_activity_list_tags" >
         </activity>
         <activity
-            android:name=".activities.ListNotesActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.ListNotesActivity"
             android:label="@string/title_activity_list_notes" >
         </activity>
         <activity
-            android:name=".activities.ListChecklistsActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.ListChecklistsActivity"
             android:label="@string/title_activity_list_checklists" >
         </activity>
         <activity
-            android:name=".activities.ListHabitsActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.ListHabitsActivity"
             android:label="@string/title_activity_list_habits" >
         </activity>
         <activity
-            android:name=".activities.UpdateHabitActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.UpdateHabitActivity"
             android:label="@string/title_activity_update_habit" >
         </activity>
         <activity
-            android:name=".activities.UpdateCheckListActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.UpdateCheckListActivity"
             android:label="@string/title_activity_update_check_list" >
         </activity>
         <activity
-            android:name=".activities.UpdateTagActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.UpdateTagActivity"
             android:label="@string/title_activity_update_tag" >
         </activity>
 
-        <receiver
-            android:name=".utils.MyBroadcastReceiver"
-            android:process=":remote" >
+        <receiver android:process=":remote" android:name="com.bhargav.smart.smartTasks.utils.MyBroadcastReceiver"
+            >
+
         </receiver>
 
+
         <activity
-            android:name=".activities.HomeActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.HomeActivity"
             android:label="@string/title_activity_home" >
         </activity>
         <activity
-            android:name=".activities.HabitStreakActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.HabitStreakActivity"
             android:label="@string/title_activity_habit_streak" >
         </activity>
         <activity
-            android:name=".activities.TagListView"
+            android:name="com.bhargav.smart.smartTasks.activities.TagListView"
             android:label="@string/title_activity_tag_list_view" >
         </activity>
         <activity
-            android:name=".activities.TagActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.TagActivity"
             android:label="@string/title_activity_tag" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.semantic.semanticOrganizer.semanticcalendar.activities.TagListView" />
         </activity>
         <activity
-            android:name=".activities.SuperMain"
+            android:name="com.bhargav.smart.smartTasks.activities.SuperMain"
             android:label="@string/app_name" >
 
         </activity>
         <activity
-            android:name=".activities.ArchivesActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.ArchivesActivity"
             android:label="@string/title_activity_archives" >
         </activity>
         <activity
-            android:name=".activities.GoalsActivity"
+            android:name="com.bhargav.smart.smartTasks.activities.GoalsActivity"
             android:label="@string/title_activity_goals" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

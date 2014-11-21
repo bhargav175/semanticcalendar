@@ -15,7 +15,7 @@
                 android:padding="@dimen/material_padding">
 
 
-                <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+                <com.bhargav.smart.smartTasks.helpers.InlineEditable
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Name"

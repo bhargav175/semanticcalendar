@@ -1,0 +1,18 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="material_left_padding">8dp</dimen>
+    <dimen name="material_left_high_padding">56dp</dimen>
+    <dimen name="default_element_height">64dp</dimen>
+    <dimen name="checklist_element_height">40dp</dimen>
+    <dimen name="material_padding">16dp</dimen>
+    <dimen name="material_light_padding">8dp</dimen>
+    <dimen name="material_actionbar_size">48dp</dimen>
+    <dimen name="material_micro_text_size">12sp</dimen>
+    <dimen name="material_simple_text_size">14sp</dimen>
+    <dimen name="material_small_text_size">14sp</dimen>
+    <dimen name="material_heading_text_size">22sp</dimen>
+    <dimen name="material_medium_text_size">18sp</dimen>
+    <dimen name="action_bar_height_material">56dp</dimen>
+</resources>

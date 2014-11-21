@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-       tools:context="com.semantic.semanticOrganizer.docket.activities.AddTagActivity">
+       tools:context="com.bhargav.smart.smartTasks.activities.AddTagActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -18,7 +18,7 @@
             android:textSize="20sp"
             android:id="@+id/titleLabel" />
 
-        <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+        <com.bhargav.smart.smartTasks.helpers.InlineEditable
             android:id="@+id/tagTitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:background="@drawable/inline_editable"
             />
 
-        <com.semantic.semanticOrganizer.docket.helpers.InlineEditable
+        <com.bhargav.smart.smartTasks.helpers.InlineEditable
             android:id="@+id/descriptionText"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

@@ -1,8 +1,10 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Theme.MyTheme" parent="android:Theme.Holo.Light">
+    <style name="Theme.MyTheme" parent="@style/Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
+
+        <!--Theme is edited here-->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
         <item name="android:windowBackground">@color/white_opaque</item>
@@ -10,6 +12,9 @@
         <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
         <item name="android:spinnerStyle">@style/Spinner</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItemSytle</item>
+
+
+
 
         <!--<item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>-->
     </style>
