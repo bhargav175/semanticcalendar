@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 

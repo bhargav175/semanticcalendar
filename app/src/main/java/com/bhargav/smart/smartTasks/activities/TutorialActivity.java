@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.TutorialPagerAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
 

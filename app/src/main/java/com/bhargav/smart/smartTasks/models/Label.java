@@ -1,6 +1,6 @@
 package com.bhargav.smart.smartTasks.models;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 
 /**
  * Created by Admin on 03-11-2014.

@@ -16,10 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.ArchivesPagerAdapter;
 import com.bhargav.smart.smartTasks.adapters.SlidingTabLayout;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
@@ -33,6 +34,7 @@ public class ArchivesActivity extends ActionBarActivity {
     ArchivesPagerAdapter sAdapter;
     SlidingTabLayout slidingTabLayout;
     private DrawerLayout mDrawerLayout;
+    private LinearLayout sidebarHeader;
     private ListView mDrawerListView;
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
     private List<Tag> tags;
@@ -55,14 +57,15 @@ public class ArchivesActivity extends ActionBarActivity {
                 getApplicationContext().getAssets(),
                 "fonts/RobotoCondensed-Light.ttf");
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
-        slidingTabLayout=(SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        mDrawerListView = (ListView) findViewById(R.id.right_drawer);
+        sidebarHeader = (LinearLayout) getLayoutInflater().inflate(R.layout.sidebar_right_header, null);
+        mDrawerListView.addHeaderView(sidebarHeader);slidingTabLayout=(SlidingTabLayout) findViewById(R.id.sliding_tabs);
         sAdapter = new ArchivesPagerAdapter(getSupportFragmentManager());
         //Set the pager with an adapter
         mPager  = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(sAdapter);
         slidingTabLayout.setViewPager(mPager);
-        timelineLink = (TextView) findViewById(R.id.timeline);
+        timelineLink = (TextView) findViewById(R.id.home);
         timelineLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +73,7 @@ public class ArchivesActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
-        homeLink = (TextView) findViewById(R.id.home);
+        homeLink = (TextView) findViewById(R.id.lists);
         homeLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,8 +99,6 @@ public class ArchivesActivity extends ActionBarActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.title);
                 cardText1.setText(toCamelCase(tags.get(position).getTagText()));
-                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                cardText1.setTypeface(font);
                 return view;
             }
         };
@@ -105,15 +106,15 @@ public class ArchivesActivity extends ActionBarActivity {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(tags.get(position).getTagId()!=null){
-                    mDrawerLayout.closeDrawers();
-                    Intent intent = new Intent(ArchivesActivity.this,TagActivity.class);
-                    intent.putExtra(DBHelper.COLUMN_ID,tags.get(position).getTagId());
-                    startActivity(intent);
-                }else{
-                    Intent intent = new Intent(ArchivesActivity.this,TagActivity.class);
-                    intent.putExtra(DBHelper.COLUMN_ID,tags.get(position).getTagId());
-                    startActivity(intent);
+                position -= mDrawerListView.getHeaderViewsCount();
+                if(position>-1){
+                    if(tags.get(position).getTagId()!=null){
+                        Intent intent = new Intent(ArchivesActivity.this,TagActivity.class);
+                        intent.putExtra(DBHelper.COLUMN_ID,(tags.get(position).getTagId()));
+                        startActivity(intent);
+                    }else{
+
+                    }
                 }
             }
         });

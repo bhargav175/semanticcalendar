@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.models.NavDrawerItem;
 
 import java.util.ArrayList;

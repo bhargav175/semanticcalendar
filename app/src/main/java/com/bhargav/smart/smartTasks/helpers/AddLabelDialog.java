@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.LabelDBHelper;
 import com.bhargav.smart.smartTasks.models.Label;
 

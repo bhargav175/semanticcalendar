@@ -33,7 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.ExpandableListAdapter;
 import com.bhargav.smart.smartTasks.database.CheckListDBHelper;
 import com.bhargav.smart.smartTasks.database.HabitDBHelper;

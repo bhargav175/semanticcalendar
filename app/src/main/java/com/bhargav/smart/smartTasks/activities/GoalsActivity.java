@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.CheckListDBHelper;
 import com.bhargav.smart.smartTasks.database.HabitDBHelper;
 import com.bhargav.smart.smartTasks.database.NoteDBHelper;
@@ -50,6 +50,7 @@ public class GoalsActivity extends ActionBarActivity {
     private List<Tag> tags;
     private Typeface font;
     private Integer doSave;
+    private LinearLayout sidebarHeader;
     private FloatingActionsMenu fam;
     private ComingUpDialog wAlertBuilder;
     private AlertDialog wAlert;
@@ -71,10 +72,11 @@ public class GoalsActivity extends ActionBarActivity {
                 "fonts/RobotoCondensed-Light.ttf");
         fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
-
-        archivesLink = (TextView) findViewById(R.id.archiveLink);
-        timelineLink = (TextView) findViewById(R.id.timeline);
+        mDrawerListView = (ListView) findViewById(R.id.right_drawer);
+        sidebarHeader = (LinearLayout) getLayoutInflater().inflate(R.layout.sidebar_right_header, null);
+        mDrawerListView.addHeaderView(sidebarHeader);
+        archivesLink = (TextView) findViewById(R.id.archives);
+        timelineLink = (TextView) findViewById(R.id.home);
         archivesLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,8 +133,6 @@ public class GoalsActivity extends ActionBarActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.title);
                 cardText1.setText(utilFunctions.toCamelCase(tags.get(position).getTagText()));
-                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                cardText1.setTypeface(font);
                 return view;
             }
         };
@@ -140,15 +140,17 @@ public class GoalsActivity extends ActionBarActivity {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(tags.get(position).getTagId()!=null){
-                    Intent intent = new Intent(GoalsActivity.this,TagActivity.class);
-                    intent.putExtra(DBHelper.COLUMN_ID,tags.get(position).getTagId());
-                    startActivity(intent);
-                }else{
-                    mDrawerLayout.closeDrawers();
-                    Intent intent = new Intent(GoalsActivity.this,TagActivity.class);
-                    startActivity(intent);
+                position -= mDrawerListView.getHeaderViewsCount();
+                if(position>-1){
+                    if(tags.get(position).getTagId()!=null){
+                        Intent intent = new Intent(GoalsActivity.this,TagActivity.class);
+                        intent.putExtra(DBHelper.COLUMN_ID,(tags.get(position).getTagId()));
+                        startActivity(intent);
+                    }else{
+
+                    }
                 }
+
             }
         });
         addFloatingActionButtons();

@@ -12,7 +12,7 @@ import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.activities.UpdateCheckListActivity;
 import com.bhargav.smart.smartTasks.activities.UpdateHabitActivity;
 import com.bhargav.smart.smartTasks.activities.UpdateNoteActivity;

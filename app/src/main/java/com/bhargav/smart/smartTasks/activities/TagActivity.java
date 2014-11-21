@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.CheckListDBHelper;
 import com.bhargav.smart.smartTasks.database.HabitDBHelper;
 import com.bhargav.smart.smartTasks.database.NoteDBHelper;
@@ -62,13 +62,14 @@ public class TagActivity extends ActionBarActivity {
     private FloatingActionsMenu fam;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
+    private LinearLayout sidebarHeader;
     private List<OrganizerItem> organizerItems;
     private List<Tag> tags;
     private LinearLayout mCustomHeaders;
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
     private ComingUpDialog wAlertBuilder;
     private AlertDialog wAlert;
-    private TextView archivesLink,homeLink,timelineLink;
+    private TextView archivesLink,homeLink,listsLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,9 @@ public class TagActivity extends ActionBarActivity {
                 "fonts/RobotoCondensed-Light.ttf");
         fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
+        mDrawerListView = (ListView) findViewById(R.id.right_drawer);
+        sidebarHeader = (LinearLayout) getLayoutInflater().inflate(R.layout.sidebar_right_header, null);
+        mDrawerListView.addHeaderView(sidebarHeader);
         mCustomHeaders=new LinearLayout(getApplicationContext());
         mCustomHeaders.setOrientation(LinearLayout.VERTICAL);
         tagOrganizerMapView = (RelativeLayout) findViewById(R.id.tagOrganizerMap);
@@ -94,7 +97,7 @@ public class TagActivity extends ActionBarActivity {
 
         wAlertBuilder = new ComingUpDialog(this);
         wAlert = wAlertBuilder.create();
-        archivesLink = (TextView) findViewById(R.id.archiveLink);
+        archivesLink = (TextView) findViewById(R.id.archives);
         archivesLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,8 +113,8 @@ public class TagActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
-        timelineLink = (TextView) findViewById(R.id.timeline);
-        timelineLink.setOnClickListener(new View.OnClickListener() {
+        listsLink = (TextView) findViewById(R.id.lists);
+        listsLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TagActivity.this,SuperMain.class);
@@ -191,8 +194,6 @@ public class TagActivity extends ActionBarActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.title);
                 cardText1.setText(toCamelCase(tags.get(position).getTagText()));
-                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                cardText1.setTypeface(font);
                 return view;
             }
         };
@@ -200,13 +201,18 @@ public class TagActivity extends ActionBarActivity {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(tags.get(position).getTagId()!=null){
-                    mDrawerLayout.closeDrawers();
-                    getTag(tags.get(position).getTagId());
-                }else{
-                    mDrawerLayout.closeDrawers();
-                    getTag(null);
+                position -= mDrawerListView.getHeaderViewsCount();
+                if(position>-1){
+                    if(tags.get(position).getTagId()!=null){
+                        mDrawerLayout.closeDrawers();
+                        getTag(tags.get(position).getTagId());
+
+                    }else{
+
+                    }
                 }
+
+
             }
         });
 

@@ -15,7 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.activities.UpdateCheckListActivity;
 import com.bhargav.smart.smartTasks.activities.UpdateHabitActivity;
 import com.bhargav.smart.smartTasks.activities.UpdateNoteActivity;

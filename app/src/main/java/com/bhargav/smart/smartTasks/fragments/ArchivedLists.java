@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.activities.ArchivesActivity;
 import com.bhargav.smart.smartTasks.database.TagDBHelper;
 import com.bhargav.smart.smartTasks.models.Tag;

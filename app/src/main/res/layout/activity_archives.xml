@@ -46,6 +46,6 @@
     <!-- The navigation drawer -->
 
     <include layout="@layout/sidebar"/>
-
+    <include layout="@layout/sidebar_right"/>
 
 </android.support.v4.widget.DrawerLayout>

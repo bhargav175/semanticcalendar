@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.SlidingTabLayout;
 import com.bhargav.smart.smartTasks.adapters.SuperMainPagerAdapter;
 import com.bhargav.smart.smartTasks.database.CheckListDBHelper;
@@ -51,6 +52,7 @@ public class SuperMain extends ActionBarActivity {
     private TextView archivesLink,goalsLink;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
+    private LinearLayout sidebarHeader;
     private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
     private List<Tag> tags;
     private Typeface font;
@@ -75,15 +77,17 @@ public class SuperMain extends ActionBarActivity {
                 "fonts/RobotoCondensed-Light.ttf");
         fam = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
+        mDrawerListView = (ListView) findViewById(R.id.right_drawer);
+        sidebarHeader = (LinearLayout) getLayoutInflater().inflate(R.layout.sidebar_right_header, null);
+        mDrawerListView.addHeaderView(sidebarHeader);
         slidingTabLayout=(SlidingTabLayout) findViewById(R.id.sliding_tabs);
         sAdapter = new SuperMainPagerAdapter(getSupportFragmentManager());
         //Set the pager with an adapter
         mPager  = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(sAdapter);
         slidingTabLayout.setViewPager(mPager);
-        archivesLink = (TextView) findViewById(R.id.archiveLink);
-        goalsLink = (TextView) findViewById(R.id.home);
+        archivesLink = (TextView) findViewById(R.id.archives);
+        goalsLink = (TextView) findViewById(R.id.lists);
         archivesLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,8 +115,6 @@ public class SuperMain extends ActionBarActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.title);
                 cardText1.setText(toCamelCase(tags.get(position).getTagText()));
-                cardText1.setTextSize(getResources().getDimension(R.dimen.material_micro_text_size));
-                cardText1.setTypeface(font);
                 return view;
             }
         };
@@ -120,14 +122,15 @@ public class SuperMain extends ActionBarActivity {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(tags.get(position).getTagId()!=null){
-                    Intent intent = new Intent(SuperMain.this,TagActivity.class);
-                    intent.putExtra(DBHelper.COLUMN_ID,tags.get(position).getTagId());
-                    startActivity(intent);
-                }else{
-                    mDrawerLayout.closeDrawers();
-                    Intent intent = new Intent(SuperMain.this,TagActivity.class);
-                    startActivity(intent);
+                position -= mDrawerListView.getHeaderViewsCount();
+                if(position>-1){
+                    if(tags.get(position).getTagId()!=null){
+                        Intent intent = new Intent(SuperMain.this,TagActivity.class);
+                        intent.putExtra(DBHelper.COLUMN_ID,(tags.get(position).getTagId()));
+                        startActivity(intent);
+                    }else{
+
+                    }
                 }
             }
         });

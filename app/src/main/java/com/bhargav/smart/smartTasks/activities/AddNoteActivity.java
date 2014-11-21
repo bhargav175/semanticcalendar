@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.NoteDBHelper;
 import com.bhargav.smart.smartTasks.models.Note;
 import com.bhargav.smart.smartTasks.models.Tag;

@@ -3,7 +3,7 @@ package com.bhargav.smart.smartTasks.activities;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 
 public class NoteListActivity extends Activity {
 

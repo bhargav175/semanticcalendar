@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.Toast;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.models.Habit;
 import com.bhargav.smart.smartTasks.models.HabitItem;
 

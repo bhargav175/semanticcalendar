@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.NoteDBHelper;
 import com.bhargav.smart.smartTasks.database.ReminderDBHelper;
 import com.bhargav.smart.smartTasks.helpers.AddLabelDialog;

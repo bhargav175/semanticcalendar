@@ -14,7 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.HabitDBHelper;
 import com.bhargav.smart.smartTasks.models.Habit;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;

@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.CheckListDBHelper;
 import com.bhargav.smart.smartTasks.database.CheckListItemDBHelper;
 import com.bhargav.smart.smartTasks.helpers.AddLabelDialog;

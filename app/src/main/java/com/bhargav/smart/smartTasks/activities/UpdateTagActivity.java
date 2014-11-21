@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.database.TagDBHelper;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
 import com.bhargav.smart.smartTasks.helpers.InlineEditable;

@@ -22,7 +22,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.semantic.semanticOrganizer.docket.R;
+import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.InfinitePagerAdapter;
 import com.bhargav.smart.smartTasks.adapters.WrapContentHeightViewPager;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;

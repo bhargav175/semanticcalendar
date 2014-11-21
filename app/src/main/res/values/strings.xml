@@ -124,5 +124,6 @@
     <string name="title_activity_super_main">SuperMain</string>
     <string name="title_activity_archives">ArchivesActivity</string>
     <string name="title_activity_goals">Docket | My Goals</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
 </resources>
