@@ -11,6 +11,16 @@
         <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
         <item name="android:spinnerStyle">@style/Spinner</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItemSytle</item>
+        <item name="android:paddingStart">?android:attr/paddingLeft</item>
+        <item name="android:paddingEnd">?android:attr/paddingRight</item>
+        <item name="android:layout_marginStart">?android:attr/layout_marginLeft</item>
+        <item name="android:layout_marginEnd">?android:attr/layout_marginRight</item>
+        <item name="android:layout_toStartOf">?android:attr/layout_toLeftOf</item>
+        <item name="android:layout_toEndOf">?android:attr/layout_toRightOf</item>
+        <item name="android:layout_alignParentStart">?android:attr/layout_alignParentLeft</item>
+        <item name="android:layout_alignParentEnd">?android:attr/layout_alignParentRight</item>
+        <item name="android:drawableStart">?android:attr/drawableLeft</item>
+        <item name="android:drawableEnd">?android:attr/drawableRight</item>
 
 
         <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
@@ -31,11 +41,12 @@
     </style>
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/primary_color</item>
+        <!--<item name="android:background">@color/primary_color</item>-->
         <item name="actionBarDivider">@null</item>
         <item name="android:actionBarDivider">@null</item>
         <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:logo">@drawable/actionbar_space_between_icon_and_title</item>
         <item name="android:height">56dp</item>
 
     </style>
@@ -46,8 +57,10 @@
         <item name="pageColor">@android:color/white</item>
     </style>
     <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">@dimen/material_padding</item>
+        <!--<item name="android:textColor">@android:color/white</item>-->
+        <!--<item name="android:padding">@dimen/material_padding</item>-->
+        <item name="android:textSize">@dimen/material_medium_text_size</item>
+        <item name="android:drawablePadding">@dimen/material_padding</item>
     </style>
 
     <style name="Widget.CirclePageIndicator" parent="Widget">

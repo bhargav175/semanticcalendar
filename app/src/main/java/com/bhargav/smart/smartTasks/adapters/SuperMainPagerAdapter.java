@@ -10,11 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.bhargav.smart.smartTasks.fragments.TimeLineFragment;
-import com.bhargav.smart.smartTasks.fragments.TodayFragment;
+import com.bhargav.smart.smartTasks.fragments.DueTasksFragment;
 
 public class SuperMainPagerAdapter extends FragmentPagerAdapter {
 
-    private String[] titles= {"Today", "Timeline"};
+    private String[] titles= {"Today", "Month"};
 
     public SuperMainPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -25,7 +25,7 @@ public class SuperMainPagerAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
-                return new TodayFragment();
+                return new DueTasksFragment();
             case 1:
                 return new TimeLineFragment();
 

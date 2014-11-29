@@ -15,4 +15,5 @@
     <dimen name="material_heading_text_size">22sp</dimen>
     <dimen name="material_medium_text_size">18sp</dimen>
     <dimen name="action_bar_height_material">56dp</dimen>
+    <dimen name="material_small_padding">4dp</dimen>
 </resources>

@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bhargav.smart.smartTasks.models.OneTimeTask;
+import com.bhargav.smart.smartTasks.utils.utilFunctions;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.bhargav.smart.smartTasks.R;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
@@ -39,11 +41,12 @@ public class DueDateDialog extends AlertDialog.Builder {
     private List<String> dates, times;
     private Boolean hasReminder;
     private Integer reminderId;
+    private OneTimeTask oneTimeTask;
     private Button addDueDateButton, dateButton, timeButton, closeButton;
     ;
 
 
-    public DueDateDialog(final FragmentActivity a, final Calendar c, final TextView textView,int y, int M , int d, int h, int m,final Boolean hasReminder,Integer reminderId) {
+    public DueDateDialog(final FragmentActivity a, final OneTimeTask oneTimeTask, final Calendar c, final TextView textView,int y, int M , int d, int h, int m,final Boolean hasReminder,Integer reminderId) {
         super(a);
         // TODO Auto-generated constructor stub
         this.a = a;
@@ -54,6 +57,7 @@ public class DueDateDialog extends AlertDialog.Builder {
         this.setView(dialogLayout);
         this.setTitle("Add Due Time");
         this.year = y;
+        this.oneTimeTask = oneTimeTask;
         this.month = M;
         this.day = d;
         this.hour = h;
@@ -77,7 +81,6 @@ public class DueDateDialog extends AlertDialog.Builder {
                 noDueLayout.setVisibility(View.VISIBLE);
                 dueLayout.setVisibility(View.GONE);
                 hasReminder=false;
-                hideTextView();
             }
         });
 
@@ -86,7 +89,6 @@ public class DueDateDialog extends AlertDialog.Builder {
             public void onClick(View v) {
                 noDueLayout.setVisibility(View.GONE);
                 dueLayout.setVisibility(View.VISIBLE);
-                showTextView();
                 hasReminder= true;
             }
         });
@@ -190,7 +192,6 @@ public class DueDateDialog extends AlertDialog.Builder {
             noDueLayout.setVisibility(View.VISIBLE);
             dueLayout.setVisibility(View.GONE);
             setDueDate();
-            hideTextView();
             }
 
     }
@@ -202,10 +203,10 @@ public class DueDateDialog extends AlertDialog.Builder {
         cal.set(Calendar.YEAR, tempYear);
         cal.set(Calendar.MONTH, tempMonth);
         cal.set(Calendar.DAY_OF_MONTH, tempDay);
-        textView.setText("Due Date - " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(cal.getTime()));
-        showTextView();
-        dateButton.setText(new SimpleDateFormat("dd-MM-yyyy").format(cal.getTime()));
-        timeButton.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
+        oneTimeTask.setDueTime(cal);
+        textView.setText(OneTimeTask.getMetaText(oneTimeTask));
+        dateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(cal.getTime()));
+        timeButton.setText(new SimpleDateFormat(utilFunctions.timeFormat).format(cal.getTime()));
     }
 
 
@@ -216,9 +217,13 @@ public class DueDateDialog extends AlertDialog.Builder {
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, day);
-        textView.setText("Due Date - " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(cal.getTime()));
-        dateButton.setText(new SimpleDateFormat("dd-MM-yyyy").format(cal.getTime()));
-        timeButton.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
+        setTextViewText();
+        dateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(cal.getTime()));
+        timeButton.setText(new SimpleDateFormat(utilFunctions.timeFormat).format(cal.getTime()));
+    }
+    private void setTextViewText(){
+        textView.setText(OneTimeTask.getMetaText(oneTimeTask));
+
     }
     public Holder returnUpdatedValues(){
         Calendar cal = null;
@@ -258,14 +263,6 @@ public class DueDateDialog extends AlertDialog.Builder {
 
         }
     }
-    private void hideTextView(){
-        textView.setVisibility(View.GONE);
-    }
-    private void showTextView(){
-        textView.setVisibility(View.VISIBLE);
-    }
-
-
 
 
 }

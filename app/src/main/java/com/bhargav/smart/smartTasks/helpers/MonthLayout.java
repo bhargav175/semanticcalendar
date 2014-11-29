@@ -16,7 +16,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
-import com.bhargav.smart.smartTasks.models.Habit;
+import com.bhargav.smart.smartTasks.models.RepeatingTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,11 +29,11 @@ public class MonthLayout extends LinearLayout {
 
     private Calendar mMonth, currMonthSelected;
     private TextView mMonthTitle;
-    private List<HabitButton> mHabitButtons;
+    private List<RepeatingTaskButton> mRepeatingTaskButtons;
     private TableLayout mTableLayout;
     private List<TableRow> mTableRows;
     private TableRow datesRow;
-    private Habit habit;
+    private RepeatingTask repeatingTask;
     private Context context;
     private Calendar firstDayOfMonth;
     private ViewGroup view;
@@ -59,7 +59,7 @@ public class MonthLayout extends LinearLayout {
 
     }
 
-    public MonthLayout(Context context, Calendar calendar, Habit habit) {
+    public MonthLayout(Context context, Calendar calendar, RepeatingTask repeatingTask) {
         super(context);
 
     }
@@ -125,7 +125,7 @@ public class MonthLayout extends LinearLayout {
 
     }
 
-    private void initWithDate(Context context, Calendar calendar, Habit habit) {
+    private void initWithDate(Context context, Calendar calendar, RepeatingTask repeatingTask) {
         this.mYears = new ArrayList<Integer>();
         this.currYear = calendar.get(Calendar.YEAR);
         int i;
@@ -171,7 +171,7 @@ public class MonthLayout extends LinearLayout {
         });
         yearSpinner.setAdapter(yearSpinnerAdapter);
         this.mTableRows = new ArrayList<TableRow>();
-        this.habit = habit;
+        this.repeatingTask = repeatingTask;
         this.context = context;
         this.mMonth = calendar;
         initializeCalendarView();
@@ -225,12 +225,12 @@ public class MonthLayout extends LinearLayout {
         }
         for (int i = 0; i < numberOfDays; i++) {
             Calendar temp = (Calendar) c.clone();
-            HabitButton habitButton = new HabitButton(this.context, temp, this.habit);
+            RepeatingTaskButton repeatingTaskButton = new RepeatingTaskButton(this.context, temp, this.repeatingTask);
             if (this.datesRow.getChildCount() < 7) {
             } else {
                 createADateRow();
             }
-            this.datesRow.addView(habitButton, this.datesRow.getChildCount());
+            this.datesRow.addView(repeatingTaskButton, this.datesRow.getChildCount());
             c.add(Calendar.DATE, 1);
         }
         c.add(Calendar.DATE,-1);
@@ -310,8 +310,8 @@ public class MonthLayout extends LinearLayout {
     }
 
 
-    public void initializeWith(Context context, Calendar currMonth, Habit habitCurrent) {
-        initWithDate(context, currMonth, habitCurrent);
+    public void initializeWith(Context context, Calendar currMonth, RepeatingTask repeatingTaskCurrent) {
+        initWithDate(context, currMonth, repeatingTaskCurrent);
 
 
     }

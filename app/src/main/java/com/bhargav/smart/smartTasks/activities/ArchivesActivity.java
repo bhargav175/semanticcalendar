@@ -24,7 +24,7 @@ import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.ArchivesPagerAdapter;
 import com.bhargav.smart.smartTasks.adapters.SlidingTabLayout;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
-import com.bhargav.smart.smartTasks.models.Tag;
+import com.bhargav.smart.smartTasks.models.TaskList;
 
 import java.util.List;
 
@@ -36,10 +36,10 @@ public class ArchivesActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private LinearLayout sidebarHeader;
     private ListView mDrawerListView;
-    private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
-    private List<Tag> tags;
+    private ArrayAdapter<TaskList> tagDrawerLayoutArrayAdapter;
+    private List<TaskList> taskLists;
     private Typeface font;
-    private TextView timelineLink,homeLink;
+    private TextView timelineLink,homeLink,settingsLink;
 
 
 
@@ -66,6 +66,14 @@ public class ArchivesActivity extends ActionBarActivity {
         mPager.setAdapter(sAdapter);
         slidingTabLayout.setViewPager(mPager);
         timelineLink = (TextView) findViewById(R.id.home);
+        settingsLink = (TextView) findViewById(R.id.settings);
+        settingsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ArchivesActivity.this,SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
         timelineLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +85,7 @@ public class ArchivesActivity extends ActionBarActivity {
         homeLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ArchivesActivity.this,GoalsActivity.class);
+                Intent intent = new Intent(ArchivesActivity.this,TaskListsActivity.class);
                 startActivity(intent);
             }
         });
@@ -87,18 +95,18 @@ public class ArchivesActivity extends ActionBarActivity {
 
 
     }
-    public void addTagToDrawer(Tag t){
-        tags.add(t);
+    public void addTagToDrawer(TaskList t){
+        taskLists.add(t);
         tagDrawerLayoutArrayAdapter.notifyDataSetChanged();
     }
 
     private void afterGetTags(){
-        tagDrawerLayoutArrayAdapter = new ArrayAdapter<Tag>(this,R.layout.drawer_list_item_tag,R.id.title,tags){
+        tagDrawerLayoutArrayAdapter = new ArrayAdapter<TaskList>(this,R.layout.drawer_list_item_tag,R.id.title, taskLists){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.title);
-                cardText1.setText(toCamelCase(tags.get(position).getTagText()));
+                cardText1.setText(toCamelCase(taskLists.get(position).getTagText()));
                 return view;
             }
         };
@@ -108,9 +116,9 @@ public class ArchivesActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 position -= mDrawerListView.getHeaderViewsCount();
                 if(position>-1){
-                    if(tags.get(position).getTagId()!=null){
-                        Intent intent = new Intent(ArchivesActivity.this,TagActivity.class);
-                        intent.putExtra(DBHelper.COLUMN_ID,(tags.get(position).getTagId()));
+                    if(taskLists.get(position).getTagId()!=null){
+                        Intent intent = new Intent(ArchivesActivity.this,TaskListActivity.class);
+                        intent.putExtra(DBHelper.COLUMN_ID,(taskLists.get(position).getTagId()));
                         startActivity(intent);
                     }else{
 
@@ -171,9 +179,9 @@ public class ArchivesActivity extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(String... params) {
-            tags =Tag.getAllUnArchivedTags(context);
+            taskLists = TaskList.getAllUnArchivedTags(context);
             //No Sandbox
-//            tags.add(new Tag("Untagged"));
+//            tags.add(new LOG_TAG("Untagged"));
             return null;
         }
 

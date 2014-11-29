@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="General"
+        >
+
+        <CheckBoxPreference
+            android:key="pref_completed_tasks"
+            android:title="Hide Completed Tasks"
+            android:defaultValue="false"
+            android:layout="@layout/preference_checkbox"
+            />
+
+
+        </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Reminders"
+        >
+
+    <CheckBoxPreference
+            android:key="pref_reminders_on"
+            android:title="Reminders"
+            android:defaultValue="false"
+            android:layout="@layout/preference_checkbox"
+            />
+
+        <ListPreference
+            android:key="pref_remind_delta"
+            android:title="Remind Before"
+            android:layout="@layout/preference_text_view"
+            android:dependency="pref_reminders_on"
+            android:entries="@array/reminder_delta_list_preference"
+            android:entryValues="@array/reminder_delta_list_preference"
+            android:dialogTitle="Remind Before"
+            android:defaultValue="1"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Task Settings"
+        >
+
+        <CheckBoxPreference
+            android:key="pref_show_year"
+            android:title="Show Tasks Due This Year"
+            android:layout="@layout/preference_checkbox"
+            android:defaultValue="false"/>
+
+        <CheckBoxPreference
+            android:key="pref_show_month"
+            android:title="Show Tasks Due This Month"
+            android:layout="@layout/preference_checkbox"
+            android:defaultValue="false"/>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Repeating Task Settings"
+        >
+
+
+        <CheckBoxPreference
+            android:key="pref_show_statistics"
+            android:layout="@layout/preference_checkbox"
+            android:title="Show Statistics"
+            android:summary="Available only in Pro"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>

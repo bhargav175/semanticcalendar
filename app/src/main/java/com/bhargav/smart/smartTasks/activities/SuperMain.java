@@ -9,8 +9,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,49 +25,66 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bhargav.smart.smartTasks.fragments.OverDueTasksFragment;
+import com.bhargav.smart.smartTasks.fragments.TimeLineFragment;
+import com.bhargav.smart.smartTasks.fragments.DueTasksFragment;
+import com.bhargav.smart.smartTasks.fragments.UpcomingTasksFragment;
+import com.bhargav.smart.smartTasks.models.TaskList;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.adapters.SlidingTabLayout;
 import com.bhargav.smart.smartTasks.adapters.SuperMainPagerAdapter;
-import com.bhargav.smart.smartTasks.database.CheckListDBHelper;
-import com.bhargav.smart.smartTasks.database.HabitDBHelper;
-import com.bhargav.smart.smartTasks.database.NoteDBHelper;
-import com.bhargav.smart.smartTasks.database.TagDBHelper;
+import com.bhargav.smart.smartTasks.database.RepeatingTaskDBHelper;
+import com.bhargav.smart.smartTasks.database.OneTimeTaskDBHelper;
+import com.bhargav.smart.smartTasks.database.TaskListDBHelper;
 import com.bhargav.smart.smartTasks.helpers.ComingUpDialog;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
-import com.bhargav.smart.smartTasks.models.CheckList;
-import com.bhargav.smart.smartTasks.models.Habit;
-import com.bhargav.smart.smartTasks.models.Note;
-import com.bhargav.smart.smartTasks.models.Tag;
+import com.bhargav.smart.smartTasks.models.RepeatingTask;
+import com.bhargav.smart.smartTasks.models.OneTimeTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SuperMain extends ActionBarActivity {
+public class SuperMain extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
     ViewPager mPager;
     SuperMainPagerAdapter sAdapter;
     SlidingTabLayout slidingTabLayout;
-    private TextView archivesLink,goalsLink;
+    private TextView archivesLink,goalsLink,settingsLink;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private LinearLayout sidebarHeader;
-    private ArrayAdapter<Tag> tagDrawerLayoutArrayAdapter;
-    private List<Tag> tags;
+    private ArrayAdapter<TaskList> tagDrawerLayoutArrayAdapter;
+    private List<TaskList> taskLists;
     private Typeface font;
     private Integer doSave;
     private FloatingActionsMenu fam;
     private ComingUpDialog wAlertBuilder;
     private AlertDialog wAlert;
+    private ActionBar actionBar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_super_main);
+        actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+        ArrayList<String> itemList = new ArrayList<String>();
+        itemList.add("Due Tasks");
+        itemList.add("Upcoming Tasks");
+        itemList.add("Overdue Tasks");
+        SpinnerAdapter aAdpt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, itemList);
+        actionBar.setListNavigationCallbacks(aAdpt, this);
         preInit();
         new GetTags(this).execute("");
 
@@ -83,9 +102,7 @@ public class SuperMain extends ActionBarActivity {
         slidingTabLayout=(SlidingTabLayout) findViewById(R.id.sliding_tabs);
         sAdapter = new SuperMainPagerAdapter(getSupportFragmentManager());
         //Set the pager with an adapter
-        mPager  = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(sAdapter);
-        slidingTabLayout.setViewPager(mPager);
+
         archivesLink = (TextView) findViewById(R.id.archives);
         goalsLink = (TextView) findViewById(R.id.lists);
         archivesLink.setOnClickListener(new View.OnClickListener() {
@@ -100,21 +117,28 @@ public class SuperMain extends ActionBarActivity {
         goalsLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SuperMain.this,GoalsActivity.class);
+                Intent intent = new Intent(SuperMain.this,TaskListsActivity.class);
+                startActivity(intent);
+            }
+        });
+        settingsLink = (TextView) findViewById(R.id.settings);
+        settingsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SuperMain.this,SettingsActivity.class);
                 startActivity(intent);
             }
         });
 
-
     }
 
     private void afterGetTags(){
-        tagDrawerLayoutArrayAdapter = new ArrayAdapter<Tag>(this,R.layout.drawer_list_item_tag,R.id.title,tags){
+        tagDrawerLayoutArrayAdapter = new ArrayAdapter<TaskList>(this,R.layout.drawer_list_item_tag,R.id.title, taskLists){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.title);
-                cardText1.setText(toCamelCase(tags.get(position).getTagText()));
+                cardText1.setText(toCamelCase(taskLists.get(position).getTagText()));
                 return view;
             }
         };
@@ -124,9 +148,9 @@ public class SuperMain extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 position -= mDrawerListView.getHeaderViewsCount();
                 if(position>-1){
-                    if(tags.get(position).getTagId()!=null){
-                        Intent intent = new Intent(SuperMain.this,TagActivity.class);
-                        intent.putExtra(DBHelper.COLUMN_ID,(tags.get(position).getTagId()));
+                    if(taskLists.get(position).getTagId()!=null){
+                        Intent intent = new Intent(SuperMain.this,TaskListActivity.class);
+                        intent.putExtra(DBHelper.COLUMN_ID,(taskLists.get(position).getTagId()));
                         startActivity(intent);
                     }else{
 
@@ -138,28 +162,23 @@ public class SuperMain extends ActionBarActivity {
 
     }
 
-    private void saveStuff(String str, Tag t){
+    private void saveStuff(String str, TaskList t){
         if(doSave==1){
-            Note note = new Note();
-            NoteDBHelper noteDbHelper = new NoteDBHelper(getApplicationContext());
-            note.setNoteTitle(str);
-            noteDbHelper.open();
-            noteDbHelper.saveNoteWithTag(note, t);
-            noteDbHelper.close();
+            OneTimeTask oneTimeTask = new OneTimeTask();
+            OneTimeTaskDBHelper oneTimeTaskDbHelper = new OneTimeTaskDBHelper(getApplicationContext());
+            oneTimeTask.setNoteTitle(str);
+            oneTimeTaskDbHelper.open();
+            oneTimeTaskDbHelper.saveNoteWithTag(oneTimeTask, t);
+            oneTimeTaskDbHelper.close();
         }else if(doSave ==2){
-            CheckList checkList = new CheckList();
-            CheckListDBHelper checkListDBHelper = new CheckListDBHelper(getApplicationContext());
-            checkList.setCheckListTitle(str);
-            checkListDBHelper.open();
-            checkListDBHelper.saveCheckListWithTag(checkList, t);
-            checkListDBHelper.close();
+
         }else if(doSave==3){
-            Habit habit = new Habit();
-            HabitDBHelper habitDBHelper = new HabitDBHelper(getApplicationContext());
-            habit.setHabitText(str);
-            habitDBHelper.open();
-            habitDBHelper.saveHabitWithTag(habit,t);
-            habitDBHelper.close();
+            RepeatingTask repeatingTask = new RepeatingTask();
+            RepeatingTaskDBHelper repeatingTaskDBHelper = new RepeatingTaskDBHelper(getApplicationContext());
+            repeatingTask.setRepeatingTaskText(str);
+            repeatingTaskDBHelper.open();
+            repeatingTaskDBHelper.saveRepeatingTaskWithTag(repeatingTask, t);
+            repeatingTaskDBHelper.close();
         }else if(doSave==4){
 
             new SaveTag(getApplicationContext(),str).execute("");
@@ -183,127 +202,6 @@ public class SuperMain extends ActionBarActivity {
                         dialog.cancel();
                     }
                 });
-
-//        FloatingActionButton addNote = (FloatingActionButton) findViewById(R.id.addNoteFab);
-//        FloatingActionButton addCheckList = (FloatingActionButton) findViewById(R.id.addCheckListab);
-//        FloatingActionButton addHabit = (FloatingActionButton) findViewById(R.id.addHabitFab);
-//        FloatingActionButton addList = (FloatingActionButton) findViewById(R.id.addListFab);
-//
-//
-//        addList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                doSave = 4;
-//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-//                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-//                spinner.setVisibility(View.GONE);
-//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-//                editInput.setCursorVisible(true);
-//                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,int which) {
-//                                // Write your code here to execute after dialog
-//                                String str = editInput.getText().toString();
-//                                if(str.length()>0){
-//                                    saveStuff(editInput.getText().toString(),null);
-//                                    dialog.cancel();
-//                                }else{
-//                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                            }}).create().show();
-//            }
-//        });
-//
-//
-//        addNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                doSave = 1;
-//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-//                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-//                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
-//                spinner.setAdapter(tagArrayAdapter);
-//                spinner.setSelection(tags.size()-1);
-//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-//                editInput.setCursorVisible(true);
-//
-//                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,int which) {
-//                                // Write your code here to execute after dialog
-//                                String str = editInput.getText().toString();
-//                                if(str.length()>0){
-//                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
-//                                    dialog.cancel();
-//                                }else{
-//                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                            }}).create().show();
-//              }
-//        });
-//        addCheckList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                doSave = 2;
-//                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-//                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-//                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
-//                spinner.setAdapter(tagArrayAdapter);
-//                spinner.setSelection(tags.size()-1);
-//                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-//                editInput.setCursorVisible(true);
-//                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,int which) {
-//                                // Write your code here to execute after dialog
-//                                String str = editInput.getText().toString();
-//                                if(str.length()>0){
-//                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
-//                                    dialog.cancel();
-//                                }else{
-//                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                            }}).create().show();
-//            }
-//        });
-//        addHabit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                //Replace code here
-////                doSave = 3;
-////                View editInputLayout =layoutInflater.inflate(R.layout.add_something_to_list, null);
-////                final Spinner spinner = (Spinner) editInputLayout.findViewById(R.id.spinner);
-////                ArrayAdapter<Tag> tagArrayAdapter = new ArrayAdapter<Tag>(getApplicationContext(),R.layout.spinner_list_item,tags);
-////                spinner.setAdapter(tagArrayAdapter);
-////                spinner.setSelection(tags.size()-1);
-////                final EditText editInput = (EditText) editInputLayout.findViewById(R.id.noteTitle);
-////                editInput.setCursorVisible(true);
-////
-////                alertDialog.setTitle("Add List").setView(editInputLayout).setPositiveButton("YES",
-////                        new DialogInterface.OnClickListener() {
-////                            public void onClick(DialogInterface dialog,int which) {
-////                                // Write your code here to execute after dialog
-////                                String str = editInput.getText().toString();
-////                                if(str.length()>0){
-////                                    saveStuff(editInput.getText().toString(),(Tag) spinner.getSelectedItem());
-////                                    dialog.cancel();
-////                                }else{
-////                                    Toast.makeText(getApplicationContext(), "Title Cannot Be Empty", Toast.LENGTH_SHORT).show();
-////                                }
-////
-////                            }}).create().show();
-//
-//                //Replace code ends here
-//
-//
-//                wAlert = wAlertBuilder.create();
-//                wAlert.show();
-//            }
-//        });
 
 
         FloatingActionButton addList = (FloatingActionButton) findViewById(R.id.addListFabButton);
@@ -374,6 +272,31 @@ public class SuperMain extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long l) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        switch (itemPosition) {
+            case 0:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content, new DueTasksFragment())
+                        .commitAllowingStateLoss();
+                break;
+            case 1:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content, new UpcomingTasksFragment())
+                        .commitAllowingStateLoss();
+                break;
+            case 2:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content, new OverDueTasksFragment())
+                        .commitAllowingStateLoss();
+                break;
+
+
+        }
+        return true;
+    }
+
     private class GetTags extends AsyncTask<String, Void,Void> {
 
         private Context context;
@@ -384,9 +307,9 @@ public class SuperMain extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(String... params) {
-            tags =Tag.getAllUnArchivedTags(context);
+            taskLists = TaskList.getAllUnArchivedTags(context);
             //No Sandbox from now
-//            tags.add(new Tag("Untagged"));
+//            tags.add(new LOG_TAG("Untagged"));
             return null;
         }
 
@@ -408,7 +331,7 @@ public class SuperMain extends ActionBarActivity {
         @Override
         protected void onProgressUpdate(Void... values) {}
     }
-    private class SaveTag extends AsyncTask<String, Void,Tag> {
+    private class SaveTag extends AsyncTask<String, Void,TaskList> {
 
         private Context context;
         private String str;
@@ -419,27 +342,27 @@ public class SuperMain extends ActionBarActivity {
         }
 
         @Override
-        protected Tag doInBackground(String... params) {
+        protected TaskList doInBackground(String... params) {
 
-            Tag tag = new Tag();
-            TagDBHelper tagDBHelper = new TagDBHelper(getApplicationContext());
-            tag.setTagText(str);
-            tagDBHelper.open();
-            Tag tempTag = tagDBHelper.saveTag(tag);
-            tagDBHelper.close();
-            tags.add(tempTag);
-            return tempTag;
+            TaskList taskList = new TaskList();
+            TaskListDBHelper taskListDBHelper = new TaskListDBHelper(getApplicationContext());
+            taskList.setTagText(str);
+            taskListDBHelper.open();
+            TaskList tempTaskList = taskListDBHelper.saveTag(taskList);
+            taskListDBHelper.close();
+            taskLists.add(tempTaskList);
+            return tempTaskList;
         }
 
         @Override
-        protected void onPostExecute(final Tag t) {
+        protected void onPostExecute(final TaskList t) {
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
                     tagDrawerLayoutArrayAdapter.notifyDataSetChanged();
                     Toast.makeText(getApplicationContext(),""+t.getTagText()+" goal created",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(),UpdateTagActivity.class);
+                    Intent intent = new Intent(getApplicationContext(),UpdateTaskListActivity.class);
                     intent.putExtra(DBHelper.COLUMN_ID,t.getTagId());
                     startActivity(intent);
 

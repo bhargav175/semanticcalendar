@@ -1,5 +1,11 @@
 package com.bhargav.smart.smartTasks.utils;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.util.Log;
+
+import com.bhargav.smart.smartTasks.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -8,9 +14,87 @@ import java.util.Calendar;
  */
 public class utilFunctions {
 
-    public static String dateFormat = "dd:MM:yyyy";
-    public static String timeFormat = "h::mm a";
-    public static String dateTimeFormat = "dd:MM:yyyy h::mm a";
+
+    public enum  State{
+        NOT_STARTED(0), STARTED(1), FAILED(2),COMPLETED(3);
+
+        private int stateValue;
+        State(int stateValue) {
+            this.stateValue = stateValue;
+        }
+
+        public void setStateValue(int stateValue) {
+            this.stateValue = stateValue;
+        }
+
+        public int getStateValue() {
+            return stateValue;
+        }
+    }
+
+    public enum  Color{
+        TRANSPARENT(0),VIOLET(1), INDIGO(2), BLUE(3),GREEN(4),YELLOW(5),ORANGE(6),RED(7),BLACK(8);
+
+        private int colorValue;
+        Color(int colorValue) {
+            this.colorValue = colorValue;
+        }
+
+        public void setColorValue(int colorValue) {
+            this.colorValue = colorValue;
+        }
+
+        public int getColorValue() {
+            return colorValue;
+        }
+
+        public static int getColorResource(Color color){
+
+            int cr;
+            switch (color){
+                case TRANSPARENT:
+                    cr = android.R.color.transparent;
+                    break;
+                case VIOLET:
+                    cr =  R.color.violet_color;
+                    break;
+                case INDIGO:
+                    cr =  R.color.indigo_color;
+                    break;
+                case BLUE:
+                    cr =  R.color.blue_color;
+                    break;
+                case GREEN:
+                    cr =  R.color.green_color;
+                    break;
+                case YELLOW:
+                    cr =  R.color.yellow_color;
+                    break;
+                case ORANGE:
+                    cr =  R.color.orange_color;
+                    break;
+                case RED:
+                    cr =  R.color.red_color;
+                    break;
+                case BLACK:
+                    cr =  R.color.pitch_black;
+                    break;
+                default:
+                    cr =  android.R.color.transparent;
+
+
+            }
+            return cr;
+        }
+    }
+
+
+
+    public static String dateFormat = "dd-MM-yyyy";
+    public static String timeFormat = "HH:mm";
+    public static String dateTimeFormat = "dd-MM-yyyy HH:mm";
+    public static String reverseDateTimeFormat =  "yyyy-MM-dd HH:mm:ss";
+
     public static String SUPER_TAG = "Semantic-Log";
 
     public static String getCursorEntity(String entity){
@@ -20,6 +104,9 @@ public class utilFunctions {
         else{
             return "";
         }
+    }
+    public static void BLog(String str){
+        Log.d("SmartDo",str);
     }
 
     public static String getDate(Long milliSeconds) {

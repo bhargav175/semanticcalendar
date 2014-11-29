@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="Theme.MyTheme" parent="@style/Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
+
         <!--Theme is edited here-->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="vpiCirclePageIndicatorStyle">@style/CircleStyle</item>
@@ -11,6 +12,9 @@
         <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
         <item name="android:spinnerStyle">@style/Spinner</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItemSytle</item>
+
+
+
 
         <!--<item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>-->
     </style>
@@ -27,7 +31,7 @@
     </style>
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/indigo_color</item>
+        <!--<item name="android:background">@color/indigo_color</item>-->
         <item name="actionBarDivider">@null</item>
         <item name="android:actionBarDivider">@null</item>
         <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
@@ -50,8 +54,8 @@
         <item name="pageColor">@android:color/white</item>
     </style>
     <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">@dimen/material_padding</item>
+        <!--&lt;!&ndash;<item name="android:textColor">@android:color/white</item>&ndash;&gt;-->
+        <item name="android:drawablePadding">@dimen/material_padding</item>
     </style>
 
     <style name="Spinner" parent="android:Widget.Holo.Light.Spinner">

@@ -13,13 +13,11 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.bhargav.smart.smartTasks.R;
-import com.bhargav.smart.smartTasks.activities.UpdateCheckListActivity;
-import com.bhargav.smart.smartTasks.activities.UpdateHabitActivity;
-import com.bhargav.smart.smartTasks.activities.UpdateNoteActivity;
+import com.bhargav.smart.smartTasks.activities.UpdateRepeatingTaskActivity;
+import com.bhargav.smart.smartTasks.activities.UpdateOneTimeTaskActivity;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
-import com.bhargav.smart.smartTasks.models.CheckList;
-import com.bhargav.smart.smartTasks.models.Habit;
-import com.bhargav.smart.smartTasks.models.Note;
+import com.bhargav.smart.smartTasks.models.RepeatingTask;
+import com.bhargav.smart.smartTasks.models.OneTimeTask;
 
 import java.util.Calendar;
 import java.util.List;
@@ -29,9 +27,8 @@ import java.util.List;
  */
 public class MyBroadcastReceiver extends BroadcastReceiver
 {
-    private Note noteCurrent;
-    private CheckList checkListCurrent;
-    private Habit habitCurrent;
+    private OneTimeTask oneTimeTaskCurrent;
+    private RepeatingTask repeatingTaskCurrent;
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Alarm executing",
@@ -43,10 +40,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver
             Integer id = extras.getInt(DBHelper.COLUMN_ID);
             Integer type = extras.getInt("Type");
             if(type == 1){
-                noteCurrent = Note.getNote(id,context );
-                if (noteCurrent != null) {
-                    Intent notificationIntent = new Intent(context, UpdateNoteActivity.class);
-                    notificationIntent.putExtra(DBHelper.COLUMN_ID,noteCurrent.getId());
+                oneTimeTaskCurrent = OneTimeTask.getNote(id, context);
+                if (oneTimeTaskCurrent != null) {
+                    Intent notificationIntent = new Intent(context, UpdateOneTimeTaskActivity.class);
+                    notificationIntent.putExtra(DBHelper.COLUMN_ID, oneTimeTaskCurrent.getId());
                     PendingIntent contentIntent = PendingIntent.getActivity(context,
                             0, notificationIntent,
                             PendingIntent.FLAG_CANCEL_CURRENT);
@@ -54,8 +51,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver
                             new NotificationCompat.Builder(context)
                                     .setContentIntent(contentIntent)
                                     .setSmallIcon(R.drawable.docket_logo)
-                                    .setContentTitle(noteCurrent.getNoteTitle())
-                                    .setContentText(noteCurrent.getCreatedTime());
+                                    .setContentTitle(oneTimeTaskCurrent.getNoteTitle())
+                                    .setContentText(oneTimeTaskCurrent.getCreatedTime().getTime().toString());
 
                     NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     mNotificationManager.notify(1, mBuilder.build());
@@ -64,53 +61,35 @@ public class MyBroadcastReceiver extends BroadcastReceiver
 
                 }
             }if(type==2){
-                checkListCurrent = CheckList.getCheckListById(id, context);
-                if (checkListCurrent != null) {
-                    Intent notificationIntent = new Intent(context, UpdateCheckListActivity.class);
-                    notificationIntent.putExtra(DBHelper.COLUMN_ID,checkListCurrent.getId());
-                    PendingIntent contentIntent = PendingIntent.getActivity(context,
-                            0, notificationIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT);
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(context)
-                                    .setContentIntent(contentIntent)
-                                    .setSmallIcon(R.drawable.docket_logo)
-                                    .setContentTitle(checkListCurrent.getCheckListTitle())
-                                    .setContentText(checkListCurrent.getCreatedTime());
 
-                    NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(1, mBuilder.build());
-                } else {
-
-                }
 
             }if(type==3){
-                habitCurrent = Habit.getHabitById(id, context);
-                if (habitCurrent != null) {
+                repeatingTaskCurrent = RepeatingTask.getRepeatingTaskById(id, context);
+                if (repeatingTaskCurrent != null) {
                     Boolean triggerNotification = false;
                     String notificationTitle= "";
                     String notificationText ="";
-                    Intent notificationIntent = new Intent(context, UpdateHabitActivity.class);
-                    notificationIntent.putExtra(DBHelper.COLUMN_ID,habitCurrent.getId());
+                    Intent notificationIntent = new Intent(context, UpdateRepeatingTaskActivity.class);
+                    notificationIntent.putExtra(DBHelper.COLUMN_ID, repeatingTaskCurrent.getId());
                     PendingIntent contentIntent = PendingIntent.getActivity(context,
                             0, notificationIntent,
                             PendingIntent.FLAG_CANCEL_CURRENT);
-                    if(habitCurrent.getHabitType() == Habit.Type.FIXED){
-                            Integer daysCode = habitCurrent.getDaysCode();
+                    if(repeatingTaskCurrent.getRepeatingTaskType() == RepeatingTask.Type.FIXED){
+                            Integer daysCode = repeatingTaskCurrent.getDaysCode();
 
                         if(daysCode!=null){
 
 
-                            List<Boolean> daysBoolean = Habit.getBooleansFromDayCode(daysCode);
+                            List<Boolean> daysBoolean = RepeatingTask.getBooleansFromDayCode(daysCode);
                             triggerNotification= isFixedDayToRemind(daysBoolean);
-                            notificationTitle = habitCurrent.getHabitText();
-                            notificationText = habitCurrent.getDaysCode().toString();
+                            notificationTitle = repeatingTaskCurrent.getRepeatingTaskText();
+                            notificationText = repeatingTaskCurrent.getDaysCode().toString();
                             }else{
 
                             }
 
                     }
-                    else if(habitCurrent.getHabitType() == Habit.Type.FLEXIBLE){
+                    else if(repeatingTaskCurrent.getRepeatingTaskType() == RepeatingTask.Type.FLEXIBLE){
 
                     }
                     if(triggerNotification){
@@ -175,7 +154,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver
         }
     }
 
-    private class GetNote extends AsyncTask<String, Void, Note> {
+    private class GetNote extends AsyncTask<String, Void, OneTimeTask> {
 
         private int id;
         private Context context;
@@ -185,14 +164,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver
         }
 
         @Override
-        protected Note doInBackground(String... params) {
+        protected OneTimeTask doInBackground(String... params) {
 
-            noteCurrent = Note.getNote(id,context );
-            return noteCurrent;
+            oneTimeTaskCurrent = OneTimeTask.getNote(id, context);
+            return oneTimeTaskCurrent;
         }
 
         @Override
-        protected void onPostExecute(final Note note) {
+        protected void onPostExecute(final OneTimeTask oneTimeTask) {
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -212,58 +191,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver
         }
     }
 
-    private class GetCheckList extends AsyncTask<String, Void, CheckList> {
 
-        private int id;
-        private Context context;
-
-        public GetCheckList(int id, Context context) {
-            this.id = id; this.context = context;
-        }
-
-        @Override
-        protected CheckList doInBackground(String... params) {
-
-            checkListCurrent = CheckList.getCheckListById(id, context);
-            return checkListCurrent;
-        }
-
-        @Override
-        protected void onPostExecute(final CheckList checkListCurrent) {
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    if (checkListCurrent != null) {
-                        Intent notificationIntent = new Intent(context, UpdateCheckListActivity.class);
-                        notificationIntent.putExtra(DBHelper.COLUMN_ID,checkListCurrent.getId());
-                        PendingIntent contentIntent = PendingIntent.getActivity(context,
-                                0, notificationIntent,
-                                PendingIntent.FLAG_CANCEL_CURRENT);
-                        NotificationCompat.Builder mBuilder =
-                                new NotificationCompat.Builder(context)
-                                        .setContentIntent(contentIntent)
-                                        .setSmallIcon(R.drawable.docket_logo)
-                                        .setContentTitle(checkListCurrent.getCheckListTitle())
-                                        .setContentText(checkListCurrent.getCreatedTime());
-
-                        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        mNotificationManager.notify(1, mBuilder.build());
-                    } else {
-
-                    }
-                }
-            });
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
 
 }

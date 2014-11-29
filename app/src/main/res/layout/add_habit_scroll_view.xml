@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-tools:context="com.bhargav.smart.smartTasks.activities.AddNoteActivity"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:focusable="true" android:focusableInTouchMode="true"
-android:background="@color/light_gray_color"
-    >
-
 
 
 <ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bhargav.smart.smartTasks.activities.AddOneTimeTaskActivity"
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/light_gray_color">
 
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/light_gray_color"
-        tools:context="com.bhargav.smart.smartTasks.activities.AddNoteActivity"
+        tools:context="com.bhargav.smart.smartTasks.activities.AddOneTimeTaskActivity"
         android:padding="@dimen/material_light_padding"
         android:focusable="false" android:focusableInTouchMode="false"
         android:id="@+id/re">
 
-        <android.support.v7.widget.CardView
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/material_light_padding"
-            android:id="@+id/parentLayout">
 
             <RelativeLayout
+                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/material_light_padding"
+                android:id="@+id/parentLayout">
 
 
                 <com.bhargav.smart.smartTasks.helpers.InlineEditable
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/habitText"
+                    android:id="@+id/repeatingTaskText"
                     android:hint="@string/write_habit_text_hint"
                     android:layout_gravity="center_horizontal"
                     android:textColorHint="@color/gray_color"
@@ -52,99 +42,21 @@ android:background="@color/light_gray_color"
 
 
             </RelativeLayout>
-        </android.support.v7.widget.CardView >
 
 
 
-        <android.support.v7.widget.CardView
-            android:orientation="vertical"
-            android:id="@+id/parentLayout2"
-            android:layout_width="fill_parent"
-            android:layout_below="@id/parentLayout"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/material_padding"
-            android:padding="@dimen/material_light_padding">
+
+
+
+
             <RelativeLayout
+                android:orientation="vertical"
+                android:id="@+id/parentLayout2"
                 android:layout_width="fill_parent"
+                android:layout_below="@id/parentLayout"
                 android:layout_height="wrap_content"
-                >
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/metaLayout">
-
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/infoLayout">
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Archived"
-                            android:id="@+id/isArchived"
-                            android:checked="false"
-                            android:textColor="@color/pitch_black"
-                            android:textSize="12sp"
-                            android:layout_weight="0.4"
-                            android:gravity="center_vertical|center_horizontal" />
-
-                        <Spinner
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/selectSpinner"
-                            android:layout_toRightOf="@+id/isArchived"
-                            android:layout_marginLeft="@dimen/material_padding"
-                            android:gravity="right"
-                            android:paddingLeft="@dimen/material_padding" />
-
-                    </RelativeLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Due at 23:50 hrs on 16 Nov"
-                        android:layout_below="@id/infoLayout"
-                        android:id="@+id/showDueDate"
-                        android:visibility="gone"
-                        android:textSize="@dimen/material_micro_text_size"
-                        android:clickable="true"
-                        android:textColor="@color/pitch_black"
-                        android:padding="@dimen/material_light_padding" />
-
-                </RelativeLayout>
-
-                <org.apmem.tools.layouts.FlowLayout
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    app:horizontalSpacing="6dip"
-                    app:verticalSpacing="12dip"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/metaLayout"
-                    android:id="@+id/labelsLayout"
-                    android:background="@color/white"
-                    android:layout_weight="0.8">
-                </org.apmem.tools.layouts.FlowLayout>
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-
-
-
-        <android.support.v7.widget.CardView
-            android:orientation="vertical"
-            android:id="@+id/parentLayout3"
-            android:layout_width="fill_parent"
-            android:layout_below="@id/parentLayout2"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/material_padding"
-            android:padding="@dimen/material_light_padding">
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="@dimen/material_padding"
+                android:padding="@dimen/material_light_padding">
 
 
 
@@ -155,12 +67,110 @@ android:background="@color/light_gray_color"
                     android:hint="Habit Question"
                     android:layout_gravity="center_horizontal"
                     android:gravity="top"
+                    android:padding="@dimen/material_light_padding"
                     android:textColorHint="@color/gray_color"
                     android:textColor="@color/pitch_black" />
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_padding"
+            android:orientation="vertical"
+            android:layout_below="@+id/parentLayout2"
+            android:id="@+id/dueDateLayout"
+            android:padding="@dimen/material_padding">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Meta"
+                android:paddingBottom="@dimen/material_padding"
+                android:layout_weight="0.5"
+                android:id="@+id/showDueDateText"
+                android:textColor="@color/pitch_black"
+                />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:id="@+id/showDueDate"
+                android:visibility="visible"
+                android:clickable="true"
+                android:textColor="@color/blue_color"
+                android:gravity="left" />
 
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/parentLayout3"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/dueDateLayout"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_padding"
+            android:padding="@dimen/material_padding">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textColor="@color/pitch_black"
+                android:layout_weight="0.5"
+                android:id="@+id/categoryTextView"
+                />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/categorySelectSpinner"
+                android:layout_marginLeft="@dimen/material_padding"
+                android:gravity="right"
+                android:layout_weight="0.5"
+                android:paddingLeft="@dimen/material_padding" />
+
+
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/parentLayout4"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/parentLayout3"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/material_padding">
+
+            <Switch
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Reminder"
+                android:id="@+id/hasReminderSwitch" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/parentLayout5"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/parentLayout4"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/material_padding">
+
+            <Switch
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Archived"
+                android:textOn="Yes"
+                android:textOff="No"
+                android:id="@+id/isArchivedSwitch" />
+
+        </LinearLayout>
 
 
 
@@ -168,6 +178,4 @@ android:background="@color/light_gray_color"
     </RelativeLayout>
 
 </ScrollView>
-<include layout="@layout/fab_add_extra"/>
-</RelativeLayout>
 

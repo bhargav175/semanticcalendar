@@ -31,7 +31,7 @@ android:visibility="visible">
     fab:fab_colorNormal="@color/pink"
     fab:fab_colorPressed="@color/pink_pressed"
     fab:fab_icon="@drawable/ic_note_add_white_36dp"
-    android:id="@+id/addNoteFab"
+    android:id="@+id/addOneTimeTaskFab"
     />
 
 <com.getbase.floatingactionbutton.FloatingActionButton
@@ -49,7 +49,7 @@ android:visibility="visible">
     fab:fab_colorNormal="@color/pink"
     fab:fab_colorPressed="@color/pink_pressed"
     fab:fab_icon="@drawable/ic_repeat_white_36dp"
-    android:id="@+id/addHabitFab"
+    android:id="@+id/addRepeatingTaskFab"
     />
 
 

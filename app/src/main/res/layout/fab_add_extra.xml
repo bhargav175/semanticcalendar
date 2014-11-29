@@ -1,38 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<com.getbase.floatingactionbutton.FloatingActionsMenu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.getbase.floatingactionbutton.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-
-android:id="@+id/multiple_actions"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_alignParentBottom="true"
-android:layout_alignParentRight="true"
-fab:fab_addButtonColorNormal="@color/pink"
-fab:fab_addButtonColorPressed="@color/pink_pressed"
-fab:fab_addButtonPlusIconColor="@color/white"
-android:layout_marginBottom="16dp"
-android:layout_marginRight="16dp"
-android:visibility="visible">
-
-<com.getbase.floatingactionbutton.FloatingActionButton
+    android:id="@+id/edit"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="16dp"
+    android:layout_marginRight="16dp"
+    android:background="@color/pink"
+    fab:fab_addButtonPlusIconColor="@color/white"
     fab:fab_colorNormal="@color/pink"
     fab:fab_colorPressed="@color/pink_pressed"
-    fab:fab_icon="@drawable/ic_action_labels"
-    android:id="@+id/addLabel"
-    />
-
-<com.getbase.floatingactionbutton.FloatingActionButton
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    fab:fab_colorNormal="@color/pink"
-    fab:fab_colorPressed="@color/pink_pressed"
-    fab:fab_icon="@drawable/ic_timelapse_white_24dp"
-    android:id="@+id/addDueDate"
-    />
-
-</com.getbase.floatingactionbutton.FloatingActionsMenu>
+    fab:fab_icon="@drawable/ic_edit_white_24dp" />

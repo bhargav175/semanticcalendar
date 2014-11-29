@@ -10,70 +10,30 @@
         android:allowBackup="true"
         android:icon="@drawable/docket_logo"
         android:label="@string/app_name"
-        android:logo="@drawable/ic_menu_white_18dp"
+        android:logo="@drawable/ic_menu_black_18dp"
         android:theme="@style/Theme.MyTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name=".activities.NoteListActivity"
-            android:label="@string/title_list_notes" >
-        </activity>
+
         <activity
             android:name=".activities.TutorialActivity"
             android:label="Tutorial" >
         </activity>
+
         <activity
-            android:name=".activities.LandingActivity"
-            android:label="@string/LandingActivity" >
-        </activity>
-        <activity
-            android:name=".activities.AddTagActivity"
-            android:label="@string/title_activity_add_tag" >
-        </activity>
-        <activity
-            android:name=".activities.AddNoteActivity"
-            android:label="@string/title_activity_add_note" >
-        </activity>
-        <activity
-            android:name=".activities.UpdateNoteActivity"
+            android:name=".activities.UpdateOneTimeTaskActivity"
             android:label="@string/title_update_note" >
         </activity>
+
         <activity
-            android:name=".activities.AddChecklistActivity"
-            android:label="@string/title_activity_add_checklist" >
-        </activity>
-        <activity
-            android:name=".activities.AddHabitActivity"
-            android:label="@string/title_activity_add_habit" >
-        </activity>
-        <activity
-            android:name=".activities.ListTagsActivity"
-            android:label="@string/title_activity_list_tags" >
-        </activity>
-        <activity
-            android:name=".activities.ListNotesActivity"
-            android:label="@string/title_activity_list_notes" >
-        </activity>
-        <activity
-            android:name=".activities.ListChecklistsActivity"
-            android:label="@string/title_activity_list_checklists" >
-        </activity>
-        <activity
-            android:name=".activities.ListHabitsActivity"
-            android:label="@string/title_activity_list_habits" >
-        </activity>
-        <activity
-            android:name=".activities.UpdateHabitActivity"
+            android:name=".activities.UpdateRepeatingTaskActivity"
             android:label="@string/title_activity_update_habit" >
         </activity>
+
         <activity
-            android:name=".activities.UpdateCheckListActivity"
-            android:label="@string/title_activity_update_check_list" >
-        </activity>
-        <activity
-            android:name=".activities.UpdateTagActivity"
+            android:name=".activities.UpdateTaskListActivity"
             android:label="@string/title_activity_update_tag" >
         </activity>
 
@@ -83,19 +43,12 @@
         </receiver>
 
         <activity
-            android:name=".activities.HomeActivity"
-            android:label="@string/title_activity_home" >
-        </activity>
-        <activity
-            android:name=".activities.HabitStreakActivity"
+            android:name=".activities.RepeatingTaskInfoActivity"
             android:label="@string/title_activity_habit_streak" >
         </activity>
+
         <activity
-            android:name=".activities.TagListView"
-            android:label="@string/title_activity_tag_list_view" >
-        </activity>
-        <activity
-            android:name=".activities.TagActivity"
+            android:name=".activities.TaskListActivity"
             android:label="@string/title_activity_tag" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -110,7 +63,7 @@
             android:label="@string/title_activity_archives" >
         </activity>
         <activity
-            android:name=".activities.GoalsActivity"
+            android:name=".activities.TaskListsActivity"
             android:label="@string/title_activity_goals" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

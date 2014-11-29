@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.activities.ArchivesActivity;
-import com.bhargav.smart.smartTasks.database.TagDBHelper;
-import com.bhargav.smart.smartTasks.models.Tag;
+import com.bhargav.smart.smartTasks.database.TaskListDBHelper;
+import com.bhargav.smart.smartTasks.models.TaskList;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;
 
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import java.util.List;
 
 
 public class ArchivedLists extends Fragment {
-    public static final String Tag = "CalendarPrint";
-    private List<Tag> tags;
+    public static final String LOG_TAG = "CalendarPrint";
+    private List<TaskList> taskLists;
     private ListView listView;
-    private ArrayAdapter<Tag> arrayAdapter;
+    private ArrayAdapter<TaskList> arrayAdapter;
     Typeface font;
     private final int UNARCHIVE=0;
 
@@ -62,7 +62,7 @@ public class ArchivedLists extends Fragment {
         if (v.getId() == R.id.listView) {
             ListView lv = (ListView) v;
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            Tag obj = (Tag) lv.getItemAtPosition(acmi.position);
+            TaskList obj = (TaskList) lv.getItemAtPosition(acmi.position);
             menu.setHeaderTitle(obj.getTagText());
             menu.add(0,UNARCHIVE,0,"Unarchive");
         }
@@ -76,10 +76,10 @@ public class ArchivedLists extends Fragment {
                     case UNARCHIVE:
                         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                         Log.d("ArchivedList", "removing item pos=" + info.position);
-                        Tag obj = (Tag) listView.getItemAtPosition(info.position);
+                        TaskList obj = (TaskList) listView.getItemAtPosition(info.position);
                         obj.setIsArchived(false);
                         new UnArchiveTag(getActivity(),obj).execute("");
-                        tags.remove((Tag) listView.getItemAtPosition(info.position));
+                        taskLists.remove((TaskList) listView.getItemAtPosition(info.position));
                         arrayAdapter.notifyDataSetChanged();
                         return true;
                     default:
@@ -93,12 +93,12 @@ public class ArchivedLists extends Fragment {
 
 
     private void init(){
-        arrayAdapter = new ArrayAdapter<com.bhargav.smart.smartTasks.models.Tag>(getActivity(),R.layout.simple_list_item,R.id.text1,tags){
+        arrayAdapter = new ArrayAdapter<TaskList>(getActivity(),R.layout.simple_list_item,R.id.text1, taskLists){
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView cardText1 = (TextView) view.findViewById(R.id.text1);
-                cardText1.setText(utilFunctions.toCamelCase(tags.get(position).getTagText()));
+                cardText1.setText(utilFunctions.toCamelCase(taskLists.get(position).getTagText()));
                 cardText1.setTypeface(font);
                 return view;
             }
@@ -106,7 +106,7 @@ public class ArchivedLists extends Fragment {
         listView.setAdapter(arrayAdapter);
     };
     private void preInit(){
-        tags = new ArrayList<com.bhargav.smart.smartTasks.models.Tag>();
+        taskLists = new ArrayList<TaskList>();
 
 
     }
@@ -122,7 +122,7 @@ public class ArchivedLists extends Fragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            tags = com.bhargav.smart.smartTasks.models.Tag.getAllArchivedTags(context);
+            taskLists = TaskList.getAllArchivedTags(context);
             return null;
         }
 
@@ -146,22 +146,22 @@ public class ArchivedLists extends Fragment {
     }
 
 
-    private class UnArchiveTag extends AsyncTask<String, Void,Tag> {
+    private class UnArchiveTag extends AsyncTask<String, Void,TaskList> {
 
         private Context context;
-        private Tag tag;
-        public UnArchiveTag(Context context, Tag tag){
-            this.context=context;this.tag=tag;
+        private TaskList taskList;
+        public UnArchiveTag(Context context, TaskList taskList){
+            this.context=context;this.taskList = taskList;
         }
 
         @Override
-        protected Tag doInBackground(String... params) {
-            TagDBHelper  tagDBHelper = new TagDBHelper(context);
+        protected TaskList doInBackground(String... params) {
+            TaskListDBHelper taskListDBHelper = new TaskListDBHelper(context);
             try{
-                tagDBHelper.open();
-                tagDBHelper.updateTag(tag);
-                tagDBHelper.close();
-                return tag;
+                taskListDBHelper.open();
+                taskListDBHelper.updateTag(taskList);
+                taskListDBHelper.close();
+                return taskList;
             }catch (Exception e){
                 return null;
             }
@@ -170,7 +170,7 @@ public class ArchivedLists extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(final Tag t) {
+        protected void onPostExecute(final TaskList t) {
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override

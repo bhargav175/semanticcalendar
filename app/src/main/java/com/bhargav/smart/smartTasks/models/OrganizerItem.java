@@ -2,6 +2,8 @@ package com.bhargav.smart.smartTasks.models;
 
 import android.content.Context;
 
+import com.bhargav.smart.smartTasks.utils.utilFunctions;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -35,11 +37,11 @@ public class OrganizerItem {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getCreatedTime() {
+    public Calendar getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(String createdTime) {
+    public void setCreatedTime(Calendar createdTime) {
         this.createdTime = createdTime;
     }
     private String type;
@@ -55,20 +57,19 @@ public class OrganizerItem {
     }
 
     private String secondaryText;
-    private String createdTime;
+    private Calendar createdTime;
     private Integer id;
+    private utilFunctions.State state;
 
-    public static List<OrganizerItem> getOrganizerItemsWithTag(Tag tag, Context context){
+    public static List<OrganizerItem> getOrganizerItemsWithTag(TaskList taskList, Context context){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
 
-        if(tag!=null){
-            List<Note> noteList = Note.getAllNotesInTag(tag, context);
-            List<CheckList> checkListList = CheckList.getAllCheckListsInTag(tag, context);
-            List<Habit> habitList = Habit.getAllHabitsInTag(tag, context);
-            organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
-            organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+        if(taskList !=null){
+            List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllNotesInTag(taskList, context);
+            List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllRepeatingTasksInTag(taskList, context);
+            organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
             return organizerItems;
         }
         else{
@@ -77,17 +78,15 @@ public class OrganizerItem {
     }
 
 
-    public static List<OrganizerItem> getUnArchivedOrganizerItemsWithTag(Tag tag, Context context){
+    public static List<OrganizerItem> getUnArchivedOrganizerItemsWithTag(TaskList taskList, Context context){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
 
-        if(tag!=null){
-            List<Note> noteList = Note.getAllUnArchivedNotesInTag(tag, context);
-            List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsInTag(tag, context);
-            List<Habit> habitList = Habit.getAllUnArchivedHabitsInTag(tag, context);
-            organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
-            organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+        if(taskList !=null){
+            List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedNotesInTag(taskList, context);
+            List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllUnArchivedRepeatingTasksInTag(taskList, context);
+            organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
             return organizerItems;
         }
         else{
@@ -100,12 +99,10 @@ public class OrganizerItem {
 
 
 
-            List<Note> noteList = Note.getAllNotesSandbox(context);
-            List<CheckList> checkListList = CheckList.getAllCheckListsSandbox(context);
-            List<Habit> habitList = Habit.getAllHabitsSandbox(context);
-            organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-            organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
-            organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+            List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllNotesSandbox(context);
+            List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllRepeatingTasksSandbox(context);
+            organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+            organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
             return organizerItems;
 
     }
@@ -115,122 +112,95 @@ public class OrganizerItem {
 
 
 
-        List<Note> noteList = Note.getAllUnArchivedNotesSandbox(context);
-        List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsSandbox(context);
-        List<Habit> habitList = Habit.getAllUnArchivedHabitsSandbox(context);
-        organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-        organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
-        organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedNotesSandbox(context);
+        List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllUnArchivedRepeatingTasksSandbox(context);
+        organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
         return organizerItems;
 
     }
 
 
-    public static List<OrganizerItem> castNotesToOrganizerItemList( List<Note> noteList){
+    public static List<OrganizerItem> castNotesToOrganizerItemList( List<OneTimeTask> oneTimeTaskList){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
-        for(Note note:noteList){
-            organizerItems.add(OrganizerItem.castNoteToOrganizerItem(note));
+        for(OneTimeTask oneTimeTask : oneTimeTaskList){
+            organizerItems.add(OrganizerItem.castNoteToOrganizerItem(oneTimeTask));
         }
         return organizerItems;
     }
 
 
-    public static OrganizerItem castNoteToOrganizerItem( Note note){
+    public static OrganizerItem castNoteToOrganizerItem( OneTimeTask oneTimeTask){
             OrganizerItem organizerItem = new OrganizerItem();
-            organizerItem.setItemText(note.getNoteTitle());
-            organizerItem.setCreatedTime(note.getCreatedTime());
-            organizerItem.setSecondaryText(note.getNoteDescription());
-            if(note.getDueTime()!=null){
-                organizerItem.setDueTime((Calendar)note.getDueTime().clone());
+            organizerItem.setItemText(oneTimeTask.getNoteTitle());
+            organizerItem.setCreatedTime(oneTimeTask.getCreatedTime());
+            organizerItem.setSecondaryText(oneTimeTask.getNoteDescription());
+            if(oneTimeTask.getDueTime()!=null){
+                organizerItem.setDueTime((Calendar) oneTimeTask.getDueTime().clone());
             }
-            organizerItem.setId(note.getId());
+           if(oneTimeTask.getTaskItemState()!=null){
+             organizerItem.setState(oneTimeTask.getTaskItemState());
+            }
+            organizerItem.setId(oneTimeTask.getId());
             organizerItem.setType("NOTE");
 
         return organizerItem;
     }
 
 
-    public static List<OrganizerItem> castHabitsToOrganizerItemList(List<Habit> habitList){
+    public static List<OrganizerItem> castHabitsToOrganizerItemList(List<RepeatingTask> repeatingTaskList){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
 
-        for(Habit habit:habitList){
-            organizerItems.add(castHabitToOrganizerItem(habit));
+        for(RepeatingTask repeatingTask : repeatingTaskList){
+            organizerItems.add(castHabitToOrganizerItem(repeatingTask));
         }
         return organizerItems;
     }
 
-    public static OrganizerItem castHabitToOrganizerItem(Habit habit){
+    public static OrganizerItem castHabitToOrganizerItem(RepeatingTask repeatingTask){
         OrganizerItem organizerItem = new OrganizerItem();
-
-            if(habit.getHabitDescription()!=null && habit.getHabitDescription().length()>0){
-                organizerItem.setItemText(habit.getHabitDescription());
-
+            if(repeatingTask.getRepeatingTaskDescription()!=null && repeatingTask.getRepeatingTaskDescription().length()>0){
+                organizerItem.setItemText(repeatingTask.getRepeatingTaskDescription());
             }else{
-                organizerItem.setItemText(habit.getHabitText());
-
+                organizerItem.setItemText(repeatingTask.getRepeatingTaskText());
             }
-            organizerItem.setSecondaryText(habit.getCreatedTime());
-            organizerItem.setCreatedTime(habit.getCreatedTime());
-            organizerItem.setId(habit.getId());
+            if(repeatingTask.getDueTime()!=null){
+                Calendar today = Calendar.getInstance();
+                Calendar c =(Calendar) repeatingTask.getDueTime().clone();
+                c.set(Calendar.YEAR,today.get(Calendar.YEAR));
+                c.set(Calendar.MONTH,today.get(Calendar.MONTH));
+                c.set(Calendar.DAY_OF_MONTH,today.get(Calendar.DAY_OF_MONTH));
+            organizerItem.setDueTime(c);
+            }
+            organizerItem.setSecondaryText(repeatingTask.getRepeatingTaskDescription());
+            organizerItem.setCreatedTime(repeatingTask.getCreatedTime());
+            organizerItem.setId(repeatingTask.getId());
             organizerItem.setType("HABIT");
 
         return organizerItem;
     }
 
 
-
-    public static List<OrganizerItem> castCheckListsToOrganizerItemList( List<CheckList> checkListList){
-        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
-
-        for(CheckList checkList:checkListList){
-            organizerItems.add(castCheckListToOrganizerItem(checkList));
-        }
-        return organizerItems;
-    }
-
-
-    public static OrganizerItem castCheckListToOrganizerItem( CheckList checkList){
-
-            OrganizerItem organizerItem = new OrganizerItem();
-            organizerItem.setItemText(checkList.getCheckListTitle());
-            organizerItem.setCreatedTime(checkList.getCreatedTime());
-            organizerItem.setSecondaryText(checkList.getCheckListDescription());
-            if(checkList.getDueTime()!=null){
-                organizerItem.setDueTime((Calendar)checkList.getDueTime().clone());
-            }
-        organizerItem.setId(checkList.getId());
-            organizerItem.setType("CHECKLIST");
-        return organizerItem;
-    }
-
-
     public static List<OrganizerItem> getAllArchivedItems(Context context) {
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
-        List<Note> noteList = Note.getAllArchivedNotes(context);
-        List<CheckList> checkListList = CheckList.getAllArchivedCheckLists(context);
-        List<Habit> habitList = Habit.getAllArchivedHabits(context);
-        organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-        organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
-        organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllArchivedNotes(context);
+        List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllArchivedRepeatingTasks(context);
+        organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
         return organizerItems;
-
-
     }
 
 
     public static List<OrganizerItem> getAllUnArchivedItemsByDueDate(Context context, Calendar calendar) {
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
-        List<Note> noteList = Note.getAllUnArchivedNotesByDueDate(context, calendar);
-        List<CheckList> checkListList = CheckList.getAllUnArchivedCheckListsByDueDate(context, calendar);
-        List<Habit> habitList = Habit.getAllUnArchivedHabitsByDueDate(context,calendar);
-        organizerItems.addAll(castNotesToOrganizerItemList(noteList));
-        organizerItems.addAll(castCheckListsToOrganizerItemList(checkListList));
-        organizerItems.addAll(castHabitsToOrganizerItemList(habitList));
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedNotesByDueDate(context, calendar);
+        List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllUnArchivedRepeatingTasksByDueDate(context, calendar);
+        organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
         Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
             @Override
             public int compare(OrganizerItem org1, OrganizerItem org2) {
-
                 return org1.getDueTime().compareTo(org2.getDueTime());
             }
         });
@@ -244,5 +214,42 @@ public class OrganizerItem {
 
     public void setDueTime(Calendar dueTime) {
         this.dueTime = dueTime;
+    }
+
+    public utilFunctions.State getState() {
+        return state;
+    }
+
+    public void setState(utilFunctions.State state) {
+        this.state = state;
+    }
+
+    public static List<OrganizerItem> getAllUnArchivedItemsByWeek(Context context, Calendar calendar) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedNotesByWeek(context, calendar);
+       organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+
+        return organizerItems;
+
+    }
+
+    public static List<OrganizerItem> getAllUnArchivedItemsByMonth(Context context, Calendar calendar) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedNotesByMonth(context, calendar);
+        organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+
+        return organizerItems;
     }
 }

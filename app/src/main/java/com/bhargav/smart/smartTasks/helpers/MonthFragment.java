@@ -15,7 +15,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
-import com.bhargav.smart.smartTasks.models.Habit;
+import com.bhargav.smart.smartTasks.models.RepeatingTask;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -29,11 +29,11 @@ public class MonthFragment extends Fragment {
 
     private Calendar mMonth;
     private TextView mMonthTitle;
-    private List<HabitButton> mHabitButtons;
+    private List<RepeatingTaskButton> mRepeatingTaskButtons;
     private TableLayout mTableLayout;
     private List<TableRow> mTableRows;
     private TableRow datesRow;
-    private Habit habit;
+    private RepeatingTask repeatingTask;
     private Calendar firstDayOfMonth;
     private ViewGroup view;
     private Context context;
@@ -66,7 +66,7 @@ public class MonthFragment extends Fragment {
         calendar.set(Calendar.YEAR,year);
         calendar.set(Calendar.MONTH,month);
         this.firstDayOfMonth = (Calendar) calendar.clone();
-        this.habit = null;
+        this.repeatingTask = null;
 
         return rootView;
     }
@@ -113,12 +113,12 @@ public class MonthFragment extends Fragment {
         }
         for (int i = 0; i < numberOfDays; i++) {
             Calendar temp = (Calendar) c.clone();
-            HabitButton habitButton =  new HabitButton(this.context,temp,this.habit);
+            RepeatingTaskButton repeatingTaskButton =  new RepeatingTaskButton(this.context,temp,this.repeatingTask);
             if(this.datesRow.getChildCount()<7){
             }else{
                 createADateRow();
             }
-            this.datesRow.addView(habitButton,this.datesRow.getChildCount());
+            this.datesRow.addView(repeatingTaskButton,this.datesRow.getChildCount());
             c.add(Calendar.DATE, 1);
         }
 
@@ -165,7 +165,7 @@ public class MonthFragment extends Fragment {
         @Override
         protected Void doInBackground(String... params) {
 
-            habit = Habit.getHabitById(id, getActivity());
+            repeatingTask = RepeatingTask.getRepeatingTaskById(id, getActivity());
 
             return null;
         }

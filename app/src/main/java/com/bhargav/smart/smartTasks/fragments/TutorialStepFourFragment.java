@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
-import com.bhargav.smart.smartTasks.activities.LandingActivity;
+import com.bhargav.smart.smartTasks.activities.SuperMain;
 
 
 public class TutorialStepFourFragment extends Fragment {
@@ -33,7 +33,7 @@ public class TutorialStepFourFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Intent intent = new Intent(getActivity(), LandingActivity.class);
+                Intent intent = new Intent(getActivity(), SuperMain.class);
                 startActivity(intent);
             }
         });

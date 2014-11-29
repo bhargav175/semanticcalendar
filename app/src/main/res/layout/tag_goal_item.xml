@@ -16,34 +16,103 @@
 
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-    android:padding="@dimen/material_light_padding">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="72dp">
 
-<TextView android:id="@+id/text1"
-    android:text="Heading"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="@dimen/material_medium_text_size" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="4dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/bgDiv">
 
-<TextView android:id="@+id/text2"
-    android:text="Content"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@android:id/text1"
-    android:textSize="@dimen/material_small_text_size"
-    android:paddingTop="@dimen/material_light_padding" />
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/text3"
-        android:text="Content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:textSize="@dimen/material_micro_text_size"
-        android:textStyle="italic"
-        android:paddingTop="@dimen/material_light_padding" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-</LinearLayout>
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/one"
+                    android:layout_toLeftOf="@+id/two"
+              >
+
+
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="72dp"
+                        android:layout_height="fill_parent"
+                        android:padding="@dimen/material_padding">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/ribbon">
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/material_light_padding"
+                        android:paddingBottom="@dimen/material_light_padding"
+                        >
+
+
+
+                        <TextView android:id="@+id/text1"
+                            android:text="Heading"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/material_medium_text_size"
+                            android:textColor="@color/pitch_black" />
+
+                        <TextView android:id="@+id/text2"
+                            android:text="Content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@android:id/text1"
+                            android:textSize="@dimen/material_small_text_size"
+                            android:paddingTop="@dimen/material_light_padding"
+                            android:singleLine="true"
+
+                            android:textColor="@color/gray_color" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="56dp"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/two"
+
+                   >
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"></LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+

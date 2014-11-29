@@ -16,9 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
-import com.bhargav.smart.smartTasks.activities.UpdateCheckListActivity;
-import com.bhargav.smart.smartTasks.activities.UpdateHabitActivity;
-import com.bhargav.smart.smartTasks.activities.UpdateNoteActivity;
+import com.bhargav.smart.smartTasks.activities.UpdateRepeatingTaskActivity;
+import com.bhargav.smart.smartTasks.activities.UpdateOneTimeTaskActivity;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
 import com.bhargav.smart.smartTasks.models.OrganizerItem;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;
@@ -61,18 +60,15 @@ public class ArchivedCards extends Fragment {
                     public void onClick(View v) {
                         OrganizerItem organizerItem = organizerItems.get(position);
                         if(organizerItem.getType().equals("NOTE")){
-                            Intent intent = new Intent(getActivity(), UpdateNoteActivity.class);
+                            Intent intent = new Intent(getActivity(), UpdateOneTimeTaskActivity.class);
                             intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
                             startActivity(intent);
                         }else if(organizerItem.getType().equals("HABIT")){
-                            Intent intent = new Intent(getActivity(), UpdateHabitActivity.class);
+                            Intent intent = new Intent(getActivity(), UpdateRepeatingTaskActivity.class);
                             intent.putExtra(DBHelper.COLUMN_ID,organizerItem.getId());
                             startActivity(intent);
                         }else if(organizerItem.getType().equals("CHECKLIST")){
-                            Intent intent = new Intent(getActivity(), UpdateCheckListActivity.class);
-                            intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
-                            startActivity(intent);
-                        }
+                           }
                     }
                 });
                 cardText1.setTypeface(font);

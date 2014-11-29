@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.helpers.MonthLayout;
-import com.bhargav.smart.smartTasks.models.Habit;
+import com.bhargav.smart.smartTasks.models.RepeatingTask;
 
 import java.util.Calendar;
 import java.util.List;
@@ -21,13 +21,13 @@ public class InfinitePagerAdapter extends PagerAdapter {
 
     private List<MonthLayout> monthLayouts;
     private Context context;
-    private Habit habitCurrent;
+    private RepeatingTask repeatingTaskCurrent;
     private Calendar currMonth;
     private MonthLayout firstLayout;
 
-    public InfinitePagerAdapter(Habit habitCurrent, Context context, List<MonthLayout> monthLayouts) {
+    public InfinitePagerAdapter(RepeatingTask repeatingTaskCurrent, Context context, List<MonthLayout> monthLayouts) {
         super();
-        this.habitCurrent = habitCurrent;
+        this.repeatingTaskCurrent = repeatingTaskCurrent;
         this.context= context;
         this.monthLayouts = monthLayouts;
 

@@ -2,11 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-       tools:context="com.bhargav.smart.smartTasks.activities.AddTagActivity">
+       tools:context="com.bhargav.smart.smartTasks.activities.AddTaskListActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:background="@color/light_gray_color"
         android:padding="@dimen/material_padding">
 
@@ -63,16 +65,47 @@
             android:layout_marginBottom="@dimen/material_padding" />
 
 
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Archived"
-            android:id="@+id/isArchived"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/parentLayout7"
+            android:layout_width="fill_parent"
             android:layout_below="@id/descriptionText"
-            android:layout_alignParentLeft="true"
-            android:checked="false"
-            android:textSize="@dimen/material_micro_text_size" />
+            android:layout_height="wrap_content"
+            android:padding="@dimen/material_padding">
+
+            <Switch
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Archived"
+                android:textOn="Yes"
+                android:textOff="No"
+                android:id="@+id/isArchivedSwitch" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/parentLayout5"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/parentLayout7"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/material_padding">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Background"
+                android:layout_weight="0.5"/>
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/backgroundSpinner"
+                android:layout_weight="0.5"/>
+        </LinearLayout>
+
 
     </RelativeLayout>
 

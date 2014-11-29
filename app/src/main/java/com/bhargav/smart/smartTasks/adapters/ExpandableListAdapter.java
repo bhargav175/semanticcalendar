@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.models.OrganizerItem;
-import com.bhargav.smart.smartTasks.models.Tag;
+import com.bhargav.smart.smartTasks.models.TaskList;
 
 import java.util.List;
 import java.util.Map;
@@ -25,18 +25,18 @@ import java.util.Map;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Activity context;
-    private Map<Tag, List<OrganizerItem>> organizerCollections;
-    private List<Tag> tags;
+    private Map<TaskList, List<OrganizerItem>> organizerCollections;
+    private List<TaskList> taskLists;
 
-    public ExpandableListAdapter(Activity context, List<Tag> tags,
-                                 Map<Tag, List<OrganizerItem>> organizerCollections) {
+    public ExpandableListAdapter(Activity context, List<TaskList> taskLists,
+                                 Map<TaskList, List<OrganizerItem>> organizerCollections) {
         this.context = context;
         this.organizerCollections = organizerCollections;
-        this.tags = tags;
+        this.taskLists = taskLists;
     }
 
     public Object getChild(int groupPosition, int childPosition) {
-        return organizerCollections.get(tags.get(groupPosition)).get(childPosition);
+        return organizerCollections.get(taskLists.get(groupPosition)).get(childPosition);
     }
 
     public long getChildId(int groupPosition, int childPosition) {
@@ -67,7 +67,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 List<OrganizerItem> child =
-                                        organizerCollections.get(tags.get(groupPosition));
+                                        organizerCollections.get(taskLists.get(groupPosition));
                                 child.remove(childPosition);
                                 notifyDataSetChanged();
                             }
@@ -120,15 +120,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     public int getChildrenCount(int groupPosition) {
-        return organizerCollections.get(tags.get(groupPosition)).size();
+        return organizerCollections.get(taskLists.get(groupPosition)).size();
     }
 
     public Object getGroup(int groupPosition) {
-        return tags.get(groupPosition);
+        return taskLists.get(groupPosition);
     }
 
     public int getGroupCount() {
-        return tags.size();
+        return taskLists.size();
     }
 
     public long getGroupId(int groupPosition) {
@@ -137,7 +137,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        Tag tagName = (Tag) getGroup(groupPosition);
+        TaskList taskListName = (TaskList) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater inflaInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -146,7 +146,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView item = (TextView) convertView.findViewById(R.id.info_text);
         item.setTypeface(null, Typeface.BOLD);
-        item.setText(toCamelCase(tagName.getTagText()));
+        item.setText(toCamelCase(taskListName.getTagText()));
 
         //convertView.setVisibility(View.GONE);
 
