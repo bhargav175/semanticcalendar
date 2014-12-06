@@ -1,6 +1,7 @@
 package com.bhargav.smart.smartTasks.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,13 +10,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bhargav.smart.smartTasks.R;
+import com.bhargav.smart.smartTasks.activities.ViewOneTimeTaskActivity;
+import com.bhargav.smart.smartTasks.activities.ViewRepeatingTaskActivity;
+import com.bhargav.smart.smartTasks.adapters.SeparatedListAdapter;
+import com.bhargav.smart.smartTasks.helpers.DBHelper;
 import com.bhargav.smart.smartTasks.helpers.StateBox;
+import com.bhargav.smart.smartTasks.helpers.StateTextBox;
 import com.bhargav.smart.smartTasks.models.OrganizerItem;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;
 
@@ -59,27 +66,57 @@ public class UpcomingTasksFragment extends Fragment {
 
     private void afterGet(){
         BLog((String.valueOf(organizerItems.size())));
-        noteAdapter = new ArrayAdapter<OrganizerItem>(getActivity(),R.layout.timeline_item,R.id.text1,organizerItems){
+        noteAdapter = new ArrayAdapter<OrganizerItem>(getActivity(),R.layout.timeline_item_plain_text,R.id.text1,organizerItems){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                if(convertView==null) {
+                    convertView = inflater.inflate(R.layout.timeline_item_plain_text, parent, false);
+
+                }else{
+
+                }
                 View view = super.getView(position, convertView, parent);
                 TextView mainText = (TextView) view.findViewById(R.id.text1);
                 TextView description = (TextView) view.findViewById(R.id.text2);
-                TextView dueDate = (TextView) view.findViewById(R.id.time);
-                LinearLayout stateLayout = (LinearLayout) view.findViewById(R.id.stateBoxLayout);
+                TextView dueTime = (TextView) view.findViewById(R.id.time);
+                TextView dueDate = (TextView) view.findViewById(R.id.date);
                 mainText.setText(organizerItems.get(position).getItemText());
                 description.setText(organizerItems.get(position).getSecondaryText());
-                dueDate.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(organizerItems.get(position).getDueTime().getTime()));
-
+                dueTime.setText(new SimpleDateFormat(utilFunctions.timeFormat).format(organizerItems.get(position).getDueTime().getTime()));
+                StateTextBox stateView = (StateTextBox) view.findViewById(R.id.state);
                 if(organizerItems.get(position).getType().equals("NOTE")){
-                    StateBox stateView = (StateBox) inflater.inflate(R.layout.simple_state_item, stateLayout, false);
-                    stateView.init(getActivity(),organizerItems.get(position).getId());
-                    stateLayout.addView(stateView);
+                    stateView.init(getActivity(), organizerItems.get(position).getId());
+                    dueDate.setText(new SimpleDateFormat(utilFunctions.weekDayMonthFormat).format(organizerItems.get(position).getDueTime().getTime()));
+                }
+
+                if(organizerItems.get(position).getType().equals("HABIT")) {
+                    dueDate.setVisibility(View.GONE);
+                }
+                else{
+                    dueDate.setVisibility(View.VISIBLE);
                 }
                 return view;
             }
         };
-        lv.setAdapter(noteAdapter);
+        SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
+        adapter.addSection("Fixed Tasks", noteAdapter);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(((OrganizerItem) lv.getItemAtPosition(position)).getType().equals("NOTE")){
+                    Intent intent = new Intent(getActivity(),ViewOneTimeTaskActivity.class);
+                    intent.putExtra(DBHelper.COLUMN_ID,(((OrganizerItem) lv.getItemAtPosition(position)).getId()));
+                    startActivity(intent);
+                }
+                else if(((OrganizerItem) lv.getItemAtPosition(position)).getType().equals("HABIT")){
+                    Intent intent = new Intent(getActivity(),ViewRepeatingTaskActivity.class);
+                    intent.putExtra(DBHelper.COLUMN_ID,(((OrganizerItem) lv.getItemAtPosition(position)).getId()));
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
 
     private class GetDueNotes extends AsyncTask<String, Void,Void> {
@@ -93,7 +130,7 @@ public class UpcomingTasksFragment extends Fragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            organizerItems = OrganizerItem.getAllUnArchivedItemsByWeek(context, calendar);
+            organizerItems = OrganizerItem.getAllUnArchivedUpcomingItemsByWeek(context, calendar);
             //No Sandbox
             //tags.add(new LOG_TAG("SandBox"));
             return null;

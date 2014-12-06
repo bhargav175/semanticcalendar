@@ -118,6 +118,8 @@
     <string name="write_checklist_text_hint">Add CheckList</string>
     <string name="write_checklist_label">Check List</string>
     <string name="title_activity_update_tag">UpdateTagActivity</string>
+    <string name="title_activity_view_note">View One Time Task</string>
+    <string name="title_activity_view_habit">View Repeating Task</string>
     <string name="title_activity_habit_streak">Habit Streak</string>
     <string name="title_activity_tag_list_view">Your Lists</string>
     <string name="title_activity_tag">TagActivity</string>

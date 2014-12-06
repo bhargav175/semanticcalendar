@@ -69,20 +69,20 @@
                         android:textColor="@color/light_blue_500"
                         />
 
-                    <com.bhargav.smart.smartTasks.helpers.StateBox
-                        android:layout_width="150dp"
+                    <com.bhargav.smart.smartTasks.helpers.StateTextBox
+                        android:layout_width="wrap_content"
                         android:layout_height="24dp"
                         android:text="Not Started"
                         android:gravity="right"
                         android:layout_alignParentRight="true"
                         android:id="@+id/state"
                         style="@style/stateBoxStyle"
-                        android:paddingTop="0dp"
+                        android:paddingTop="4dp"
                         android:paddingBottom="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="0dp"
-
-                        />
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false" />
 
                     </RelativeLayout>
 

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
 import com.bhargav.smart.smartTasks.models.OneTimeTask;
+import com.bhargav.smart.smartTasks.models.Reminder;
 import com.bhargav.smart.smartTasks.models.TaskList;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;
 
@@ -24,7 +25,7 @@ import static com.bhargav.smart.smartTasks.utils.utilFunctions.BLog;
 public class OneTimeTaskDBHelper {
 
     private final static String TABLE = DBHelper.TASKS_TABLE;
-    private final static String TAG = "TaskSave";
+    private final static String TAG = utilFunctions.SUPER_TAG;
 
     private DBHelper dbHelper;
     private Context context;
@@ -71,7 +72,7 @@ public class OneTimeTaskDBHelper {
         values.put(DBHelper.TASK_TITLE, oneTimeTask.getNoteTitle());
         values.put(DBHelper.TASK_DESCRIPTION, oneTimeTask.getNoteDescription());
         values.put(DBHelper.COLUMN_PRIORITY, oneTimeTask.getPriority());
-        values.put(DBHelper.COLUMN_STATE, oneTimeTask.getTaskItemState().getStateValue());
+//        values.put(DBHelper.COLUMN_STATE, oneTimeTask.getTaskItemState().getStateValue());
         if (oneTimeTask.getDueTime() != null) {
             values.put(DBHelper.COLUMN_DUE_TIME, new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(oneTimeTask.getDueTime().getTime()));
         } else {
@@ -139,7 +140,7 @@ public class OneTimeTaskDBHelper {
 
     public OneTimeTask cursorToNote(Cursor cursor) {
         OneTimeTask oneTimeTask = new OneTimeTask();
-        oneTimeTask.setId(cursor.getInt(0));
+         oneTimeTask.setId(cursor.getInt(0));
         oneTimeTask.setNoteTitle(cursor.getString(1));
         oneTimeTask.setNoteDescription(cursor.getString(2));
         oneTimeTask.setPriority(cursor.getInt(3));
@@ -149,6 +150,8 @@ public class OneTimeTaskDBHelper {
             Calendar cal = Calendar.getInstance();
             try {
                 cal.setTime(sdf.parse(cursor.getString(5)));
+                cal.set(Calendar.SECOND,0);
+                cal.set(Calendar.MILLISECOND,0);
                 oneTimeTask.setDueTime(cal);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -241,7 +244,11 @@ public class OneTimeTaskDBHelper {
         database.insert(TABLE, null, values);
 
         Log.d(TAG, "Note saved" + oneTimeTask.getNoteTitle());
-        return getNote(id);
+        OneTimeTask oneTimeTask1 = getNote(id);
+        oneTimeTask1.setDefaultProperties();
+        updateNote(oneTimeTask1);
+        Log.d(TAG, "Note updated" + oneTimeTask1.getNoteTitle());
+        return oneTimeTask1;
     }
 
     public Cursor fetchAllUnarchivedNotesWithDueDate(Calendar calendar) {
@@ -336,6 +343,52 @@ public class OneTimeTaskDBHelper {
         BLog(new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(d.getTime()));
         BLog(new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(e.getTime()));
         return database.query(TABLE, null,DBHelper.COLUMN_IS_ARCHIVED + " = 0 AND " + DBHelper.COLUMN_DUE_TIME + " >= Datetime('"+new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(d.getTime()) +"') AND " + DBHelper.COLUMN_DUE_TIME + " <= Datetime('"+new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(e.getTime())+"')",null, null, null, null);
+
+    }
+
+    public Cursor fetchAllUnArchivedUpComingNotes(Calendar calendar) {
+        Calendar d = (Calendar) calendar.clone();
+        d.set(Calendar.HOUR_OF_DAY, 0);
+        d.set(Calendar.MINUTE, 0);
+        d.set(Calendar.SECOND, 0);
+        d.add(Calendar.DAY_OF_MONTH, 1);
+        BLog(new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(d.getTime()));
+        return database.query(TABLE, null,DBHelper.COLUMN_IS_ARCHIVED + " = 0 AND " + DBHelper.COLUMN_DUE_TIME + " >= Datetime('"+new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(d.getTime()) +"')",null, null, null, null);
+    }
+
+    public Cursor fetchAllUnArchivedOverdueNotes(Calendar calendar) {
+        Calendar d = (Calendar) calendar.clone();
+        d.set(Calendar.HOUR_OF_DAY, 23);
+        d.set(Calendar.MINUTE, 59);
+        d.set(Calendar.SECOND, 59);
+        d.add(Calendar.DAY_OF_MONTH, -1);
+        BLog(new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(d.getTime()));
+        return database.query(TABLE, null,DBHelper.COLUMN_IS_ARCHIVED + " = 0 AND " + DBHelper.COLUMN_IS_COMPLETED + " = 0 AND " + DBHelper.COLUMN_DUE_TIME + " <= Datetime('"+new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(d.getTime()) +"')",null, null, null, null);
+    }
+
+    public void updateState(OneTimeTask oneTimeTask) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_STATE, oneTimeTask.getTaskItemState().getStateValue());
+        // updating row
+        BLog(values.toString());
+        database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(oneTimeTask.getId())});
+        BLog(oneTimeTask.getTaskItemState().toString());
+    }
+
+    public void removeReminder(OneTimeTask oneTimeTask, Context context) {
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_HAS_REMINDER, false);
+        values.putNull(DBHelper.TASK_REMINDER_ID);
+        if(oneTimeTask.getRemainderId()!=null){
+            Reminder.deleteReminder(context,oneTimeTask.getRemainderId());
+        }
+        // updating row
+        BLog(values.toString());
+        database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(oneTimeTask.getId())});
 
     }
 }

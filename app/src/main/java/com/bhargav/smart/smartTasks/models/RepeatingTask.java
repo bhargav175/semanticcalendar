@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.bhargav.smart.smartTasks.database.RepeatingTaskDBHelper;
 import com.bhargav.smart.smartTasks.database.RepeatingTaskItemDBHelper;
+import com.bhargav.smart.smartTasks.helpers.DBHelper;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +33,8 @@ private Boolean isReminded;
     private Integer frequency;
     private Calendar dueTime;
     private Calendar startDate;
+    private Integer hits,misses;
+    private Double successPercentage;
 
     public Integer getPriority() {
         return priority;
@@ -56,7 +59,7 @@ private Boolean isReminded;
     private Calendar endDate;
 
     private Integer daysCode;
-    public static String[] frequencyStrings = {"4 times a week","3 times a week", "2 times a week","Once a week","Once every 2 weeks","Once a month","Once every 2 months", "Once every 6 months", "Once a year" };
+    public static String[] frequencyStrings = {"4 times a week","3 times a week", "2 times a week","Once a week","Twice a month","Once a month"};
     public static String[] durationStrings = {"1 week", "2 weeks","3 weeks" ,"1 month", "2 months", "3 months", "6 months", "1 year" ,"Forever" };
     private Integer id;
 
@@ -112,6 +115,41 @@ private Boolean isReminded;
         this.daysCode = daysCode;
     }
 
+    public void setDefaultProperties(){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY,0);
+        c.set(Calendar.MINUTE,0);
+        c.set(Calendar.SECOND,0);
+        Calendar e = (Calendar)c.clone();
+        e.add(Calendar.DATE,30);
+        e.set(Calendar.HOUR_OF_DAY,23);
+        e.set(Calendar.MINUTE,59);
+        e.set(Calendar.SECOND,59);
+        Calendar d = (Calendar)c.clone();
+        d.set(Calendar.HOUR_OF_DAY, 9);
+        d.set(Calendar.MINUTE, 0);
+        d.set(Calendar.YEAR,2000);
+        d.set(Calendar.SECOND,0);
+        d.set(Calendar.MONTH,0);
+        d.set(Calendar.DAY_OF_MONTH, 1);
+        this.setRepeatingTaskDescription("");
+        this.setPriority(70);
+        this.setRepeatingTaskType(Type.FIXED);
+        this.setRepeatingTaskType(Type.FIXED);
+        this.setDaysCode(1111111);
+        this.setFrequency(null);
+        this.setStartDate(c);
+        this.setEndDate(e);
+        this.setHits(0);
+        this.setMisses(0);
+        this.setSuccessPercentage(0.0);
+        this.setHasStatistics(false);
+        this.setIsArchived(false);
+        this.setDueTime(d);
+        this.setIsReminded(false);
+        this.setRepeatingTaskDescription("");
+
+    }
 
     public RepeatingTaskItem getRepeatingTaskItemToday(Context context) {
         if(this.getId()!=null){
@@ -175,6 +213,108 @@ private Boolean isReminded;
 
     public void setStartDate(Calendar startDate) {
         this.startDate = startDate;
+    }
+
+    public  boolean isDayDueDate(Calendar calendar) {
+        //if fixed
+        boolean r = false;
+        if(calendar==null){
+            r = false;
+        }else{
+            if(this.getRepeatingTaskType() == Type.FIXED) {
+                if(this.getDaysCode()!=null){
+                    r = isFixedDayDue(calendar,RepeatingTask.getBooleansFromDayCode(this.getDaysCode()));
+                }else{
+                    r =false;
+                }
+            }else if(this.getRepeatingTaskType() == Type.FLEXIBLE){
+                if(this.getFrequency()!=null){
+                    r = true;
+                }else{
+                    r=false;
+                }
+            }else{
+                r = false;
+            }
+
+
+        }
+
+        //else if flexible
+
+          //else false
+        return r;
+    }
+
+    public boolean isFixedDayDue(Calendar calendar , List<Boolean> daysBoolean){
+
+        Boolean sun,mon,tue,wed,thu,fri,sat;
+        sun = daysBoolean.get(0);
+        mon = daysBoolean.get(1);
+        tue = daysBoolean.get(2);
+        wed = daysBoolean.get(3);
+        thu = daysBoolean.get(4);
+        fri = daysBoolean.get(5);
+        sat = daysBoolean.get(6);
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY && sun){
+            return true;
+        }
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY && mon){
+            return true;
+        }
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.TUESDAY && tue){
+            return true;
+        }
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.WEDNESDAY && wed){
+            return true;
+        }
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.THURSDAY && thu){
+            return true;
+        }
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY && fri){
+            return true;
+        }
+        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY && sat){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    public Double getSuccessPercentage() {
+        return successPercentage;
+    }
+
+    public void setSuccessPercentage(Double successPercentage) {
+        this.successPercentage = successPercentage;
+    }
+
+    public Integer getHits() {
+        return hits;
+    }
+
+    public void setHits(Integer hits) {
+        this.hits = hits;
+    }
+
+    public Integer getMisses() {
+        return misses;
+    }
+
+    public void setMisses(Integer misses) {
+        this.misses = misses;
+    }
+
+    public static void removeReminders(TaskList taskList, Context context) {
+        List<RepeatingTask> repeatingTaskList = getAllUnArchivedRepeatingTasksInTag(taskList, context);
+        RepeatingTaskDBHelper repeatingTaskDBHelper = new RepeatingTaskDBHelper(context);
+        repeatingTaskDBHelper.open();
+
+        for(RepeatingTask repeatingTask : repeatingTaskList){
+            repeatingTaskDBHelper.removeReminder(repeatingTask,context);
+        }
+        repeatingTaskDBHelper.close();
     }
 
 
@@ -354,6 +494,59 @@ public static List<RepeatingTask> getAllUnArchivedRepeatingTasksSandbox(Context 
         return repeatingTaskList;
     }
 
+    public static List<RepeatingTask> getAllUnArchivedFlexbleRepeatingTasksByWeek(Context context, Calendar calendar) {
+        List<RepeatingTask> repeatingTaskList = new ArrayList<RepeatingTask>();
+        RepeatingTaskDBHelper repeatingTaskDBHelper = new RepeatingTaskDBHelper(context);
+        repeatingTaskDBHelper.open();
+        Cursor cursor= repeatingTaskDBHelper.fetchAllUnArchivedFlexibleRepeatingTasksByWeek(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            RepeatingTask repeatingTask = repeatingTaskDBHelper.cursorToRepeatingTask(cursor);
+            repeatingTaskList.add(repeatingTask);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        repeatingTaskDBHelper.close();
+        return repeatingTaskList;
+
+    }
+    public static List<RepeatingTask> getAllUnArchivedFlexbleRepeatingTasksByMonth(Context context, Calendar calendar) {
+        List<RepeatingTask> repeatingTaskList = new ArrayList<RepeatingTask>();
+        RepeatingTaskDBHelper repeatingTaskDBHelper = new RepeatingTaskDBHelper(context);
+        repeatingTaskDBHelper.open();
+        Cursor cursor= repeatingTaskDBHelper.fetchAllUnArchivedFlexibleRepeatingTasksByMonth(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            RepeatingTask repeatingTask = repeatingTaskDBHelper.cursorToRepeatingTask(cursor);
+            repeatingTaskList.add(repeatingTask);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        repeatingTaskDBHelper.close();
+        return repeatingTaskList;
+    }
+
+    public static List<RepeatingTask> getAllUnArchivedRepeatingTasksWithStartDateBeforeToday(Context context, Calendar calendar) {
+        List<RepeatingTask> repeatingTaskList = new ArrayList<RepeatingTask>();
+        RepeatingTaskDBHelper repeatingTaskDBHelper = new RepeatingTaskDBHelper(context);
+        repeatingTaskDBHelper.open();
+        Cursor cursor= repeatingTaskDBHelper.fetchAllUnArchivedRepeatingTasksWithStartDateBefore(calendar);
+        if(cursor!=null){
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                RepeatingTask repeatingTask = repeatingTaskDBHelper.cursorToRepeatingTask(cursor);
+                repeatingTaskList.add(repeatingTask);
+                cursor.moveToNext();
+            }
+            // make sure to close the cursor
+            cursor.close();
+        }
+
+        repeatingTaskDBHelper.close();
+        return repeatingTaskList;
+    }
 
 
     public static void archiveAllRepeatingTasksInTag(TaskList taskList, Context context) {

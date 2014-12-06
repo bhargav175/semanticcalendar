@@ -10,8 +10,7 @@
         <item name="android:windowBackground">@color/white_opaque</item>
         <item name="android:colorBackground">@color/pitch_black</item>
         <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
-        <item name="android:spinnerStyle">@style/Spinner</item>
-        <item name="android:spinnerItemStyle">@style/SpinnerItemSytle</item>
+
 
         <item name="android:drawableStart">?android:attr/drawableLeft</item>
         <item name="android:drawableEnd">?android:attr/drawableRight</item>
@@ -90,15 +89,24 @@
     </style>
 
 
-    <style name="stateBoxStyle" parent="android:Widget.TextView">
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:paddingLeft">@dimen/material_padding</item>
-        <item name="android:paddingRight">@dimen/material_padding</item>
-        <item name="android:textSize">10sp</item>
+    <style name="stateBoxStyle" parent="android:Widget.Button">
+
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/orange_color</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">24dp</item>
+
+
     </style>
 
+    <style name="stateBoxThinStyle" parent="stateBoxStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">18dp</item>
+        <item name="android:textSize">10sp</item>
+
+    </style>
 
 
 </resources>

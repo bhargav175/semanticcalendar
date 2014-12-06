@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.bhargav.smart.smartTasks.R;
 import com.bhargav.smart.smartTasks.activities.UpdateRepeatingTaskActivity;
 import com.bhargav.smart.smartTasks.activities.UpdateOneTimeTaskActivity;
+import com.bhargav.smart.smartTasks.activities.ViewOneTimeTaskActivity;
+import com.bhargav.smart.smartTasks.activities.ViewRepeatingTaskActivity;
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
 import com.bhargav.smart.smartTasks.models.RepeatingTask;
 import com.bhargav.smart.smartTasks.models.OneTimeTask;
@@ -42,7 +44,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver
             if(type == 1){
                 oneTimeTaskCurrent = OneTimeTask.getNote(id, context);
                 if (oneTimeTaskCurrent != null) {
-                    Intent notificationIntent = new Intent(context, UpdateOneTimeTaskActivity.class);
+                    Intent notificationIntent = new Intent(context, ViewOneTimeTaskActivity.class);
                     notificationIntent.putExtra(DBHelper.COLUMN_ID, oneTimeTaskCurrent.getId());
                     PendingIntent contentIntent = PendingIntent.getActivity(context,
                             0, notificationIntent,
@@ -69,7 +71,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver
                     Boolean triggerNotification = false;
                     String notificationTitle= "";
                     String notificationText ="";
-                    Intent notificationIntent = new Intent(context, UpdateRepeatingTaskActivity.class);
+                    Intent notificationIntent = new Intent(context, ViewRepeatingTaskActivity.class);
                     notificationIntent.putExtra(DBHelper.COLUMN_ID, repeatingTaskCurrent.getId());
                     PendingIntent contentIntent = PendingIntent.getActivity(context,
                             0, notificationIntent,

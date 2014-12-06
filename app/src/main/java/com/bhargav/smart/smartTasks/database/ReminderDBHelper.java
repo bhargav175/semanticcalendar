@@ -48,12 +48,11 @@ public class ReminderDBHelper {
     public Reminder getReminder(int id) {
         Cursor cursor = database.query(TABLE,null, DBHelper.COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null){
+
             if ( cursor.moveToFirst()) {
                 Reminder reminder =cursorToReminder(cursor);
                 return reminder;
             }
-        }
         return null;
 
     }

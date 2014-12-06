@@ -101,6 +101,7 @@
                 android:id="@+id/categorySelectSpinner"
                 android:layout_marginLeft="@dimen/material_padding"
                 android:gravity="right"
+                style="@style/Spinner"
                 android:layout_weight="0.6"
                 android:paddingLeft="@dimen/material_padding" />
 
@@ -155,12 +156,13 @@
             android:text="State"
             android:layout_weight="0.4"/>
 
-        <TextView
-            android:layout_width="0dp"
+        <com.bhargav.smart.smartTasks.helpers.StateBox
+            style="@style/stateBoxThinStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/stateTextView"
-            android:layout_weight="0.6"/>
+            android:layout_weight="0.6"
+            android:text="Not Started"
+            android:id="@+id/state" />
     </LinearLayout>
 
 

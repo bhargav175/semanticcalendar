@@ -10,8 +10,7 @@
         <item name="android:windowBackground">@color/white_opaque</item>
         <item name="android:colorBackground">@color/pitch_black</item>
         <!--<item name="android:spinnerItemStyle">@style/SpinnerItem</item>-->
-        <item name="android:spinnerStyle">@style/Spinner</item>
-        <item name="android:spinnerItemStyle">@style/SpinnerItemSytle</item>
+
 
 
 

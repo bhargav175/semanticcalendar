@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static com.bhargav.smart.smartTasks.utils.utilFunctions.BLog;
+
 /**
  * Created by Admin on 12-10-2014.
  */
@@ -31,12 +33,11 @@ public class RepeatingTaskReminderHelper {
 
 
         private Context context;
-        private Boolean hadReminder, hasReminder;
+        private Boolean hadReminder, hasReminder, hadDueDate;
         private Reminder currentReminder;
         private Integer reminderId;
         private Calendar dueDate;
         private RepeatingTask repeatingTaskCurrent;
-
         private int year,month,day,hour,minute,second;
         private TextView textView;
         private DueHabitDialog mAlertBuilder;
@@ -44,6 +45,21 @@ public class RepeatingTaskReminderHelper {
        private FragmentActivity f;
        private ReminderDBHelper reminderDBHelper;
         private Integer itemId,itemType;
+    private enum ACTION{
+        SAVE_DATE_AND_REMINDER(0),SAVE_DUE_DATE_BUT_NO_REMINDER(1),UPDATE_DATE_AND_REMINDER(2),UPDATE_DATE_BUT_NO_REMINDER(3),DELETE_DATE_AND_REMINDER(4),DELETE_REMINDER(5),DO_NOTHING(6),RETURN_ALL_NULL(7),SAVE_DUE_DATE_BUT_DELETE_REMINDER(8),UPDATE_DUE_DATE_BUT_DELETE_REMINDER(9);
+        private int actionValue;
+        ACTION(int actionValue) {
+            this.actionValue = actionValue;
+        }
+
+        public void setActionValue(int actionValue) {
+            this.actionValue = actionValue;
+        }
+
+        public int getActionValue() {
+            return actionValue;
+        }
+    }
 
     public RepeatingTaskReminderHelper(Context context, FragmentActivity f, Integer reminderId, Calendar dueDate, TextView textView, RepeatingTask repeatingTaskCurrent, Integer itemType) {
         this.context = context;
@@ -52,6 +68,11 @@ public class RepeatingTaskReminderHelper {
         this.dueDate = dueDate;
         this.textView = textView;
         this.repeatingTaskCurrent = repeatingTaskCurrent;
+        if(repeatingTaskCurrent.getDueTime()!=null){
+            hadDueDate = true;
+        }else{
+            hadDueDate = false;
+        }
         this.reminderId = reminderId;
         this.f =f;
         Calendar cal = dueDate!=null ?(Calendar)dueDate.clone() : Calendar.getInstance();
@@ -75,9 +96,12 @@ public class RepeatingTaskReminderHelper {
     public DueHabitDialog.Holder returnUpdatedValues(){
         return this.mAlertBuilder.returnUpdatedValues();
     }
-    public DueHabitDialog.Holder doSomething(Boolean isReminded){
+    public DueHabitDialog.Holder doSomething(Boolean isReminded, Boolean hasDueDate){
         DueHabitDialog.Holder holder = returnUpdatedValues();
+        DueHabitDialog.Holder initialHolder =this.mAlertBuilder.initialHolder();
+
         Calendar cal =(Calendar) holder.cal.clone();
+        Boolean dueDateChanged =true;
         year= cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
         day = cal.get(Calendar.DAY_OF_MONTH);
@@ -85,37 +109,233 @@ public class RepeatingTaskReminderHelper {
         minute = cal.get(Calendar.MINUTE);
             //there is a reminder
 
-        if(isReminded){
-            if(hadReminder){
-                //update
-                new UpdateReminder(context,holder,reminderId,hour,minute).execute("");
+        //new code
 
-            }
-            else{
-                //save
+        dueDateChanged = hasAnythingChanged(initialHolder, holder);
+        Boolean wasReminded= hadReminder;
+
+        holder = performActions(holder,isReminded, wasReminded, hasDueDate, dueDateChanged,year,month,day,hour,minute);
+
+        return holder;
+    }
+
+    private DueHabitDialog.Holder performActions(DueHabitDialog.Holder holder,Boolean isReminded, Boolean wasReminded, Boolean hasDueDate, Boolean dueDateChanged, int YEAR, int MONTH,int DAY, int HOUR, int SECOND){
+        ACTION a = dueDateReminderAction(isReminded, wasReminded, hasDueDate, dueDateChanged);
+        switch (a){
+            case SAVE_DATE_AND_REMINDER:{
+                BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
                 new SaveReminder(context,holder,reminderId,hour,minute).execute("");
-
+                break;
             }
-        }else{
+            case SAVE_DUE_DATE_BUT_NO_REMINDER:{
+                //BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
+                //new SaveReminder(context,reminderId,year,month,day,hour,minute).execute("");
+                //equivalent to do nothing
+                holder.remainderId=null;
+                break;
+            }
+            case UPDATE_DATE_AND_REMINDER:{
+                BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
+                new UpdateReminder(context,holder,reminderId,hour,minute).execute("");
+                break;
+            }
+            case UPDATE_DATE_BUT_NO_REMINDER:{
+                //quivalent to do nothing
+                holder.remainderId=null;
+                break;
+            }
+            case DELETE_DATE_AND_REMINDER:{
+                //
+                Integer remId = reminderId;
+                BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
+                new DeleteReminder(context,remId,year,month,day,hour,minute).execute("");
+                holder.cal = null;
+                holder.startD = null;
+                holder.endD = null;
+                holder.remainderId = null;
+                holder.curFrequency =null;
+                holder.curHabitType = RepeatingTask.Type.FIXED;
+                holder.daysCode = 0000000;
+
+                break;
+            }
+            case DELETE_REMINDER:{
+                Integer remId = reminderId;
+                BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
+                new DeleteReminder(context,remId,year,month,day,hour,minute).execute("");
+                holder.remainderId = null;
+
+                break;
+            }
+            case DO_NOTHING:{
+
+                break;
+            }
+            case RETURN_ALL_NULL:{
+                holder.cal = null;
+                holder.startD = null;
+                holder.endD = null;
+                holder.remainderId = null;
+                holder.curFrequency =null;
+                holder.curHabitType = RepeatingTask.Type.FIXED;
+                holder.daysCode = 0000000;
+
+
+                break;
+            }
+            case SAVE_DUE_DATE_BUT_DELETE_REMINDER:{
+                Integer remId = reminderId;
+                BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
+                new DeleteReminder(context,remId,year,month,day,hour,minute).execute("");
+                holder.remainderId = null;
+                break;
+            }
+            case UPDATE_DUE_DATE_BUT_DELETE_REMINDER:{
+                Integer remId = reminderId;
+                BLog(""+reminderId+"--" + year + "---"+month+"---"+day+"---"+hour+"---"+minute);
+                new DeleteReminder(context,remId,year,month,day,hour,minute).execute("");
+                holder.remainderId = null;
+                break;
+            }
 
         }
-            if(hadReminder){
-                //update
-                new UpdateReminder(context,holder,reminderId,hour,minute).execute("");
 
-            }
-            else{
-                //save
-                if(reminderId!=null){
-                    deleteReminder(reminderId);
-                }else{
+        return holder;
+    }
+
+    private Boolean hasAnythingChanged(DueHabitDialog.Holder initialHolder, DueHabitDialog.Holder newHolder){
+        Integer initialFrequency,initialReminderId,initialDaysCode;
+        RepeatingTask.Type initialHabitType;
+        Calendar initialStartDate,initialEndDate,initialDueTime;
+        initialFrequency = initialHolder.curFrequency;
+        initialDaysCode = initialHolder.daysCode;
+        initialReminderId = initialHolder.remainderId;
+        initialHabitType = initialHolder.curHabitType;
+        initialStartDate = (Calendar)initialHolder.startD.clone();
+        initialEndDate = (Calendar)initialHolder.endD.clone();
+        initialDueTime = (Calendar)initialHolder.cal.clone();
+        Integer finalFrequency,finalReminderId,finalDaysCode;
+        RepeatingTask.Type finalHabitType;
+        Calendar finalStartDate,finalEndDate,finalDueTime;
+        finalFrequency = newHolder.curFrequency;
+        finalDaysCode = newHolder.daysCode;
+        finalReminderId = newHolder.remainderId;
+        finalHabitType = newHolder.curHabitType;
+        finalStartDate = (Calendar)newHolder.startD.clone();
+        finalEndDate = (Calendar)newHolder.endD.clone();
+        finalDueTime = (Calendar)newHolder.cal.clone();
+        if(initialFrequency == finalFrequency && initialDaysCode ==finalDaysCode && initialHabitType == finalHabitType && initialStartDate.compareTo(finalStartDate)==0 && initialEndDate.compareTo(finalEndDate) ==0 && initialDueTime.compareTo(finalDueTime)==0){
+            return false;
+        }else{
+            return true;
+        }
+
+
+    }
+
+    private ACTION dueDateReminderAction(Boolean isReminded, Boolean wasReminded, Boolean hasDueDate, Boolean dueDateChanged) {
+        if (hadDueDate) {
+            if (hasDueDate) {
+                if (dueDateChanged) {
+                    //update reminder
+                    if (wasReminded) {
+                        if (isReminded) {
+                            //do nothing
+                            return ACTION.UPDATE_DATE_AND_REMINDER;
+
+                        } else {
+                            //delete Reminder
+                            //change reminderId to null
+                            return ACTION.UPDATE_DUE_DATE_BUT_DELETE_REMINDER;
+
+
+                        }
+                    } else {
+                        if (isReminded) {
+                            //save Reminder
+                            //save
+                            return ACTION.SAVE_DATE_AND_REMINDER;
+
+                        } else {
+                            //do nothing
+                            return ACTION.SAVE_DUE_DATE_BUT_NO_REMINDER;
+
+                        }
+                    }
+                } else {
+                    //do nothing
+                    if (wasReminded) {
+                        if (isReminded) {
+                            //do nothing
+                            return ACTION.DO_NOTHING;
+
+                        } else {
+                            //delete Reminder
+                            //change reminderId to null
+                            return ACTION.DELETE_REMINDER;
+
+
+                        }
+                    } else {
+                        if (isReminded) {
+                            //save Reminder
+                            //save
+                            return ACTION.SAVE_DATE_AND_REMINDER;
+
+                        } else {
+                            //do nothing
+                            return ACTION.DO_NOTHING;
+
+                        }
+                    }
 
                 }
 
+            } else {
 
+                //there is no due date
+                // delete the reminder ob
+                //change reminderId to null
+
+                return ACTION.DELETE_DATE_AND_REMINDER;
+
+                //return null as due date
             }
 
-        return holder;
+        } else {
+            //return new due date as due date
+            if (hasDueDate) {
+                // due date change
+                // no chance of wasReminded
+                //return new due date as due date
+
+
+                if (isReminded) {
+                    //save reminder
+                    return ACTION.SAVE_DATE_AND_REMINDER;
+
+                } else {
+                    //create duedate
+                    return ACTION.SAVE_DUE_DATE_BUT_NO_REMINDER;
+
+                    //no create reminder
+                    //do nothing
+                }
+
+
+            } else {
+                //did not have a due date
+                //does not have a due date
+                // delete the reminder ob
+                //set due date to null
+                //set isReminded to null
+                //set reminder id to null
+                return ACTION.RETURN_ALL_NULL;
+
+
+
+            }
+        }
     }
 
 

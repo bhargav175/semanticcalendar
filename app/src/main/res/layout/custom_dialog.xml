@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/indigo_color"
-    android:orientation="vertical">
+    android:background="@color/teal_color"
+    android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -11,7 +12,9 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:id="@+id/noDueLayout"
-        android:padding="@dimen/material_padding">
+        android:padding="@dimen/material_padding"
+
+        >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -19,7 +22,7 @@
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:id="@+id/noDueDateText"
-            android:gravity="center_horizontal">
+            android:gravity="left">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -28,31 +31,30 @@
                 android:id="@+id/textView"
                 android:textColor="@color/white"
                 android:textSize="@dimen/material_heading_text_size"
-                android:gravity="center_horizontal"
+                android:gravity="left"
                 android:layout_gravity="center_horizontal"
-                android:padding="@dimen/material_padding" />
+                 />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:orientation="horizontal"
             android:id="@+id/noDueDate"
             android:layout_below="@+id/noDueDateText"
             android:layout_marginTop="@dimen/material_padding"
-            android:gravity="center_horizontal"
+            android:gravity="left"
             android:baselineAligned="false">
 
             <Button
                 android:id="@+id/addDueDateButton"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:background="@android:color/white"
                 android:clickable="true"
                 android:text="Add Due Date"
-                android:textColor="#5DBCD2"
+                android:textColor="@color/teal_color"
                 android:textStyle="bold"
                 android:padding="@dimen/material_padding" />
         </LinearLayout>
@@ -62,19 +64,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/dueLayout"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:padding="@dimen/material_padding"
         android:visibility="visible">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Due Date Set At :"
-            android:id="@+id/textView2"
-            android:textColor="@color/white"
-            android:textSize="@dimen/material_heading_text_size"
-            android:padding="@dimen/material_padding"
-            android:gravity="center_horizontal" />
+
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -82,40 +76,53 @@
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:id="@+id/spinnerLayout"
-            android:layout_below="@id/textView2"
             android:layout_marginTop="@dimen/material_padding"
             android:visibility="visible"
-            android:padding="@dimen/material_padding"
-            android:gravity="center_horizontal">
+            android:gravity="left">
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="New Button"
+                android:textSize="@dimen/material_small_text_size"
                 android:id="@+id/dateButton"
                 android:background="@color/white"
-                android:padding="@dimen/material_padding"
+                android:layout_gravity="left"
+                android:padding="@dimen/material_light_padding"
                 android:layout_marginRight="@dimen/material_padding"
-                android:textColor="#5DBCD2" />
+                android:textColor="@color/teal_color" />
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.4"
                 android:text="New Button"
+                android:textSize="@dimen/material_small_text_size"
                 android:id="@+id/timeButton"
                 android:background="@color/white"
-                android:padding="@dimen/material_padding"
-                android:textColor="#5DBCD2" />
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/material_padding"
+                android:padding="@dimen/material_light_padding"
+                android:textColor="@color/teal_color" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="x"
+                android:textSize="@dimen/material_medium_text_size"
+                android:textColor="@color/red"
+                android:gravity="center"
+                android:id="@+id/close"
+                android:padding="@dimen/material_light_padding"
+                android:background="@color/white"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                />
         </LinearLayout>
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="x"
-            android:id="@+id/close"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true" />
+
 
     </RelativeLayout>
 

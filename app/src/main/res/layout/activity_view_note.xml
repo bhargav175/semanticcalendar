@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+
+
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bhargav.smart.smartTasks.activities.ViewOneTimeTaskActivity"
+    >
+    <!-- The main content view -->
+
+
+
+
+
+
+    <RelativeLayout
+
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+        <ScrollView
+
+
+            android:id="@+id/ScrollView01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/white">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/material_padding"
+                android:paddingLeft="56dp"
+                android:paddingRight="@dimen/material_padding"
+                android:paddingBottom="@dimen/material_padding">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_marginBottom="@dimen/material_padding"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:textAllCaps="true"
+                        android:text="Title"
+                        android:id="@+id/textView"
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:text="New Text"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/title"
+                        android:layout_weight="0.6" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/material_padding"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:textAllCaps="true"
+                        android:text="Description"
+                        android:id="@+id/textView3" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:text="New Text"
+                        android:id="@+id/description" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/material_padding"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:layout_weight="0.4"
+                        android:text="Category"
+                        android:id="@+id/textView5" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:text="New Text"
+                        android:id="@+id/category" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/material_padding"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:textAllCaps="true"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:text="Due"
+                        android:id="@+id/textView7" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:text="New Text"
+                        android:id="@+id/due" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/material_padding"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:textAllCaps="true"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:text="Reminder"
+                        android:id="@+id/textView11" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:text="New Text"
+                        android:id="@+id/reminder" />
+                </LinearLayout>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginBottom="@dimen/material_light_padding"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/material_padding"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:textAllCaps="true"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.4"
+                        android:text="State"
+
+                        android:id="@+id/textView9" />
+
+                    <com.bhargav.smart.smartTasks.helpers.StateBox
+                        android:layout_width="fill_parent"
+                        android:layout_marginTop="16dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.6"
+                        android:text="Not Started"
+                        style="@style/stateBoxStyle"
+                        android:id="@+id/state" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+        <include layout="@layout/fab_edit"/>
+
+    </RelativeLayout>
+
+
+
+
+
+    <!-- The navigation drawer -->
+
+    <include layout="@layout/sidebar"/>
+    <include layout="@layout/sidebar_right"/>
+
+</android.support.v4.widget.DrawerLayout>
+

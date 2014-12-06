@@ -39,14 +39,14 @@ public class DueDateDialog extends AlertDialog.Builder {
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
     private List<String> dates, times;
-    private Boolean hasReminder;
+    private Boolean hasReminder, hasDueDate,tempHasDueDate;
     private Integer reminderId;
     private OneTimeTask oneTimeTask;
     private Button addDueDateButton, dateButton, timeButton, closeButton;
     ;
 
 
-    public DueDateDialog(final FragmentActivity a, final OneTimeTask oneTimeTask, final Calendar c, final TextView textView,int y, int M , int d, int h, int m,final Boolean hasReminder,Integer reminderId) {
+    public DueDateDialog(final FragmentActivity a, final OneTimeTask oneTimeTask, final Calendar c, final TextView textView,int y, int M , int d, int h, int m,final Boolean hasReminder,final Boolean hasDueDate,Integer reminderId) {
         super(a);
         // TODO Auto-generated constructor stub
         this.a = a;
@@ -68,6 +68,8 @@ public class DueDateDialog extends AlertDialog.Builder {
         this.tempHour = h;
         this.tempMinute = m;
         this.hasReminder = hasReminder;
+        this.hasDueDate = hasDueDate;
+        this.tempHasDueDate = hasDueDate;
         this.reminderId = reminderId;
         initUi();
         setListeners(a);
@@ -80,7 +82,8 @@ public class DueDateDialog extends AlertDialog.Builder {
             public void onClick(View v) {
                 noDueLayout.setVisibility(View.VISIBLE);
                 dueLayout.setVisibility(View.GONE);
-                hasReminder=false;
+                tempHasDueDate=false;
+                setTimeAndDateTexts();
             }
         });
 
@@ -89,26 +92,24 @@ public class DueDateDialog extends AlertDialog.Builder {
             public void onClick(View v) {
                 noDueLayout.setVisibility(View.GONE);
                 dueLayout.setVisibility(View.VISIBLE);
-                hasReminder= true;
+                tempHasDueDate= true;
+                setTimeAndDateTexts();
+
             }
         });
         this.setPositiveButton("Done",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Write your code here to execute after dialog
-                        year=tempYear;
-                        month = tempMonth;
-                        day = tempDay;
-                        hour = tempHour;
-                        minute = tempMinute;
-                        setDueDate();
+
+                        setNewTextViewText(true);
 
                     }
                 }
         );
         this.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                setDueDate();
+                setNewTextViewText(false);
 
             }
         });
@@ -184,14 +185,14 @@ public class DueDateDialog extends AlertDialog.Builder {
 
     }
     private void initializeReminder(){
-        if(hasReminder){
+        if(hasDueDate){
             noDueLayout.setVisibility(View.GONE);
             dueLayout.setVisibility(View.VISIBLE);
             setDueDate();
         }else{
             noDueLayout.setVisibility(View.VISIBLE);
             dueLayout.setVisibility(View.GONE);
-            setDueDate();
+            setTextViewNone();
             }
 
     }
@@ -203,8 +204,17 @@ public class DueDateDialog extends AlertDialog.Builder {
         cal.set(Calendar.YEAR, tempYear);
         cal.set(Calendar.MONTH, tempMonth);
         cal.set(Calendar.DAY_OF_MONTH, tempDay);
-        oneTimeTask.setDueTime(cal);
-        textView.setText(OneTimeTask.getMetaText(oneTimeTask));
+        dateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(cal.getTime()));
+        timeButton.setText(new SimpleDateFormat(utilFunctions.timeFormat).format(cal.getTime()));
+    }
+
+    private void setTimeAndDateTexts(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, tempHour);
+        cal.set(Calendar.MINUTE, tempMinute);
+        cal.set(Calendar.YEAR, tempYear);
+        cal.set(Calendar.MONTH, tempMonth);
+        cal.set(Calendar.DAY_OF_MONTH, tempDay);
         dateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(cal.getTime()));
         timeButton.setText(new SimpleDateFormat(utilFunctions.timeFormat).format(cal.getTime()));
     }
@@ -217,7 +227,8 @@ public class DueDateDialog extends AlertDialog.Builder {
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, day);
-        setTextViewText();
+        cal.set(Calendar.SECOND, 0);
+        setConfirmTextViewText();
         dateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(cal.getTime()));
         timeButton.setText(new SimpleDateFormat(utilFunctions.timeFormat).format(cal.getTime()));
     }
@@ -225,25 +236,64 @@ public class DueDateDialog extends AlertDialog.Builder {
         textView.setText(OneTimeTask.getMetaText(oneTimeTask));
 
     }
+    private void setConfirmTextViewText(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.SECOND, 0);
+        oneTimeTask.setDueTime(cal);
+        textView.setText(OneTimeTask.getMetaText(oneTimeTask));
+
+    }
+    private void setTextViewNone(){
+        textView.setText("None");
+
+    }
+
+    private void setNewTextViewText(Boolean isEffected){
+            if(isEffected){
+                hasDueDate = tempHasDueDate;
+                year=tempYear;
+                month = tempMonth;
+                day = tempDay;
+                hour = tempHour;
+                minute = tempMinute;
+                second = 0;
+            }else{
+
+            }
+            if(hasDueDate){
+                setDueDate();
+            }else{
+                setTextViewNone();
+            }
+    }
     public Holder returnUpdatedValues(){
         Calendar cal = null;
-        if(hasReminder == false){
+        if(hasDueDate == false){
             cal = Calendar.getInstance();
             cal.set(Calendar.HOUR_OF_DAY, hour);
             cal.set(Calendar.MINUTE, minute);
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, month);
             cal.set(Calendar.DAY_OF_MONTH, day);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
         }
         else{
             cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY, hour);
-            cal.set(Calendar.MINUTE, minute);
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, month);
             cal.set(Calendar.DAY_OF_MONTH, day);
+            cal.set(Calendar.HOUR_OF_DAY, hour);
+            cal.set(Calendar.MINUTE, minute);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
         }
-        return new Holder(cal, hasReminder,reminderId);
+        return new Holder(cal, hasDueDate,reminderId);
 
     }
     public class Holder{

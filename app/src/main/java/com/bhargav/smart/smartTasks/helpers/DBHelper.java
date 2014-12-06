@@ -61,6 +61,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String REPEATING_TASK_FREQUENCY = "frequency";
     public static final String REPEATING_TASK_START_DATE = "startDate";
     public static final String REPEATING_TASK_END_DATE = "endDate";
+    public static final String REPEATING_TASK_HITS = "hits";
+    public static final String REPEATING_TASK_MISSES = "misses";
+    public static final String REPEATING_TASK_SUCCESS_PERCENTAGE = "successPercentage";
     public static final String REPEATING_TASK_HAS_STATISTICS = "hasStatistics";
 
 
@@ -83,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "to_organize_db";
-    private static final int DATABASE_VERSION = 41;
+    private static final int DATABASE_VERSION = 43;
 
 
 
@@ -129,6 +132,9 @@ public class DBHelper extends SQLiteOpenHelper {
             + REPEATING_TASK_FREQUENCY + " integer DEFAULT null, "
             + REPEATING_TASK_START_DATE + " DATETIME DEFAULT null, "
             + REPEATING_TASK_END_DATE + " DATETIME DEFAULT null, "
+            + REPEATING_TASK_HITS + " integer DEFAULT 0, "
+            + REPEATING_TASK_MISSES + " integer DEFAULT 0, "
+            + REPEATING_TASK_SUCCESS_PERCENTAGE + " double DEFAULT 0, "
             + REPEATING_TASK_HAS_STATISTICS + " BOOLEAN DEFAULT 0, "
             + COLUMN_IS_ARCHIVED + " BOOLEAN DEFAULT 0, "
             + COLUMN_CREATED_TIME + " DATETIME DEFAULT (DATETIME(current_timestamp, 'localtime')), "

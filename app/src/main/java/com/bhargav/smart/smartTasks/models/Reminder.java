@@ -156,7 +156,10 @@ public class Reminder {
     }
 
 
-
-
-
+    public static void deleteReminder(Context context,Integer remainderId) {
+        ReminderDBHelper reminderDBHelper = new ReminderDBHelper(context);
+        reminderDBHelper.open();
+        reminderDBHelper.deleteReminder(remainderId);
+        reminderDBHelper.close();
+    }
 }

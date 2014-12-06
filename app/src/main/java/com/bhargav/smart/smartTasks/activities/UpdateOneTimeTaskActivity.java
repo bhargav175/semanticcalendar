@@ -23,6 +23,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bhargav.smart.smartTasks.helpers.StateBox;
 import com.bhargav.smart.smartTasks.models.OneTimeTask;
 import com.bhargav.smart.smartTasks.models.TaskList;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -52,7 +53,8 @@ public class UpdateOneTimeTaskActivity extends ActionBarActivity implements View
     private View add_reminder;
     private final List<String> dates = new ArrayList<String>();
     private Reminder currentReminder;
-;
+;    private StateBox state;
+
     private final List<String> times = new ArrayList<String>();
     private Long hadMilliSeconds = null, hasMIlliSeconds = null;
     private AdapterView.OnItemSelectedListener dateItemSelectedListener;
@@ -68,7 +70,7 @@ public class UpdateOneTimeTaskActivity extends ActionBarActivity implements View
     private AlertDialog mAlert;
     private List<TaskList> taskLists;
     private ArrayAdapter<TaskList> adapter;
-    private TextView showDueDateTextView,stateTextView;
+    private TextView showDueDateTextView;
     public OneTimeTaskReminderHelper oneTimeTaskReminderHelper;
     private FlowLayout labelLayout;
     int day, month, year, hour, minute, second;
@@ -152,12 +154,12 @@ public class UpdateOneTimeTaskActivity extends ActionBarActivity implements View
         isArchived = (Switch) findViewById(R.id.isArchivedSwitch);
         isReminded = (Switch) findViewById(R.id.hasReminderSwitch);
         tag = (Spinner) findViewById(R.id.categorySelectSpinner);
-        stateTextView = (TextView) findViewById(R.id.stateTextView);
         showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
         final Calendar calendar = new GregorianCalendar();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
+        state = (StateBox) findViewById(R.id.state);
         hour = 9;
         minute = 0;
         second = 0;
@@ -189,6 +191,7 @@ public class UpdateOneTimeTaskActivity extends ActionBarActivity implements View
         } else {
             hadReminder = false;
         }
+        state.init(this,oneTimeTaskCurrent.getId());
         hasReminder = hadReminder;
         new GetReminder(requestId).execute("");
    }
@@ -424,7 +427,15 @@ public class UpdateOneTimeTaskActivity extends ActionBarActivity implements View
             oneTimeTaskCurrent.setDueTime(holder.cal);
             oneTimeTaskDBHelper = new OneTimeTaskDBHelper(context);
             oneTimeTaskDBHelper.open();
-            oneTimeTaskCurrent.setRemainderId(requestId);
+            if(requestId!=null){
+                oneTimeTaskCurrent.setRemainderId(requestId);
+                oneTimeTaskCurrent.setIsReminded(true);
+            }else{
+                oneTimeTaskCurrent.setRemainderId(null);
+                oneTimeTaskCurrent.setIsReminded(false);
+
+            }
+
             oneTimeTaskDBHelper.updateNote(oneTimeTaskCurrent);
             oneTimeTaskDBHelper.close();
             return null;
@@ -454,15 +465,14 @@ public class UpdateOneTimeTaskActivity extends ActionBarActivity implements View
 
     @Override
     public void onBackPressed() {
-        if(oneTimeTaskCurrent !=null){
-            Intent intent = new Intent(this,TaskListActivity.class);
-            intent.putExtra(DBHelper.COLUMN_ID, oneTimeTaskCurrent.getTag());
+        if(oneTimeTaskCurrent!=null){
+            Intent intent = new Intent(UpdateOneTimeTaskActivity.this,ViewOneTimeTaskActivity.class);
+            intent.putExtra(DBHelper.COLUMN_ID, oneTimeTaskCurrent.getId());
             startActivity(intent);
         }else{
-            Intent intent = new Intent(this,SuperMain.class);
-            startActivity(intent);
+            finish();
         }
-        return;
+
     }
 
 }

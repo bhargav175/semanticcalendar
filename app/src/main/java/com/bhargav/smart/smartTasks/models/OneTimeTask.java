@@ -125,7 +125,18 @@ public class OneTimeTask {
     private Integer priority;
 
 
+    public void setDefaultProperties(){
+        this.setNoteDescription("");
+        this.setTaskItemState(utilFunctions.State.NOT_STARTED);
+        this.setRemainderId(null);
+        this.setPriority(70);
+        this.setIsCompleted(false);
+        this.setCompletedTime(null);
+        this.setIsArchived(false);
+        this.setDueTime(null);
+        this.setIsReminded(false);
 
+    }
 
 
 
@@ -336,6 +347,13 @@ public class OneTimeTask {
         return oneTimeTaskList;
     }
 
+    public static void saveState(Context context,OneTimeTask oneTimeTask) {
+        OneTimeTaskDBHelper oneTimeTaskDBHelper = new OneTimeTaskDBHelper(context);
+        oneTimeTaskDBHelper.open();
+        oneTimeTaskDBHelper.updateState(oneTimeTask);
+        oneTimeTaskDBHelper.close();
+    }
+
     public static List<OneTimeTask> getAllUnArchivedNotesByMonth(Context context, Calendar calendar) {
         List<OneTimeTask> oneTimeTaskList = new ArrayList<OneTimeTask>();
         OneTimeTaskDBHelper oneTimeTaskDBHelper = new OneTimeTaskDBHelper(context);
@@ -351,5 +369,52 @@ public class OneTimeTask {
         cursor.close();
         oneTimeTaskDBHelper.close();
         return oneTimeTaskList;
+    }
+
+    public static List<OneTimeTask> getAllUnArchivedUpComingNotes(Context context, Calendar calendar) {
+        List<OneTimeTask> oneTimeTaskList = new ArrayList<OneTimeTask>();
+        OneTimeTaskDBHelper oneTimeTaskDBHelper = new OneTimeTaskDBHelper(context);
+        oneTimeTaskDBHelper.open();
+        Cursor cursor= oneTimeTaskDBHelper.fetchAllUnArchivedUpComingNotes(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            OneTimeTask oneTimeTask = oneTimeTaskDBHelper.cursorToNote(cursor);
+            oneTimeTaskList.add(oneTimeTask);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        oneTimeTaskDBHelper.close();
+        return oneTimeTaskList;
+
+    }
+
+    public static List<OneTimeTask> getAllUnArchivedOverDueNotes(Context context, Calendar calendar) {
+        List<OneTimeTask> oneTimeTaskList = new ArrayList<OneTimeTask>();
+        OneTimeTaskDBHelper oneTimeTaskDBHelper = new OneTimeTaskDBHelper(context);
+        oneTimeTaskDBHelper.open();
+        Cursor cursor= oneTimeTaskDBHelper.fetchAllUnArchivedOverdueNotes(calendar);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            OneTimeTask oneTimeTask = oneTimeTaskDBHelper.cursorToNote(cursor);
+            oneTimeTaskList.add(oneTimeTask);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        oneTimeTaskDBHelper.close();
+        return oneTimeTaskList;
+    }
+
+
+    public static void removeReminders(TaskList taskList, Context context) {
+        List<OneTimeTask> oneTimeTaskList = getAllUnArchivedNotesInTag(taskList,context);
+        OneTimeTaskDBHelper oneTimeTaskDBHelper = new OneTimeTaskDBHelper(context);
+        oneTimeTaskDBHelper.open();
+
+        for(OneTimeTask oneTimeTask : oneTimeTaskList){
+            oneTimeTaskDBHelper.removeReminder(oneTimeTask,context);
+        }
+        oneTimeTaskDBHelper.close();
     }
 }

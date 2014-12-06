@@ -28,6 +28,8 @@
     android:textAllCaps="true"
     android:textStyle="bold"
     android:textSize="@dimen/material_medium_text_size"
+    android:layout_marginTop="16dp"
     android:gravity="center_vertical"
-    style="?android:attr/listSeparatorTextViewStyle" />
+    style="?android:attr/listSeparatorTextViewStyle"
+    android:textColor="@color/light_blue"/>
 

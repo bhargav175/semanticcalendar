@@ -344,7 +344,7 @@ public class TaskListActivity extends ActionBarActivity {
        if(currentTaskListInView.getTagId()!=null){
 
             tagDescription.setText(currentTaskListInView.getTagDescription());
-            tagSecondaryText.setText(currentTaskListInView.getTagId().toString());
+            tagSecondaryText.setText(currentTaskListInView.getTagColor().asString());
 
         }
         else{
@@ -396,12 +396,13 @@ public class TaskListActivity extends ActionBarActivity {
                 OrganizerItem organizerItem = (OrganizerItem) parent.getAdapter().getItem(position);
 
                 if(organizerItem.getType().equals("NOTE")){
-                    new GetNote(organizerItem.getId()).execute("");
-
-                }else if(organizerItem.getType().equals("HABIT")){
-                    Intent intent = new Intent(getApplicationContext(), UpdateRepeatingTaskActivity.class);
-                    intent.putExtra(DBHelper.REPEATING_TASK_TITLE,  organizerItem.getItemText());
+                    Intent intent = new Intent(getApplicationContext(), ViewOneTimeTaskActivity.class);
                     intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
+                    startActivity(intent);
+                }else if(organizerItem.getType().equals("HABIT")){
+                    Intent intent = new Intent(getApplicationContext(), ViewRepeatingTaskActivity.class);
+                    intent.putExtra(DBHelper.COLUMN_ID, organizerItem.getId());
+                    intent.putExtra(DBHelper.CATEGORY_TITLE, currentTaskListInView.getTagText());
                     startActivity(intent);
                 }else if(organizerItem.getType().equals("CHECKLIST")){
 
@@ -511,47 +512,6 @@ public class TaskListActivity extends ActionBarActivity {
     }
 
 
-    private class GetNote extends AsyncTask<String, Void,OneTimeTask> {
-
-        private int id;
-        public GetNote(int id){
-            this.id = id;
-        }
-
-        @Override
-        protected OneTimeTask doInBackground(String... params) {
-            OneTimeTask oneTimeTask = new OneTimeTask();
-            oneTimeTask = OneTimeTask.getNote(id, getApplicationContext());
-            return oneTimeTask;
-        }
-
-        @Override
-        protected void onPostExecute(final OneTimeTask oneTimeTask) {
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    if(oneTimeTask !=null){
-                        Intent intent = new Intent(getApplicationContext(), UpdateOneTimeTaskActivity.class);
-                        intent.putExtra(DBHelper.TASK_DESCRIPTION, oneTimeTask.getNoteTitle());
-                        intent.putExtra(DBHelper.COLUMN_ID, oneTimeTask.getId());
-
-                        startActivity(intent);
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
-    }
 
 
     private class GetAllUnArchivedOrganizerItems extends AsyncTask<String, Void, Void> {

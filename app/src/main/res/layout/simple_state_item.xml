@@ -20,6 +20,7 @@
     android:layout_height="fill_parent"
     android:text="Test"
     android:id="@+id/state"
+
     style="@style/stateBoxStyle"
     />
 

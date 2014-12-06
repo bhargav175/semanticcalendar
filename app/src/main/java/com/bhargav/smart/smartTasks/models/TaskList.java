@@ -147,11 +147,18 @@ public class TaskList {
     }
 
     public static void archiveTag(TaskList taskList,Context context){
+        TaskList.removeRemindersForTaskListItems(context,taskList);
+
         TaskListDBHelper taskListDBHelper = new TaskListDBHelper(context);
         taskListDBHelper.open();
         taskListDBHelper.archiveTag(taskList);
         taskListDBHelper.close();
 
+    }
+
+    private static void removeRemindersForTaskListItems(Context context, TaskList taskList) {
+        OneTimeTask.removeReminders(taskList, context);
+        RepeatingTask.removeReminders(taskList, context);
     }
 
     public static void archiveAllTagItems(TaskList taskList, Context context){

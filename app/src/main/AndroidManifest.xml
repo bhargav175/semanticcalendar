@@ -37,6 +37,15 @@
             android:label="@string/title_activity_update_tag" >
         </activity>
 
+        <activity
+            android:name=".activities.ViewOneTimeTaskActivity"
+            android:label="@string/title_activity_view_note" >
+        </activity>
+        <activity
+            android:name=".activities.ViewRepeatingTaskActivity"
+            android:label="@string/title_activity_view_habit" >
+        </activity>
+
         <receiver
             android:name=".utils.MyBroadcastReceiver"
             android:process=":remote" >

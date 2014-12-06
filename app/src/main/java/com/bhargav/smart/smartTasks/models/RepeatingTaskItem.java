@@ -143,4 +143,10 @@ public class RepeatingTaskItem {
     }
 
 
+    public void saveState(Context context, RepeatingTaskItem repeatingTaskItem) {
+        RepeatingTaskItemDBHelper repeatingTaskItemDBHelper = new RepeatingTaskItemDBHelper(context);
+        repeatingTaskItemDBHelper.open();
+        repeatingTaskItemDBHelper.updateState(repeatingTaskItem);
+        repeatingTaskItemDBHelper.close();
+    }
 }

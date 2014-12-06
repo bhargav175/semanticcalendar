@@ -27,6 +27,22 @@ public class utilFunctions {
             this.stateValue = stateValue;
         }
 
+        public String getStateValueString(){
+            switch(this.getStateValue()){
+                case 0:
+                    return "Not Started";
+                case 1:
+                    return "Started";
+                case 2:
+                    return "Failed";
+                case 3:
+                    return "Completed";
+                default:
+                    return "Not Started";
+
+            }
+        }
+
         public int getStateValue() {
             return stateValue;
         }
@@ -86,16 +102,63 @@ public class utilFunctions {
             }
             return cr;
         }
+
+        public String asString(){
+
+            String cr;
+            switch (this){
+                case TRANSPARENT:
+                    cr = "Transparent";
+                    break;
+                case VIOLET:
+                    cr =  "Violet";
+                    break;
+                case INDIGO:
+                    cr =  "Indigo";
+                    break;
+                case BLUE:
+                    cr =  "Blue";
+                    break;
+                case GREEN:
+                    cr =  "Green";
+                    break;
+                case YELLOW:
+                    cr = "Yellow";
+                    break;
+                case ORANGE:
+                    cr =  "Orange";
+                    break;
+                case RED:
+                    cr =  "Red";
+                    break;
+                case BLACK:
+                    cr =  "Black";
+                    break;
+                default:
+                    cr =  "Transparent";
+
+
+            }
+            return cr;
+        }
+
     }
 
 
 
+
+
+
+
     public static String dateFormat = "dd-MM-yyyy";
+    public static String dayFormat = "dd";
+    public static String monthYearFormat = "MMM, yyyy";
+    public static String weekDayMonthFormat = "EEE, dd MM yyyy";
     public static String timeFormat = "HH:mm";
     public static String dateTimeFormat = "dd-MM-yyyy HH:mm";
     public static String reverseDateTimeFormat =  "yyyy-MM-dd HH:mm:ss";
 
-    public static String SUPER_TAG = "Semantic-Log";
+    public static String SUPER_TAG = "SmartDo";
 
     public static String getCursorEntity(String entity){
         if(entity!=null){
@@ -106,7 +169,7 @@ public class utilFunctions {
         }
     }
     public static void BLog(String str){
-        Log.d("SmartDo",str);
+        Log.d(SUPER_TAG,str);
     }
 
     public static String getDate(Long milliSeconds) {

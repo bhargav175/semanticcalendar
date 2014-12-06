@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.getbase.floatingactionbutton.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="16dp"
+    android:layout_marginRight="16dp"
+    android:background="@color/pink"
+    fab:fab_addButtonPlusIconColor="@color/white"
+    fab:fab_colorNormal="@color/pink"
+    fab:fab_colorPressed="@color/pink_pressed"
+    fab:fab_icon="@drawable/ic_edit_white_24dp" />

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.bhargav.smart.smartTasks.helpers.DBHelper;
+import com.bhargav.smart.smartTasks.models.Reminder;
 import com.bhargav.smart.smartTasks.models.RepeatingTask;
 import com.bhargav.smart.smartTasks.models.RepeatingTaskItem;
 import com.bhargav.smart.smartTasks.utils.utilFunctions;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static com.bhargav.smart.smartTasks.utils.utilFunctions.BLog;
 
 /**
  * Created by Admin on 16-09-2014.
@@ -53,7 +56,8 @@ public class RepeatingTaskItemDBHelper {
     }
 
     public RepeatingTaskItem getHabitItem(int id) {
-        Cursor cursor = database.query(TABLE,null,null, null, null, null, null);
+        Cursor cursor = database.query(TABLE, null, DBHelper.COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -63,7 +67,7 @@ public class RepeatingTaskItemDBHelper {
     }
 
     public RepeatingTaskItem getHabitItemByDate(Date date, RepeatingTask repeatingTask) {
-        Cursor cursor = database.query(DBHelper.REPEATING_TASK_ITEMS_TABLE,null, DBHelper.REPEATING_TASK_ITEM_REPEATING_TASK + "= ? AND "+DBHelper.REPEATING_TASK_ITEM_REPEATING_TASK + " = ?",
+        Cursor cursor = database.query(DBHelper.REPEATING_TASK_ITEMS_TABLE,null, DBHelper.REPEATING_TASK_ITEM_DATE + "= ? AND "+DBHelper.REPEATING_TASK_ITEM_REPEATING_TASK + " = ?",
                 new String[] { new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(date) , repeatingTask.getId().toString()}, null, null, null, null);
         RepeatingTaskItem repeatingTaskItem = null;
         if ( cursor.moveToNext())
@@ -111,7 +115,8 @@ public class RepeatingTaskItemDBHelper {
     public RepeatingTaskItem saveHabitItem(Date date,RepeatingTask repeatingTask) {
         database = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_ID, (Integer.toString(Integer.parseInt(getPrevHabitItemId(TABLE)) + 1)));
+        Integer id =Integer.parseInt(getPrevHabitItemId(TABLE)) + 1;
+        values.put(DBHelper.COLUMN_ID, (Integer.toString(id)));
         values.put(DBHelper.REPEATING_TASK_ITEM_REPEATING_TASK, repeatingTask.getId());
         values.put( DBHelper.REPEATING_TASK_ITEM_DATE,
                 new SimpleDateFormat(utilFunctions.reverseDateTimeFormat).format(date));
@@ -119,7 +124,7 @@ public class RepeatingTaskItemDBHelper {
         //TODO Location Insertion
         Log.d(TAG, values.toString());
         database.insert(TABLE, null, values);
-        RepeatingTaskItem repeatingTaskItem = getHabitItem(Integer.parseInt(getPrevHabitItemId(TABLE)) + 1);
+        RepeatingTaskItem repeatingTaskItem = getHabitItem(id);
         return repeatingTaskItem;
 
     }
@@ -140,8 +145,9 @@ public class RepeatingTaskItemDBHelper {
         SimpleDateFormat sdf = new SimpleDateFormat(utilFunctions.reverseDateTimeFormat);
         if (cursor.getString(1) != null) {
             try {
+
                 cal.setTime(sdf.parse(cursor.getString(1)));
-                repeatingTaskItem.setCurrentDate(cal);
+                repeatingTaskItem.setCurrentDate((Calendar)cal.clone());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -151,7 +157,7 @@ public class RepeatingTaskItemDBHelper {
         if (cursor.getString(4) != null) {
             try {
                 cal.setTime(sdf.parse(cursor.getString(4)));
-                repeatingTaskItem.setCompletedTime(cal);
+                repeatingTaskItem.setCompletedTime((Calendar)cal.clone());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -159,7 +165,7 @@ public class RepeatingTaskItemDBHelper {
         if (cursor.getString(5) != null) {
             try {
                 cal.setTime(sdf.parse(cursor.getString(5)));
-                repeatingTaskItem.setCreatedTime(cal);
+                repeatingTaskItem.setCreatedTime((Calendar)cal.clone());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -174,6 +180,19 @@ public class RepeatingTaskItemDBHelper {
 
     public Cursor fetchAllHabitsItemsInHabit(RepeatingTask repeatingTask) {
         return database.query(TABLE, null, DBHelper.REPEATING_TASK_ITEM_REPEATING_TASK +  "=" + repeatingTask.getId(), null, null, null, null);
+    }
+
+
+    public void updateState(RepeatingTaskItem repeatingTaskItem) {
+
+        database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_STATE, repeatingTaskItem.getHabitItemState().getStateValue());
+        // updating row
+        BLog(values.toString());
+        database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(repeatingTaskItem.getId())});
+        BLog(repeatingTaskItem.getHabitItemState().toString());
     }
 
 

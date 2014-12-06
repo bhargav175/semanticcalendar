@@ -39,22 +39,23 @@ public class DueHabitDialog extends AlertDialog.Builder {
 
     private TextView textView;
     private LinearLayout spinnerLayout;
-
     private View dialogLayout;
     private int year, month, day, hour, minute, second, tempYear, tempMonth, tempDay, tempHour, tempMinute;
     private TimePickerDialog timePickerDialog;
     private DatePickerDialog startDateDialog,endDateDialog;
     private List<String> dates, times;
     private Boolean hasReminder;
-    private Calendar startDate,endDate;
-    private Integer reminderId,currentHabitFrequency;
+    private Calendar startDate,endDate,tempStartDate,tempEndDate;
+    private Integer reminderId,currentHabitFrequency,tempHabitFrequency,tempDaysCode;
     private RepeatingTask repeatingTaskCurrent;
     private Button  timeButton, startDateButton,endDateButton;
     private RepeatingTaskDBHelper repeatingTaskDBHelper;
     private EditText habitText, habitQuestion, habitDuration, habitFrequency;
+    private RepeatingTask.Type tempHabitType;
     private Spinner tag, frequencyBase, habitType;
     private LinearLayout fixedHabitLayout, flexibleHabitLayout;
     private Boolean sun, mon,tue,wed,thu,fri,sat;
+    private Boolean tempSun, tempMon,tempTue,tempWed,tempThu,tempFri,tempSat;
     private TextView sundayButton, mondayButton, tuesdayButton, wednesdayButton,thursdayButton, fridayButton, saturdayButton;
     Integer habitId;
 
@@ -84,12 +85,15 @@ public class DueHabitDialog extends AlertDialog.Builder {
         this.tempMinute = m;
         this.hasReminder = hasReminder;
         this.reminderId = reminderId;
+        this.tempDaysCode = null;
+        this.tempHabitFrequency = null;
         if(repeatingTask.getStartDate()!=null){
             this.startDate = repeatingTask.getStartDate();
         }
         else{
             this.startDate = Calendar.getInstance();
         }
+            this.tempStartDate = (Calendar)this.startDate.clone();
         if(repeatingTask.getEndDate()!=null){
             this.endDate = repeatingTask.getEndDate();
         }
@@ -97,6 +101,8 @@ public class DueHabitDialog extends AlertDialog.Builder {
             this.endDate = Calendar.getInstance();
             this.endDate.add(Calendar.DAY_OF_YEAR,30);
         }
+        this.tempEndDate = (Calendar)this.endDate.clone();
+
         initUi();
         setListeners(a);
 
@@ -113,6 +119,7 @@ public class DueHabitDialog extends AlertDialog.Builder {
                         day = tempDay;
                         hour = tempHour;
                         minute = tempMinute;
+                        confirmChanges();
                         setDueDate();
 
                     }
@@ -153,7 +160,7 @@ public class DueHabitDialog extends AlertDialog.Builder {
                     @Override
                     public void onDateSet(DatePickerDialog datePickerDialog, int y, int m, int d) {
 
-                        setStartDate(y, m, d);
+                        setTempStartDate(y, m, d);
                     }
 
                 });
@@ -170,7 +177,7 @@ public class DueHabitDialog extends AlertDialog.Builder {
                     @Override
                     public void onDateSet(DatePickerDialog datePickerDialog, int y, int m, int d) {
 
-                        setEndDate(y, m, d);
+                        setTempEndDate(y, m, d);
                     }
 
                 });
@@ -194,6 +201,13 @@ public class DueHabitDialog extends AlertDialog.Builder {
         thu = false;
         fri = false;
         sat = false;
+        tempSun = false;
+        tempMon = false;
+        tempTue = false;
+        tempWed = false;
+        tempThu = false;
+        tempFri = false;
+        tempSat = false;
 
 
         //8 Buttons
@@ -204,9 +218,6 @@ public class DueHabitDialog extends AlertDialog.Builder {
         thursdayButton = (TextView) dialogLayout.findViewById(R.id.thursdayButton);
         fridayButton = (TextView) dialogLayout.findViewById(R.id.fridayButton);
         saturdayButton = (TextView) dialogLayout.findViewById(R.id.saturdayButton);
-
-
-
         repeatingTaskDBHelper = new RepeatingTaskDBHelper(a);
         repeatingTaskDBHelper.open();
         flexibleHabitLayout = (LinearLayout) dialogLayout.findViewById(R.id.linearLayoutFlexible);
@@ -267,21 +278,20 @@ public class DueHabitDialog extends AlertDialog.Builder {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0){
-                    repeatingTaskCurrent.setRepeatingTaskType(RepeatingTask.Type.FIXED);
-                    if(repeatingTaskCurrent.getDaysCode()==null){
-                        repeatingTaskCurrent.setDaysCode(1111111);
+                    tempHabitType = RepeatingTask.Type.FIXED;
+                    if(tempDaysCode==null){
+                        tempDaysCode = 1111111;
                     }
                     fixedHabitLayout.setVisibility(View.VISIBLE);
                     flexibleHabitLayout.setVisibility(View.GONE);
                 }else{
-                    repeatingTaskCurrent.setRepeatingTaskType(RepeatingTask.Type.FLEXIBLE);
-                    if(repeatingTaskCurrent.getFrequency()==null){
-                        repeatingTaskCurrent.setFrequency(0);
+                    tempHabitType = RepeatingTask.Type.FLEXIBLE;
+                    if(tempHabitFrequency==null){
+                        tempHabitFrequency = 0;
                     }
                     fixedHabitLayout.setVisibility(View.GONE);
                     flexibleHabitLayout.setVisibility(View.VISIBLE);
                 }
-                setTempMetaText();
             }
 
             @Override
@@ -298,9 +308,7 @@ public class DueHabitDialog extends AlertDialog.Builder {
         frequencyBase.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentHabitFrequency = position;
-                repeatingTaskCurrent.setFrequency(position);
-                setTempMetaText();
+                tempHabitFrequency = position;
             }
 
             @Override
@@ -326,14 +334,21 @@ public class DueHabitDialog extends AlertDialog.Builder {
                 thu = daysBoolean.get(4);
                 fri = daysBoolean.get(5);
                 sat = daysBoolean.get(6);
+                tempSun = sun;
+                tempMon = mon;
+                tempTue = tue;
+                tempWed = wed;
+                tempThu = thu;
+                tempFri = fri;
+                tempSat = sat;
 
-                setButtonState(sundayButton,sun);
-                setButtonState(mondayButton,mon);
-                setButtonState(tuesdayButton,tue);
-                setButtonState(wednesdayButton,wed);
-                setButtonState(thursdayButton,thu);
-                setButtonState(fridayButton,fri);
-                setButtonState(saturdayButton,sat);
+                setButtonState(sundayButton,tempSun);
+                setButtonState(mondayButton,tempMon);
+                setButtonState(tuesdayButton,tempTue);
+                setButtonState(wednesdayButton,tempWed);
+                setButtonState(thursdayButton,tempThu);
+                setButtonState(fridayButton,tempFri);
+                setButtonState(saturdayButton,tempSat);
 
             }else{
                 habitType.setSelection(1);
@@ -346,14 +361,7 @@ public class DueHabitDialog extends AlertDialog.Builder {
             }
         }
 
-        if (hasReminder) {
-
-            setDueDate();
-        } else {
-
-            setDueDate();
-            hideTextView();
-        }
+       setDueDate();
 
     }
 
@@ -370,6 +378,46 @@ public class DueHabitDialog extends AlertDialog.Builder {
     }
 
 
+    private void confirmChanges() {
+        sun =tempSun;
+        mon =tempMon;
+        tue =tempTue;
+        wed =tempWed;
+        thu =tempThu;
+        fri =tempFri;
+        sat =tempSat;
+        startDate = (Calendar) tempStartDate.clone();
+        endDate = (Calendar) tempEndDate.clone();
+        startDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(startDate.getTime()));
+        endDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(endDate.getTime()));
+        repeatingTaskCurrent.setStartDate((Calendar) startDate.clone());
+        repeatingTaskCurrent.setEndDate((Calendar) endDate.clone());
+        repeatingTaskCurrent.setRepeatingTaskType(tempHabitType);
+        if(tempHabitType == RepeatingTask.Type.FIXED){
+            repeatingTaskCurrent.setDaysCode(tempDaysCode);
+            repeatingTaskCurrent.setFrequency(null);
+        }
+        else{
+            repeatingTaskCurrent.setDaysCode(null);
+            currentHabitFrequency = tempHabitFrequency;
+            repeatingTaskCurrent.setFrequency(currentHabitFrequency);
+        }
+        setTempMetaText();
+        hour = tempHour;
+        minute = tempMinute;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        repeatingTaskCurrent.setDueTime((Calendar) cal.clone());
+
+
+    }
+
     private void setStartDate(Integer y, Integer m, Integer d) {
 
         startDate.set(Calendar.YEAR,y);
@@ -382,6 +430,20 @@ public class DueHabitDialog extends AlertDialog.Builder {
         repeatingTaskCurrent.setStartDate((Calendar) startDate.clone());
         setTempMetaText();
         startDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(startDate.getTime()));
+    }
+
+    private void setTempStartDate(Integer y, Integer m, Integer d) {
+
+        tempStartDate.set(Calendar.YEAR,y);
+        tempStartDate.set(Calendar.MONTH,m);
+        tempStartDate.set(Calendar.DAY_OF_MONTH,d);
+        if(tempEndDate.compareTo(tempStartDate)<=0){
+            tempEndDate = (Calendar) tempStartDate.clone();
+            tempEndDate.add(Calendar.DAY_OF_YEAR,1);
+        }
+
+        startDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(tempStartDate.getTime()));
+        endDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(tempEndDate.getTime()));
     }
 
     private void setEndDate(Integer y, Integer m, Integer d) {
@@ -397,6 +459,19 @@ public class DueHabitDialog extends AlertDialog.Builder {
         setTempMetaText();
         endDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(endDate.getTime()));
     }
+
+    private void setTempEndDate(Integer y, Integer m, Integer d) {
+
+        tempEndDate.set(Calendar.YEAR,y);
+        tempEndDate.set(Calendar.MONTH,m);
+        tempEndDate.set(Calendar.DAY_OF_MONTH,d);
+        if(tempEndDate.compareTo(tempStartDate)<=0){
+            tempEndDate = (Calendar) tempStartDate.clone();
+            tempEndDate.add(Calendar.DAY_OF_YEAR,1);
+        }
+        endDateButton.setText(new SimpleDateFormat(utilFunctions.dateFormat).format(tempEndDate.getTime()));
+    }
+
 
     private void setTempMetaText(){
        textView.setText(RepeatingTask.getMetaText(repeatingTaskCurrent));
@@ -417,15 +492,20 @@ public class DueHabitDialog extends AlertDialog.Builder {
         setTempMetaText();
     }
 
+    public Holder initialHolder(){
+        return new Holder(repeatingTaskCurrent.getDueTime(),  reminderId);
+    }
+
     public Holder returnUpdatedValues() {
             Calendar cal = null;
             cal = Calendar.getInstance();
             cal.set(Calendar.HOUR_OF_DAY, hour);
             cal.set(Calendar.MINUTE, minute);
             cal.set(Calendar.YEAR,2000);
-           cal.set(Calendar.SECOND,0);
-           cal.set(Calendar.MONTH,0);
+            cal.set(Calendar.SECOND,0);
+            cal.set(Calendar.MONTH,0);
             cal.set(Calendar.DAY_OF_MONTH, 1);
+
 
         return new Holder(cal,  reminderId);
 
@@ -435,50 +515,50 @@ public class DueHabitDialog extends AlertDialog.Builder {
         sundayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sun = !sun;
-                setButtonState(sundayButton,sun);
+                tempSun = !tempSun;
+                setButtonState(sundayButton,tempSun);
             }
         });
         mondayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mon = !mon;
-                setButtonState(mondayButton,mon);
+                tempMon = !tempMon;
+                setButtonState(mondayButton,tempMon);
             }
         });
         tuesdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tue = !tue;
-                setButtonState(tuesdayButton,tue);
+                tempTue = !tempTue;
+                setButtonState(tuesdayButton,tempTue);
             }
         });
         wednesdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wed = !wed;
-                setButtonState(wednesdayButton,wed);
+                tempWed = !tempWed;
+                setButtonState(wednesdayButton,tempWed);
             }
         });
         thursdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                thu = !thu;
-                setButtonState(thursdayButton,thu);
+                tempThu = !tempThu;
+                setButtonState(thursdayButton,tempThu);
             }
         });
         fridayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fri = !fri;
-                setButtonState(fridayButton,fri);
+                tempFri = !tempFri;
+                setButtonState(fridayButton,tempFri);
             }
         });
         saturdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sat = !sat;
-                setButtonState(saturdayButton,sat);
+                tempSat = !tempSat;
+                setButtonState(saturdayButton,tempSat);
             }
         });
 
@@ -493,9 +573,7 @@ public class DueHabitDialog extends AlertDialog.Builder {
             button.setBackgroundColor(a.getResources().getColor(R.color.white));
             button.setTextColor(a.getResources().getColor(R.color.light_blue_500));
         }
-        repeatingTaskCurrent.setDaysCode(RepeatingTask.toDaysCode(sun, mon, tue, wed, thu, fri, sat));
-        setTempMetaText();
-
+        tempDaysCode = RepeatingTask.toDaysCode(sun, mon, tue, wed, thu, fri, sat);
     }
     public class Holder {
         public Calendar cal, startD, endD;

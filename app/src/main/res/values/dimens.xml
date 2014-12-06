@@ -9,9 +9,10 @@
     <dimen name="material_padding">16dp</dimen>
     <dimen name="material_light_padding">8dp</dimen>
     <dimen name="material_actionbar_size">48dp</dimen>
-    <dimen name="material_micro_text_size">12sp</dimen>
+    <dimen name="material_micro_text_size">10sp</dimen>
     <dimen name="material_simple_text_size">14sp</dimen>
     <dimen name="material_small_text_size">14sp</dimen>
+    <dimen name="material_very_small_text_size">12sp</dimen>
     <dimen name="material_heading_text_size">22sp</dimen>
     <dimen name="material_medium_text_size">18sp</dimen>
     <dimen name="action_bar_height_material">56dp</dimen>

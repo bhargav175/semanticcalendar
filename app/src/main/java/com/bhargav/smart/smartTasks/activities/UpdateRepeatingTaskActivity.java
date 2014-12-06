@@ -15,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,15 +53,17 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
     Integer habitId,currentHabitDuration,currentHabitFrequency;
     private TextView showDueDateTextView;
     public RepeatingTaskReminderHelper reminderHelper;
-    private FlowLayout labelLayout;
+    private LinearLayout addDueDateLayout,hasDueDateLayout;
     int day, month, year, hour, minute, second;
     private FloatingActionsMenu fam;
     private DueHabitDialog mAlertBuilder;
     private AlertDialog mAlert;
     private Reminder currentReminder;
+    private Button closeButton,addDueDateButton;
     Integer requestId;
-    private Boolean hadReminder,hasReminder;
+    private Boolean hadReminder,hasReminder,hasDueDate;
     private Long hadMilliSeconds;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +135,10 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
         //4 edittexts
         habitText = (EditText) findViewById(R.id.repeatingTaskText);
         habitQuestion = (EditText) findViewById(R.id.habitQuestion);
-
+        addDueDateLayout = (LinearLayout) findViewById(R.id.addDueDateLayout);
+        hasDueDateLayout = (LinearLayout) findViewById(R.id.hasDueDateLayout);
+        closeButton = (Button) findViewById(R.id.close);
+        addDueDateButton = (Button) findViewById(R.id.addDueDateButton);
         //2 spinners
         tag = (Spinner) findViewById(R.id.categorySelectSpinner);
         isArchived = (Switch) findViewById(R.id.isArchivedSwitch);
@@ -139,6 +146,7 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
         repeatingTaskDBHelper = new RepeatingTaskDBHelper(this);
         repeatingTaskDBHelper.open();
         showDueDateTextView = (TextView) findViewById(R.id.showDueDate);
+        hasDueDate = false;
         //Duration
         List<String> durationStrings = new ArrayList<String>();
         durationStrings.addAll(Arrays.asList(RepeatingTask.durationStrings));
@@ -173,6 +181,9 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
         if(repeatingTaskCurrent.getIsArchived()!=null){
             isArchived.setChecked(repeatingTaskCurrent.getIsArchived());
         }
+        if(repeatingTaskCurrent.getIsReminded()!=null){
+            isReminded.setChecked(repeatingTaskCurrent.getIsReminded());
+        }
 
         if (repeatingTaskCurrent.getReminderId() != null) {
             hadReminder = true;
@@ -181,6 +192,35 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
             hadReminder = false;
         }
         hasReminder = hadReminder;
+        if(repeatingTaskCurrent.getDueTime()!=null){
+            addDueDateLayout.setVisibility(View.GONE);
+            hasDueDateLayout.setVisibility(View.VISIBLE);
+            hasDueDate = true;
+        }else{
+            addDueDateLayout.setVisibility(View.VISIBLE);
+            hasDueDateLayout.setVisibility(View.GONE);
+            hasDueDate = false;
+        }
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(addDueDateLayout.getVisibility()==View.GONE){
+                    addDueDateLayout.setVisibility(View.VISIBLE);
+                    hasDueDateLayout.setVisibility(View.GONE);
+                    hasDueDate = false;
+                }
+            }
+        });
+        addDueDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(addDueDateLayout.getVisibility()==View.VISIBLE){
+                    addDueDateLayout.setVisibility(View.GONE);
+                    hasDueDateLayout.setVisibility(View.VISIBLE);
+                    hasDueDate = true;
+                }
+            }
+        });
         new GetReminder(requestId).execute("");
 
     }
@@ -230,7 +270,7 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
         @Override
         protected Integer doInBackground(String... params) {
             Integer res = 0;
-            DueHabitDialog.Holder holder = reminderHelper.doSomething(isReminded.isChecked());
+            DueHabitDialog.Holder holder = reminderHelper.doSomething(isReminded.isChecked(),hasDueDate);
             repeatingTaskCurrent.setRepeatingTaskType(holder.curHabitType);
             repeatingTaskCurrent.setDueTime(holder.cal);
             currentHabitFrequency = holder.curFrequency;
@@ -242,11 +282,17 @@ public class UpdateRepeatingTaskActivity extends ActionBarActivity {
             TaskList habitTaskList = (TaskList) tag.getSelectedItem();
             repeatingTaskCurrent.setRepeatingTaskText(habitTextString);
             repeatingTaskCurrent.setRepeatingTaskDescription(habitQuestionString);
-            repeatingTaskCurrent.setReminderId(holder.remainderId);
             repeatingTaskCurrent.setTag(habitTaskList.getTagId());
             repeatingTaskCurrent.setStartDate(holder.startD);
             repeatingTaskCurrent.setEndDate(holder.endD);
             repeatingTaskCurrent.setIsArchived(isArchived.isChecked());
+            if(holder.remainderId!=null){
+                repeatingTaskCurrent.setReminderId(holder.remainderId);
+                repeatingTaskCurrent.setIsReminded(true);
+            }else{
+                repeatingTaskCurrent.setReminderId(null);
+                repeatingTaskCurrent.setIsReminded(false);
+            }
             if(repeatingTaskCurrent.getRepeatingTaskType()== RepeatingTask.Type.FIXED){
                 repeatingTaskCurrent.setFrequency(null);
                 repeatingTaskCurrent.setDaysCode(daysCode);
@@ -469,15 +515,7 @@ private class GetTags extends AsyncTask<String, Void, List<TaskList>> {
 
     @Override
     public void onBackPressed() {
-        if(repeatingTaskCurrent !=null){
-            Intent intent = new Intent(this,TaskListActivity.class);
-            intent.putExtra(DBHelper.COLUMN_ID, repeatingTaskCurrent.getTag());
-            startActivity(intent);
-        }else{
-            Intent intent = new Intent(this,SuperMain.class);
-            startActivity(intent);
-        }
+        finish();
 
-        return;
     }
 }

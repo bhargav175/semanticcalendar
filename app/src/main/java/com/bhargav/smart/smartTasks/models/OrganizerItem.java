@@ -44,9 +44,9 @@ public class OrganizerItem {
     public void setCreatedTime(Calendar createdTime) {
         this.createdTime = createdTime;
     }
-    private String type;
-    private String itemText;
-    private Calendar dueTime;
+    protected String type;
+    protected String itemText;
+    protected Calendar dueTime;
 
     public String getSecondaryText() {
         return secondaryText;
@@ -56,10 +56,10 @@ public class OrganizerItem {
         this.secondaryText = secondaryText;
     }
 
-    private String secondaryText;
-    private Calendar createdTime;
-    private Integer id;
-    private utilFunctions.State state;
+    protected String secondaryText;
+    protected Calendar createdTime;
+    protected Integer id;
+    protected utilFunctions.State state;
 
     public static List<OrganizerItem> getOrganizerItemsWithTag(TaskList taskList, Context context){
         List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
@@ -160,11 +160,7 @@ public class OrganizerItem {
 
     public static OrganizerItem castHabitToOrganizerItem(RepeatingTask repeatingTask){
         OrganizerItem organizerItem = new OrganizerItem();
-            if(repeatingTask.getRepeatingTaskDescription()!=null && repeatingTask.getRepeatingTaskDescription().length()>0){
-                organizerItem.setItemText(repeatingTask.getRepeatingTaskDescription());
-            }else{
                 organizerItem.setItemText(repeatingTask.getRepeatingTaskText());
-            }
             if(repeatingTask.getDueTime()!=null){
                 Calendar today = Calendar.getInstance();
                 Calendar c =(Calendar) repeatingTask.getDueTime().clone();
@@ -251,5 +247,66 @@ public class OrganizerItem {
         });
 
         return organizerItems;
+    }
+
+    public static List<OrganizerItem> getAllUnArchivedFlexibleRepeatingItems(Context context, Calendar calendar) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllUnArchivedFlexbleRepeatingTasksByWeek(context, calendar);
+        repeatingTaskList.addAll(RepeatingTask.getAllUnArchivedFlexbleRepeatingTasksByMonth(context, calendar));
+        organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+        return organizerItems;
+
+    }
+
+    public static List<OrganizerItem> getAllUnArchivedUpcomingItemsByWeek(Context context, Calendar calendar) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedUpComingNotes(context, calendar);
+        organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+
+        return organizerItems;
+
+    }
+
+    public static List<OrganizerItem> getAllUnArchivedOverdueItems(Context context, Calendar calendar) {
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<OneTimeTask> oneTimeTaskList = OneTimeTask.getAllUnArchivedOverDueNotes(context, calendar);
+        organizerItems.addAll(castNotesToOrganizerItemList(oneTimeTaskList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+
+        return organizerItems;
+    }
+
+    public static List<OrganizerItem> getAllUnArchivedOverdueRepeatingItems(Context context, Calendar calendar) {
+
+        List<OrganizerItem> organizerItems = new ArrayList<OrganizerItem>();
+        List<RepeatingTask> repeatingTaskList = RepeatingTask.getAllUnArchivedRepeatingTasksWithStartDateBeforeToday(context, calendar);
+        repeatingTaskList.addAll(RepeatingTask.getAllUnArchivedFlexbleRepeatingTasksByMonth(context, calendar));
+        organizerItems.addAll(castHabitsToOrganizerItemList(repeatingTaskList));
+        Collections.sort(organizerItems, new Comparator<OrganizerItem>() {
+            @Override
+            public int compare(OrganizerItem org1, OrganizerItem org2) {
+                return org1.getDueTime().compareTo(org2.getDueTime());
+            }
+        });
+
+        return organizerItems;
+
     }
 }
