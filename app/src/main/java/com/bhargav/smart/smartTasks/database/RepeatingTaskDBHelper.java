@@ -1,3 +1,4 @@
+
 package com.bhargav.smart.smartTasks.database;
 
 import android.content.ContentValues;
@@ -138,7 +139,7 @@ public class RepeatingTaskDBHelper {
         }
 
 
-                // updating row
+        // updating row
         database.update(TABLE, values, DBHelper.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(repeatingTask.getId()) });
         Log.d( utilFunctions.SUPER_TAG+TAG,"Repeating Task updated" + repeatingTask.getRepeatingTaskText());
@@ -508,5 +509,4 @@ public class RepeatingTaskDBHelper {
                 new String[]{String.valueOf(repeatingTask.getId())});
 
     }
-
 }
